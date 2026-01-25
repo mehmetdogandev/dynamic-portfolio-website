@@ -1,5 +1,5 @@
 import { uuid,timestamp,text } from "drizzle-orm/pg-core";
-import { user } from "./schemas/schema";
+import { user } from "./schemas/authentication";
 import type { PgTable, PgColumn, PgSelect } from "drizzle-orm/pg-core";
 import { sql, type SQL } from "drizzle-orm";
 
