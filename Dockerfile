@@ -98,9 +98,3 @@ RUN npm install -g tsx
 USER nextjs
 
 EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-ENV NODE_ENV=production
-
-# Use tsx to run custom server.ts instead of server.js
-CMD ["tsx", "server.ts"]
