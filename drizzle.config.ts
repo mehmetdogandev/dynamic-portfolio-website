@@ -8,5 +8,5 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["dynamic-website_*"],
+  tablesFilter: ["dynamic_website_*"],
 } satisfies Config;
