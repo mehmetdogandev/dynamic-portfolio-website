@@ -1,8 +1,10 @@
 import { uuid,timestamp,text } from "drizzle-orm/pg-core";
 import { user } from "./schemas/authentication";
-import type { PgTable, PgColumn, PgSelect } from "drizzle-orm/pg-core";
+import type { PgTable, PgColumn, PgSelect} from "drizzle-orm/pg-core";
+import {pgTableCreator} from 'drizzle-orm/pg-core'
 import { sql, type SQL } from "drizzle-orm";
 
+export const createTable = pgTableCreator((name) => `pg-drizzle_${name}`);
 
 export const id= uuid("id").primaryKey().defaultRandom().notNull();
 
