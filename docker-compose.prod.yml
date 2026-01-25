@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:17.6
+    container_name: t3_postgres_prod
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: strongpassword
+      POSTGRES_DB: t3_prod
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      target: runner
+    container_name: t3_app_prod
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://postgres:strongpassword@postgres:5432/t3_prod
+      BETTER_AUTH_SECRET: super-secret-prod
+      BETTER_AUTH_URL: https://your-domain.com
+    depends_on:
+      - postgres
+
+  drizzle-studio:
+    image: node:20-alpine
+    container_name: drizzle_studio
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npx drizzle-kit studio
+    environment:
+      DATABASE_URL: postgres://postgres:strongpassword@postgres:5432/t3_prod
+    ports:
+      - "8811:4983"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_prod_data:
