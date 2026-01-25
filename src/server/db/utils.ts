@@ -4,7 +4,7 @@ import type { PgTable, PgColumn, PgSelect} from "drizzle-orm/pg-core";
 import {pgTableCreator} from 'drizzle-orm/pg-core'
 import { sql, type SQL } from "drizzle-orm";
 
-export const createTable = pgTableCreator((name) => `pg-drizzle_${name}`);
+export const createTable = pgTableCreator((name) => `dynamic_website_${name}`);
 
 export const id= uuid("id").primaryKey().defaultRandom().notNull();
 
