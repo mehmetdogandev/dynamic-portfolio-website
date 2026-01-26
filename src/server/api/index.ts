@@ -1,13 +1,7 @@
-import { appRouter } from "@/server/api/routers";
-import { createCallerFactory } from "@/server/api/trpc";
+export { appRouter } from "./routers";
+export type { AppRouter } from "./routers";
 
-export type { AppRouter } from "@/server/api/routers";
+import { appRouter } from "./routers";
+import { createCallerFactory } from "./trpc";
 
-/**
- * Create a server-side caller for the tRPC API.
- * @example
- * const trpc = createCaller(createContext);
- * const res = await trpc.post.all();
- *       ^? Post[]
- */
 export const createCaller = createCallerFactory(appRouter);
