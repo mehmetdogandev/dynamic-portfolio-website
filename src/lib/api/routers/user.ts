@@ -1,6 +1,6 @@
 import {
   createTRPCRouter,
-} from "@/server/api/trpc";
+} from "@/lib/api/trpc";
 
 export const userRouter = createTRPCRouter({
 });

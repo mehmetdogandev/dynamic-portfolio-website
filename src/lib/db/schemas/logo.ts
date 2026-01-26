@@ -4,7 +4,7 @@ import {
   id,
   thisProjectTimestamps,
   thisProjectAuditMeta,
-} from "@/server/db/utils";
+} from "@/lib/db/utils";
 
 export const logoStatusEnum = pgEnum("logoStatusEnum", [
   "ACTIVE",

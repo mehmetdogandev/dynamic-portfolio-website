@@ -4,7 +4,7 @@ import {
   id,
   thisProjectTimestamps,
   thisProjectAuditMeta,
-} from "@/server/db/utils";
+} from "@/lib/db/utils";
 import { user } from "./accounts";
 
 export const posts = createTable("post", {
