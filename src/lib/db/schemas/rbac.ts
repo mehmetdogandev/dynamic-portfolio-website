@@ -2,24 +2,57 @@ import { pgEnum,text} from "drizzle-orm/pg-core";
 import { createTable,id,thisProjectAuditMeta,thisProjectTimestamps } from "../utils";
 import {user} from '@/lib/db/schemas'
 
-export const userRoleEnum=pgEnum('user_role_enum',
-[
-"USER",
-"ADMIN",
-"WRITTER",
+/**
+ * This enum 
+ */
 
-],
+export const permissionEnum=pgEnum('permissionEnum',[
+'CREATE',
+'DELETE',
+'UPDATE',
+'ACCESS',
+'READ'
+]);
 
-);
+export const pageEnum=pgEnum('adminPageEnum',[
+   'HOME_PAGE',
+   'USERS',
+   'ROLES',
+   'ROLE_GROUPS',
+   'SETTINGS',
+]);
 
 
-export const userRole=createTable('user_role',
-   {
+export const roleTable=createTable('role_table',{
     id,
-    userId: text("user_id")
+    name:text().notNull().unique(),
+    description:text().notNull(),
+    permissions:permissionEnum('permissionEnum').array().notNull(),
+    page:pageEnum('page').notNull(),
+    ...thisProjectTimestamps,
+    ...thisProjectAuditMeta,
+});
+
+export const roleGroupTable=createTable('role_group_table',{
+    id,
+    name:text().notNull().unique(),
+    description:text().notNull(),
+roleId: text('role_id')
+    .notNull()
+    .references(() => roleTable.id, { onDelete: "cascade" }),
+    ...thisProjectTimestamps,
+    ...thisProjectAuditMeta,
+});
+
+
+export const userRoleGroupTable=createTable('user_role_group_table',{
+    id,
+   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  ...thisProjectTimestamps,
-  ...thisProjectAuditMeta,
-   }
-);
+roleGroupId: text('role_group_id')
+    .notNull()
+    .references(() => roleGroupTable.id, { onDelete: "cascade" }),
+    ...thisProjectTimestamps,
+    ...thisProjectAuditMeta,
+});
