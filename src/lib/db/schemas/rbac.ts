@@ -21,7 +21,10 @@ export const pageEnum=pgEnum('admin_page_enum',[
    'USERS',
    'ROLES',
    'ROLE_GROUPS',
-   'SETTINGS',
+   'USER_ROLES',
+   'USER_ROLE_GROUPS',
+   'LOGO',
+   'POST',
 ]);
 
 
