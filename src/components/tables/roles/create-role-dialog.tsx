@@ -25,6 +25,7 @@ const PAGES = [
   "POST",
 ] as const;
 const PERMISSIONS = ["CREATE", "READ", "UPDATE", "DELETE", "ACCESS"] as const;
+type Permission = (typeof PERMISSIONS)[number];
 
 type CreateRoleDialogProps = {
   open: boolean;
@@ -35,7 +36,7 @@ export function CreateRoleDialog({ open, onOpenChange }: CreateRoleDialogProps) 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [page, setPage] = useState<string>(PAGES[0]);
-  const [permissions, setPermissions] = useState<string[]>([]);
+  const [permissions, setPermissions] = useState<Permission[]>([]);
   const utils = api.useUtils();
   const createMutation = api.role.create.useMutation({
     onSuccess: () => {
@@ -48,7 +49,7 @@ export function CreateRoleDialog({ open, onOpenChange }: CreateRoleDialogProps) 
     },
   });
 
-  function togglePermission(p: string) {
+  function togglePermission(p: Permission) {
     setPermissions((prev) =>
       prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]
     );

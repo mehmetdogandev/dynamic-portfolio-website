@@ -25,6 +25,7 @@ const PAGES = [
   "POST",
 ] as const;
 const PERMISSIONS = ["CREATE", "READ", "UPDATE", "DELETE", "ACCESS"] as const;
+type Permission = (typeof PERMISSIONS)[number];
 
 type UpdateRoleDialogProps = {
   roleId: string;
@@ -36,7 +37,7 @@ export function UpdateRoleDialog({ roleId, open, onOpenChange }: UpdateRoleDialo
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [page, setPage] = useState<string>(PAGES[0]);
-  const [permissions, setPermissions] = useState<string[]>([]);
+  const [permissions, setPermissions] = useState<Permission[]>([]);
   const { data: role, isLoading } = api.role.getById.useQuery({ id: roleId }, { enabled: open && !!roleId });
   const utils = api.useUtils();
   const updateMutation = api.role.update.useMutation({
@@ -52,11 +53,13 @@ export function UpdateRoleDialog({ roleId, open, onOpenChange }: UpdateRoleDialo
       setName(role.name);
       setDescription(role.description);
       setPage(role.page);
-      setPermissions(Array.isArray(role.permissions) ? (role.permissions as string[]) : []);
+      setPermissions(
+        Array.isArray(role.permissions) ? (role.permissions as Permission[]) : []
+      );
     }
   }, [role]);
 
-  function togglePermission(p: string) {
+  function togglePermission(p: Permission) {
     setPermissions((prev) =>
       prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]
     );
