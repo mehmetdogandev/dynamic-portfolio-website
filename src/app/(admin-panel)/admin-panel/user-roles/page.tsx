@@ -6,7 +6,6 @@ import { UserRoleDataTable } from "@/components/tables/user-role/user-role-data-
 export default function AdminUserRolesPage() {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <h1 className="text-2xl font-semibold">Kullanıcı Rolleri</h1>
       <Card>
         <CardContent className="pt-0">
           <UserRoleDataTable />

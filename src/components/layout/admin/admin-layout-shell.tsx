@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ThemeProvider, useTheme } from "next-themes";
 import { AdminSidebar } from "@/components/layout/admin/sidebar";
@@ -51,6 +52,17 @@ function AdminLayoutContent({
 export function AdminLayoutShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <AdminLayoutContent>{children}</AdminLayoutContent>

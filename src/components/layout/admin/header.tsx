@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, ChevronRight } from "lucide-react";
 import { authClient } from "@/lib/better-auth/client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -16,10 +17,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PAGE_TO_TITLE, PAGE_TO_HREF } from "@/lib/rbac/navigation";
 
 export function AdminHeader() {
   const { data: session } = authClient.useSession();
   const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -39,6 +42,20 @@ export function AdminHeader() {
     hour12: false,
   });
 
+  // Get current page title from pathname
+  const getCurrentPageTitle = () => {
+    const currentPath = pathname || "/admin-panel";
+    const pageEntry = Object.entries(PAGE_TO_HREF).find(([, href]) => href === currentPath);
+    if (pageEntry) {
+      const [pageKey] = pageEntry;
+      return PAGE_TO_TITLE[pageKey as keyof typeof PAGE_TO_TITLE];
+    }
+    return null;
+  };
+
+  const currentPageTitle = getCurrentPageTitle();
+  const isHomePage = pathname === "/admin-panel";
+
   async function handleSignOut() {
     await authClient.signOut();
   }
@@ -46,9 +63,20 @@ export function AdminHeader() {
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
       <SidebarTrigger />
-      <Link href="/admin-panel" className="flex items-center gap-2 font-semibold">
-        <span className="text-lg">Admin</span>
-      </Link>
+      <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
+        <Link
+          href="/admin-panel"
+          className="font-semibold text-foreground transition-colors hover:text-foreground/80"
+        >
+          Ana Sayfa
+        </Link>
+        {!isHomePage && currentPageTitle && (
+          <>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <span className="font-semibold text-foreground">{currentPageTitle}</span>
+          </>
+        )}
+      </nav>
       <div className="hidden flex-1 justify-center md:flex">
         <div className="flex items-center justify-center gap-3 text-center">
           <time className="text-sm tabular-nums text-muted-foreground">{formattedDate}</time>
