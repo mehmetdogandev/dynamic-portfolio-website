@@ -42,11 +42,18 @@ export const roleGroupTable = createTable("role_group_table", {
     id,
     name:text().notNull().unique(),
     description:text().notNull(),
+    ...thisProjectTimestamps,
+    ...thisProjectAuditMeta,
+});
+
+export const roleGroupRoleTable = createTable("role_group_role_table", {
+    id,
+    roleGroupId: uuid('role_group_id')
+    .notNull()
+    .references(() => roleGroupTable.id, { onDelete: "cascade" }),
     roleId: uuid('role_id')
     .notNull()
     .references(() => roleTable.id, { onDelete: "cascade" }),
-    ...thisProjectTimestamps,
-    ...thisProjectAuditMeta,
 });
 
 

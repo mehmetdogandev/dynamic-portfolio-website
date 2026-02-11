@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   createPermissionProcedure,
 } from "@/lib/trpc/trpc";
-import { roleGroupTable } from "@/lib/db/schemas";
+import { roleGroupTable, roleGroupRoleTable } from "@/lib/db/schemas";
 
 export const roleGroupRouter = createTRPCRouter({
   list: createPermissionProcedure("ROLE_GROUPS", "READ").query(async ({ ctx }) => {
@@ -19,7 +19,13 @@ export const roleGroupRouter = createTRPCRouter({
         .from(roleGroupTable)
         .where(eq(roleGroupTable.id, input.id))
         .limit(1);
-      return rows[0] ?? null;
+      const group = rows[0] ?? null;
+      if (!group) return null;
+      const links = await ctx.db
+        .select({ roleId: roleGroupRoleTable.roleId })
+        .from(roleGroupRoleTable)
+        .where(eq(roleGroupRoleTable.roleGroupId, input.id));
+      return { ...group, roleIds: links.map((l) => l.roleId) };
     }),
 
   create: createPermissionProcedure("ROLE_GROUPS", "CREATE")
@@ -27,7 +33,7 @@ export const roleGroupRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1),
         description: z.string().min(1),
-        roleId: z.string().uuid(),
+        roleIds: z.array(z.string().uuid()),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -36,10 +42,16 @@ export const roleGroupRouter = createTRPCRouter({
         .values({
           name: input.name,
           description: input.description,
-          roleId: input.roleId,
         })
         .returning({ id: roleGroupTable.id });
-      return { id: row!.id };
+      if (!row) throw new Error("Failed to create role group");
+      for (const roleId of input.roleIds) {
+        await ctx.db.insert(roleGroupRoleTable).values({
+          roleGroupId: row.id,
+          roleId,
+        });
+      }
+      return { id: row.id };
     }),
 
   update: createPermissionProcedure("ROLE_GROUPS", "UPDATE")
@@ -48,20 +60,27 @@ export const roleGroupRouter = createTRPCRouter({
         id: z.string().uuid(),
         name: z.string().min(1).optional(),
         description: z.string().min(1).optional(),
-        roleId: z.string().uuid().optional(),
+        roleIds: z.array(z.string().uuid()).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, name, description, roleId } = input;
-      await ctx.db
-        .update(roleGroupTable)
-        .set({
-          ...(name !== undefined && { name }),
-          ...(description !== undefined && { description }),
-          ...(roleId !== undefined && { roleId }),
-          updatedAt: new Date(),
-        })
-        .where(eq(roleGroupTable.id, id));
+      const { id, name, description, roleIds } = input;
+      if (name !== undefined || description !== undefined) {
+        await ctx.db
+          .update(roleGroupTable)
+          .set({
+            ...(name !== undefined && { name }),
+            ...(description !== undefined && { description }),
+            updatedAt: new Date(),
+          })
+          .where(eq(roleGroupTable.id, id));
+      }
+      if (roleIds !== undefined) {
+        await ctx.db.delete(roleGroupRoleTable).where(eq(roleGroupRoleTable.roleGroupId, id));
+        for (const roleId of roleIds) {
+          await ctx.db.insert(roleGroupRoleTable).values({ roleGroupId: id, roleId });
+        }
+      }
       return { id };
     }),
 

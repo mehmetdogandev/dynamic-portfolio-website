@@ -19,6 +19,10 @@ export function DetailRoleGroupDialog({ roleGroupId, open, onOpenChange }: Detai
     { id: roleGroupId },
     { enabled: open && !!roleGroupId }
   );
+  const { data: roles } = api.role.list.useQuery(undefined, { enabled: open && !!roleGroup?.roleIds?.length });
+
+  const roleIds = roleGroup?.roleIds ?? [];
+  const roleNames = roles?.filter((r) => roleIds.includes(r.id)).map((r) => r.name) ?? [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -39,8 +43,18 @@ export function DetailRoleGroupDialog({ roleGroupId, open, onOpenChange }: Detai
               <dd>{roleGroup.description}</dd>
             </div>
             <div>
-              <dt className="font-medium text-muted-foreground">Rol ID</dt>
-              <dd className="font-mono text-xs">{roleGroup.roleId}</dd>
+              <dt className="font-medium text-muted-foreground">Roller</dt>
+              <dd>
+                {roleNames.length > 0 ? (
+                  <ul className="mt-1 list-inside list-disc space-y-0.5">
+                    {roleNames.map((name) => (
+                      <li key={name}>{name}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="text-muted-foreground">Bu gruba atanmış rol yok.</span>
+                )}
+              </dd>
             </div>
           </dl>
         ) : (

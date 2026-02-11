@@ -3,8 +3,8 @@ import { db } from "@/lib/db";
 import {
   roleTable,
   userRoleTable,
-  roleGroupTable,
   userRoleGroupTable,
+  roleGroupRoleTable,
 } from "@/lib/db/schemas";
 
 export type Page =
@@ -65,27 +65,28 @@ export async function getPermissions(
     }
   }
 
-  // Via role groups: user_role_group_table -> role_group_table -> role_table
+  // Via role groups: user_role_group_table -> role_group_role_table -> role_table
   const userRoleGroups = await db
     .select({ roleGroupId: userRoleGroupTable.roleGroupId })
     .from(userRoleGroupTable)
     .where(eq(userRoleGroupTable.userId, userId));
 
   if (userRoleGroups.length > 0) {
-    const groups = await db
-      .select({ roleId: roleGroupTable.roleId })
-      .from(roleGroupTable)
+    const groupRoleLinks = await db
+      .select({ roleId: roleGroupRoleTable.roleId })
+      .from(roleGroupRoleTable)
       .where(
         inArray(
-          roleGroupTable.id,
+          roleGroupRoleTable.roleGroupId,
           userRoleGroups.map((g) => g.roleGroupId)
         )
       );
-    if (groups.length > 0) {
+    if (groupRoleLinks.length > 0) {
+      const roleIds = [...new Set(groupRoleLinks.map((l) => l.roleId))];
       const roles = await db
         .select({ page: roleTable.page, permissions: roleTable.permissions })
         .from(roleTable)
-        .where(inArray(roleTable.id, groups.map((g) => g.roleId)));
+        .where(inArray(roleTable.id, roleIds));
       for (const r of roles) {
         addRole(r.page as Page, r.permissions as Permission[]);
       }

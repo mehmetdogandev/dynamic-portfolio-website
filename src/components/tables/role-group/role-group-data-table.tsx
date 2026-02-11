@@ -29,7 +29,6 @@ type RoleGroup = {
   id: string;
   name: string;
   description: string;
-  roleId: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -71,7 +70,6 @@ export function RoleGroupDataTable({
           <TableRow>
             <TableHead>Ad</TableHead>
             <TableHead>Açıklama</TableHead>
-            <TableHead>Rol ID</TableHead>
             {(canRead || canUpdate || canDelete) && (
               <TableHead className="w-[120px]">İşlemler</TableHead>
             )}
@@ -82,7 +80,6 @@ export function RoleGroupDataTable({
             <TableRow key={rg.id}>
               <TableCell>{rg.name}</TableCell>
               <TableCell className="max-w-[200px] truncate">{rg.description}</TableCell>
-              <TableCell className="font-mono text-xs">{rg.roleId}</TableCell>
               {(canRead || canUpdate || canDelete) && (
                 <TableCell>
                   <div className="flex items-center gap-2">

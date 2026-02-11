@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type UpdateRoleGroupDialogProps = {
   roleGroupId: string;
@@ -23,12 +24,12 @@ type UpdateRoleGroupDialogProps = {
 export function UpdateRoleGroupDialog({ roleGroupId, open, onOpenChange }: UpdateRoleGroupDialogProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [roleId, setRoleId] = useState("");
-  const { data: roleGroup, isLoading } = api.roleGroup.getById.useQuery(
+  const [roleIds, setRoleIds] = useState<string[]>([]);
+  const { data: roleGroup, isLoading: groupLoading } = api.roleGroup.getById.useQuery(
     { id: roleGroupId },
     { enabled: open && !!roleGroupId }
   );
-  const { data: roles } = api.role.list.useQuery(undefined, { enabled: open });
+  const { data: roles, isLoading: rolesLoading } = api.role.list.useQuery(undefined, { enabled: open });
   const utils = api.useUtils();
   const updateMutation = api.roleGroup.update.useMutation({
     onSuccess: () => {
@@ -42,23 +43,31 @@ export function UpdateRoleGroupDialog({ roleGroupId, open, onOpenChange }: Updat
     if (roleGroup) {
       setName(roleGroup.name);
       setDescription(roleGroup.description);
-      setRoleId(roleGroup.roleId);
+      setRoleIds(roleGroup.roleIds ?? []);
     }
   }, [roleGroup]);
 
+  function toggleRole(roleId: string) {
+    setRoleIds((prev) =>
+      prev.includes(roleId) ? prev.filter((id) => id !== roleId) : [...prev, roleId]
+    );
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    updateMutation.mutate({ id: roleGroupId, name, description, roleId });
+    updateMutation.mutate({ id: roleGroupId, name, description, roleIds });
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Rol grubunu düzenle</DialogTitle>
-          <DialogDescription>Rol grubu bilgilerini güncelleyin.</DialogDescription>
+          <DialogDescription>
+            Rol grubu bilgilerini ve gruba dahil rolleri güncelleyin.
+          </DialogDescription>
         </DialogHeader>
-        {isLoading ? (
+        {groupLoading ? (
           <p className="text-muted-foreground">Yükleniyor...</p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -83,22 +92,33 @@ export function UpdateRoleGroupDialog({ roleGroupId, open, onOpenChange }: Updat
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="update-rg-role">Rol</Label>
-              <select
-                id="update-rg-role"
-                value={roleId}
-                onChange={(e) => setRoleId(e.target.value)}
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
-                required
-                disabled={updateMutation.isPending}
-              >
-                <option value="">Seçin</option>
-                {roles?.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.name}
-                  </option>
-                ))}
-              </select>
+              <Label>Roller (role.list üzerinden)</Label>
+              {rolesLoading ? (
+                <p className="text-sm text-muted-foreground">Roller yükleniyor...</p>
+              ) : roles?.length ? (
+                <ScrollArea className="h-[200px] rounded-md border p-3">
+                  <div className="flex flex-col gap-2">
+                    {roles.map((r) => (
+                      <label
+                        key={r.id}
+                        className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/50"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={roleIds.includes(r.id)}
+                          onChange={() => toggleRole(r.id)}
+                          disabled={updateMutation.isPending}
+                          className="h-4 w-4 rounded border-input"
+                        />
+                        <span className="font-medium">{r.name}</span>
+                        <span className="text-muted-foreground">({r.page})</span>
+                      </label>
+                    ))}
+                  </div>
+                </ScrollArea>
+              ) : (
+                <p className="text-sm text-muted-foreground">Henüz rol yok.</p>
+              )}
             </div>
             {updateMutation.error && (
               <p className="text-sm text-destructive">{updateMutation.error.message}</p>
