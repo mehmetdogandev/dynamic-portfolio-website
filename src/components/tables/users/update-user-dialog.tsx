@@ -13,7 +13,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
+import { getErrorMessage } from "@/lib/trpc/error-messages";
 import { Camera, Upload, X } from "lucide-react";
+
+const SOCIAL_FIELDS: Array<{ key: string; label: string }> = [
+  { key: "twitter", label: "Twitter" },
+  { key: "facebook", label: "Facebook" },
+  { key: "instagram", label: "Instagram" },
+  { key: "linkedin", label: "LinkedIn" },
+  { key: "youtube", label: "YouTube" },
+  { key: "tiktok", label: "TikTok" },
+  { key: "pinterest", label: "Pinterest" },
+  { key: "reddit", label: "Reddit" },
+  { key: "telegram", label: "Telegram" },
+  { key: "whatsapp", label: "WhatsApp" },
+  { key: "viber", label: "Viber" },
+  { key: "skype", label: "Skype" },
+  { key: "discord", label: "Discord" },
+  { key: "twitch", label: "Twitch" },
+  { key: "spotify", label: "Spotify" },
+  { key: "appleMusic", label: "Apple Music" },
+  { key: "amazonMusic", label: "Amazon Music" },
+  { key: "deezer", label: "Deezer" },
+  { key: "soundcloud", label: "SoundCloud" },
+];
+
+type UpdateUserDialogProps = {
+  userId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
 
 function fileToBase64(file: File): Promise<{ base64: string; mimeType: string }> {
   return new Promise((resolve, reject) => {
@@ -26,11 +55,31 @@ function fileToBase64(file: File): Promise<{ base64: string; mimeType: string }>
   });
 }
 
-type UpdateUserDialogProps = {
-  userId: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-};
+function emptyUserInfo(): Record<string, string> {
+  return {
+    lastName: "",
+    displayName: "",
+    phoneNumber: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    bio: "",
+    website: "",
+    ...Object.fromEntries(SOCIAL_FIELDS.map((f) => [f.key, ""])),
+  };
+}
+
+function userInfoToState(info: Record<string, unknown> | null): Record<string, string> {
+  if (!info) return emptyUserInfo();
+  const base = emptyUserInfo();
+  for (const key of Object.keys(base)) {
+    const v = info[key];
+    base[key] = v != null ? String(v) : "";
+  }
+  return base;
+}
 
 export function UpdateUserDialog({
   userId,
@@ -39,10 +88,7 @@ export function UpdateUserDialog({
 }: UpdateUserDialogProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [bio, setBio] = useState("");
-  const [website, setWebsite] = useState("");
+  const [userInfo, setUserInfo] = useState<Record<string, string>>(emptyUserInfo);
   const [profileFile, setProfileFile] = useState<File | null>(null);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -54,7 +100,7 @@ export function UpdateUserDialog({
     { id: userId },
     { enabled: open && !!userId }
   );
-  const userInfo = user && "userInfo" in user ? user.userInfo : null;
+  const apiUserInfo = user && "userInfo" in user ? user.userInfo : null;
 
   const utils = api.useUtils();
   const updateMutation = api.user.update.useMutation({
@@ -73,25 +119,18 @@ export function UpdateUserDialog({
   }, [user]);
 
   useEffect(() => {
-    if (userInfo) {
-      setDisplayName(userInfo.displayName ?? "");
-      setPhoneNumber(userInfo.phoneNumber ?? "");
-      setBio(userInfo.bio ?? "");
-      setWebsite(userInfo.website ?? "");
-      if (userInfo.profilePicture) {
-        const url = userInfo.profilePicture.startsWith("/")
-          ? userInfo.profilePicture
-          : `/${userInfo.profilePicture}`;
+    if (apiUserInfo && typeof apiUserInfo === "object") {
+      setUserInfo(userInfoToState(apiUserInfo as Record<string, unknown>));
+      const pic = (apiUserInfo as { profilePicture?: string }).profilePicture;
+      if (pic) {
+        const url = pic.startsWith("/") ? pic : `/${pic}`;
         setProfilePreview(url);
       }
-    } else if (user && !userInfo) {
-      setDisplayName("");
-      setPhoneNumber("");
-      setBio("");
-      setWebsite("");
+    } else if (user && !apiUserInfo) {
+      setUserInfo(emptyUserInfo());
       setProfilePreview(null);
     }
-  }, [userInfo, user]);
+  }, [apiUserInfo, user]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -104,12 +143,13 @@ export function UpdateUserDialog({
 
   function clearNewPhoto() {
     setProfileFile(null);
-    if (userInfo?.profilePicture) {
-      setProfilePreview(
-        userInfo.profilePicture.startsWith("/")
-          ? userInfo.profilePicture
-          : `/${userInfo.profilePicture}`
-      );
+    if (apiUserInfo && typeof apiUserInfo === "object") {
+      const pic = (apiUserInfo as { profilePicture?: string }).profilePicture;
+      if (pic) {
+        setProfilePreview(pic.startsWith("/") ? pic : `/${pic}`);
+      } else {
+        setProfilePreview(null);
+      }
     } else {
       setProfilePreview(null);
     }
@@ -152,6 +192,10 @@ export function UpdateUserDialog({
     );
   }
 
+  function setUserInfoField(field: string, value: string) {
+    setUserInfo((prev) => ({ ...prev, [field]: value }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     let profilePhotoBase64: string | undefined;
@@ -161,18 +205,28 @@ export function UpdateUserDialog({
       profilePhotoBase64 = base64;
       profilePhotoMimeType = mimeType;
     }
+    const ui = {
+      lastName: userInfo.lastName ?? "",
+      displayName: userInfo.displayName ?? "",
+      phoneNumber: userInfo.phoneNumber ?? "",
+      address: userInfo.address ?? "",
+      city: userInfo.city ?? "",
+      state: userInfo.state ?? "",
+      zipCode: userInfo.zipCode ?? "",
+      country: userInfo.country ?? "",
+      bio: userInfo.bio ?? "",
+      website: userInfo.website ?? "",
+      ...Object.fromEntries(
+        SOCIAL_FIELDS.map((f) => [f.key, userInfo[f.key] ?? ""])
+      ),
+    };
     updateMutation.mutate({
       id: userId,
       name,
       email,
       profilePhotoBase64,
       profilePhotoMimeType,
-      userInfo: {
-        displayName: displayName || undefined,
-        phoneNumber: phoneNumber || undefined,
-        bio: bio || undefined,
-        website: website || undefined,
-      },
+      userInfo: ui,
     });
   }
 
@@ -231,7 +285,7 @@ export function UpdateUserDialog({
                     Kamerayı kapat
                   </Button>
                 )}
-                {(profileFile || (profilePreview && !userInfo?.profilePicture)) && (
+                {(profileFile || (profilePreview && !(apiUserInfo as { profilePicture?: string })?.profilePicture)) && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -265,66 +319,156 @@ export function UpdateUserDialog({
                 />
               )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="update-name">Ad Soyad</Label>
-              <Input
-                id="update-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                disabled={updateMutation.isPending}
-              />
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-muted-foreground">Temel bilgiler</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor="update-name">Ad Soyad</Label>
+                  <Input
+                    id="update-name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="update-lastName">Soyad</Label>
+                  <Input
+                    id="update-lastName"
+                    value={userInfo.lastName}
+                    onChange={(e) => setUserInfoField("lastName", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="update-displayName">Görünen ad</Label>
+                  <Input
+                    id="update-displayName"
+                    value={userInfo.displayName}
+                    onChange={(e) => setUserInfoField("displayName", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor="update-email">E-posta</Label>
+                  <Input
+                    id="update-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor="update-phoneNumber">Telefon</Label>
+                  <Input
+                    id="update-phoneNumber"
+                    value={userInfo.phoneNumber}
+                    onChange={(e) => setUserInfoField("phoneNumber", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="update-email">E-posta</Label>
-              <Input
-                id="update-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={updateMutation.isPending}
-              />
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-muted-foreground">Adres</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor="update-address">Adres</Label>
+                  <Input
+                    id="update-address"
+                    value={userInfo.address}
+                    onChange={(e) => setUserInfoField("address", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="update-city">Şehir</Label>
+                  <Input
+                    id="update-city"
+                    value={userInfo.city}
+                    onChange={(e) => setUserInfoField("city", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="update-state">İl / Eyalet</Label>
+                  <Input
+                    id="update-state"
+                    value={userInfo.state}
+                    onChange={(e) => setUserInfoField("state", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="update-zipCode">Posta kodu</Label>
+                  <Input
+                    id="update-zipCode"
+                    value={userInfo.zipCode}
+                    onChange={(e) => setUserInfoField("zipCode", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="update-country">Ülke</Label>
+                  <Input
+                    id="update-country"
+                    value={userInfo.country}
+                    onChange={(e) => setUserInfoField("country", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="update-displayName">Görünen ad</Label>
-              <Input
-                id="update-displayName"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                disabled={updateMutation.isPending}
-              />
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-muted-foreground">Diğer</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor="update-bio">Bio</Label>
+                  <Input
+                    id="update-bio"
+                    value={userInfo.bio}
+                    onChange={(e) => setUserInfoField("bio", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor="update-website">Web sitesi</Label>
+                  <Input
+                    id="update-website"
+                    type="url"
+                    value={userInfo.website}
+                    onChange={(e) => setUserInfoField("website", e.target.value)}
+                    disabled={updateMutation.isPending}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="update-phone">Telefon</Label>
-              <Input
-                id="update-phone"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                disabled={updateMutation.isPending}
-              />
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-muted-foreground">Sosyal / Medya</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {SOCIAL_FIELDS.map(({ key, label }) => (
+                  <div key={key} className="space-y-2">
+                    <Label htmlFor={`update-${key}`}>{label}</Label>
+                    <Input
+                      id={`update-${key}`}
+                      value={userInfo[key] ?? ""}
+                      onChange={(e) => setUserInfoField(key, e.target.value)}
+                      disabled={updateMutation.isPending}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="update-bio">Bio</Label>
-              <Input
-                id="update-bio"
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                disabled={updateMutation.isPending}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="update-website">Web sitesi</Label>
-              <Input
-                id="update-website"
-                type="url"
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                disabled={updateMutation.isPending}
-              />
-            </div>
+
             {updateMutation.error && (
-              <p className="text-sm text-destructive">{updateMutation.error.message}</p>
+              <p className="text-sm text-destructive">{getErrorMessage(updateMutation.error)}</p>
             )}
             <DialogFooter>
               <Button

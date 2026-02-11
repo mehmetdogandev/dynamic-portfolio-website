@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
+import { getErrorMessage } from "@/lib/trpc/error-messages";
 
 const PAGES = [
   "HOME_PAGE",
@@ -121,7 +122,7 @@ export function CreateRoleDialog({ open, onOpenChange }: CreateRoleDialogProps) 
             </div>
           </div>
           {createMutation.error && (
-            <p className="text-sm text-destructive">{createMutation.error.message}</p>
+            <p className="text-sm text-destructive">{getErrorMessage(createMutation.error)}</p>
           )}
           <DialogFooter>
             <Button

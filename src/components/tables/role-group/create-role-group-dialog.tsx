@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
+import { getErrorMessage } from "@/lib/trpc/error-messages";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 type CreateRoleGroupDialogProps = {
@@ -109,7 +110,7 @@ export function CreateRoleGroupDialog({ open, onOpenChange }: CreateRoleGroupDia
             )}
           </div>
           {createMutation.error && (
-            <p className="text-sm text-destructive">{createMutation.error.message}</p>
+            <p className="text-sm text-destructive">{getErrorMessage(createMutation.error)}</p>
           )}
           <DialogFooter>
             <Button

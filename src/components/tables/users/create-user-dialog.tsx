@@ -13,7 +13,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
+import { getErrorMessage } from "@/lib/trpc/error-messages";
 import { Camera, Upload, X } from "lucide-react";
+
+const SOCIAL_FIELDS: Array<{ key: string; label: string }> = [
+  { key: "twitter", label: "Twitter" },
+  { key: "facebook", label: "Facebook" },
+  { key: "instagram", label: "Instagram" },
+  { key: "linkedin", label: "LinkedIn" },
+  { key: "youtube", label: "YouTube" },
+  { key: "tiktok", label: "TikTok" },
+  { key: "pinterest", label: "Pinterest" },
+  { key: "reddit", label: "Reddit" },
+  { key: "telegram", label: "Telegram" },
+  { key: "whatsapp", label: "WhatsApp" },
+  { key: "viber", label: "Viber" },
+  { key: "skype", label: "Skype" },
+  { key: "discord", label: "Discord" },
+  { key: "twitch", label: "Twitch" },
+  { key: "spotify", label: "Spotify" },
+  { key: "appleMusic", label: "Apple Music" },
+  { key: "amazonMusic", label: "Amazon Music" },
+  { key: "deezer", label: "Deezer" },
+  { key: "soundcloud", label: "SoundCloud" },
+];
 
 type CreateUserDialogProps = {
   open: boolean;
@@ -32,10 +55,25 @@ function fileToBase64(file: File): Promise<{ base64: string; mimeType: string }>
   });
 }
 
+const emptyUserInfo = () => ({
+  lastName: "",
+  displayName: "",
+  phoneNumber: "",
+  address: "",
+  city: "",
+  state: "",
+  zipCode: "",
+  country: "",
+  bio: "",
+  website: "",
+  ...Object.fromEntries(SOCIAL_FIELDS.map((f) => [f.key, ""])),
+});
+
 export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userInfo, setUserInfo] = useState<Record<string, string>>(emptyUserInfo);
   const [profileFile, setProfileFile] = useState<File | null>(null);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -51,6 +89,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
       setName("");
       setEmail("");
       setPassword("");
+      setUserInfo(emptyUserInfo());
       setProfileFile(null);
       setProfilePreview(null);
     },
@@ -110,6 +149,10 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     );
   }
 
+  function setUserInfoField(field: string, value: string) {
+    setUserInfo((prev) => ({ ...prev, [field]: value }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     let profilePhotoBase64: string | undefined;
@@ -119,22 +162,38 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
       profilePhotoBase64 = base64;
       profilePhotoMimeType = mimeType;
     }
+    const ui = {
+      lastName: userInfo.lastName || "",
+      displayName: userInfo.displayName || "",
+      phoneNumber: userInfo.phoneNumber || "",
+      address: userInfo.address || "",
+      city: userInfo.city || "",
+      state: userInfo.state || "",
+      zipCode: userInfo.zipCode || "",
+      country: userInfo.country || "",
+      bio: userInfo.bio || undefined,
+      website: userInfo.website || undefined,
+      ...Object.fromEntries(
+        SOCIAL_FIELDS.map((f) => [f.key, userInfo[f.key] || undefined])
+      ),
+    };
     createMutation.mutate({
       name,
       email,
       password: password || undefined,
       profilePhotoBase64,
       profilePhotoMimeType,
+      userInfo: ui,
     });
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Yeni Kullanıcı</DialogTitle>
           <DialogDescription>
-            Yeni kullanıcı bilgilerini girin. Profil fotoğrafı isteğe bağlıdır.
+            Yeni kullanıcı bilgilerini girin. Profil fotoğrafı ve ek alanlar isteğe bağlıdır.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -217,39 +276,166 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               />
             )}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="create-name">Ad Soyad</Label>
-            <Input
-              id="create-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              disabled={createMutation.isPending}
-            />
+
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-muted-foreground">Temel bilgiler</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="create-name">Ad Soyad</Label>
+                <Input
+                  id="create-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-lastName">Soyad</Label>
+                <Input
+                  id="create-lastName"
+                  value={userInfo.lastName}
+                  onChange={(e) => setUserInfoField("lastName", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-displayName">Görünen ad</Label>
+                <Input
+                  id="create-displayName"
+                  value={userInfo.displayName}
+                  onChange={(e) => setUserInfoField("displayName", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="create-email">E-posta</Label>
+                <Input
+                  id="create-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-password">Şifre (opsiyonel)</Label>
+                <Input
+                  id="create-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-phoneNumber">Telefon</Label>
+                <Input
+                  id="create-phoneNumber"
+                  value={userInfo.phoneNumber}
+                  onChange={(e) => setUserInfoField("phoneNumber", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="create-email">E-posta</Label>
-            <Input
-              id="create-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={createMutation.isPending}
-            />
+
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-muted-foreground">Adres</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="create-address">Adres</Label>
+                <Input
+                  id="create-address"
+                  value={userInfo.address}
+                  onChange={(e) => setUserInfoField("address", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-city">Şehir</Label>
+                <Input
+                  id="create-city"
+                  value={userInfo.city}
+                  onChange={(e) => setUserInfoField("city", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-state">İl / Eyalet</Label>
+                <Input
+                  id="create-state"
+                  value={userInfo.state}
+                  onChange={(e) => setUserInfoField("state", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-zipCode">Posta kodu</Label>
+                <Input
+                  id="create-zipCode"
+                  value={userInfo.zipCode}
+                  onChange={(e) => setUserInfoField("zipCode", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="create-country">Ülke</Label>
+                <Input
+                  id="create-country"
+                  value={userInfo.country}
+                  onChange={(e) => setUserInfoField("country", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="create-password">Şifre (opsiyonel)</Label>
-            <Input
-              id="create-password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={createMutation.isPending}
-            />
+
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-muted-foreground">Diğer</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="create-bio">Bio</Label>
+                <Input
+                  id="create-bio"
+                  value={userInfo.bio}
+                  onChange={(e) => setUserInfoField("bio", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="create-website">Web sitesi</Label>
+                <Input
+                  id="create-website"
+                  type="url"
+                  value={userInfo.website}
+                  onChange={(e) => setUserInfoField("website", e.target.value)}
+                  disabled={createMutation.isPending}
+                />
+              </div>
+            </div>
           </div>
+
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-muted-foreground">Sosyal / Medya</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {SOCIAL_FIELDS.map(({ key, label }) => (
+                <div key={key} className="space-y-2">
+                  <Label htmlFor={`create-${key}`}>{label}</Label>
+                  <Input
+                    id={`create-${key}`}
+                    value={userInfo[key] ?? ""}
+                    onChange={(e) => setUserInfoField(key, e.target.value)}
+                    disabled={createMutation.isPending}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
           {createMutation.error && (
-            <p className="text-sm text-destructive">{createMutation.error.message}</p>
+            <p className="text-sm text-destructive">{getErrorMessage(createMutation.error)}</p>
           )}
           <DialogFooter>
             <Button

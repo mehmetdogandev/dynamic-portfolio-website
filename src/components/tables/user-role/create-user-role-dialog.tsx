@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
+import { getErrorMessage } from "@/lib/trpc/error-messages";
 
 type CreateUserRoleDialogProps = {
   open: boolean;
@@ -84,7 +85,7 @@ export function CreateUserRoleDialog({ open, onOpenChange }: CreateUserRoleDialo
             </select>
           </div>
           {createMutation.error && (
-            <p className="text-sm text-destructive">{createMutation.error.message}</p>
+            <p className="text-sm text-destructive">{getErrorMessage(createMutation.error)}</p>
           )}
           <DialogFooter>
             <Button

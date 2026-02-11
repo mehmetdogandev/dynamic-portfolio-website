@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getErrorMessage } from "@/lib/trpc/error-messages";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -32,7 +33,7 @@ export function LoginForm() {
     });
     setLoading(false);
     if (result.error) {
-      setError(result.error.message ?? "Giriş başarısız.");
+      setError(getErrorMessage(result.error));
       return;
     }
   }

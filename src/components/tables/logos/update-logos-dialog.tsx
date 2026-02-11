@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
+import { getErrorMessage } from "@/lib/trpc/error-messages";
 
 type UpdateLogosDialogProps = {
   logoId: string;
@@ -92,7 +93,7 @@ export function UpdateLogosDialog({ logoId, open, onOpenChange }: UpdateLogosDia
               </select>
             </div>
             {updateMutation.error && (
-              <p className="text-sm text-destructive">{updateMutation.error.message}</p>
+              <p className="text-sm text-destructive">{getErrorMessage(updateMutation.error)}</p>
             )}
             <DialogFooter>
               <Button

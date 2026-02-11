@@ -91,6 +91,12 @@ export function DetailUserDialog({
               </div>
               {userInfo && (
                 <>
+                  {(userInfo as Record<string, unknown>).lastName && (
+                    <div>
+                      <dt className="font-medium text-muted-foreground">Soyad</dt>
+                      <dd>{(userInfo as Record<string, unknown>).lastName as string}</dd>
+                    </div>
+                  )}
                   {userInfo.displayName && (
                     <div>
                       <dt className="font-medium text-muted-foreground">Görünen ad</dt>
@@ -103,10 +109,65 @@ export function DetailUserDialog({
                       <dd>{userInfo.phoneNumber}</dd>
                     </div>
                   )}
+                  {(userInfo as Record<string, unknown>).address && (
+                    <div>
+                      <dt className="font-medium text-muted-foreground">Adres</dt>
+                      <dd>{(userInfo as Record<string, unknown>).address as string}</dd>
+                    </div>
+                  )}
+                  {(userInfo as Record<string, unknown>).city && (
+                    <div>
+                      <dt className="font-medium text-muted-foreground">Şehir</dt>
+                      <dd>{(userInfo as Record<string, unknown>).city as string}</dd>
+                    </div>
+                  )}
+                  {(userInfo as Record<string, unknown>).state && (
+                    <div>
+                      <dt className="font-medium text-muted-foreground">İl / Eyalet</dt>
+                      <dd>{(userInfo as Record<string, unknown>).state as string}</dd>
+                    </div>
+                  )}
+                  {(userInfo as Record<string, unknown>).zipCode && (
+                    <div>
+                      <dt className="font-medium text-muted-foreground">Posta kodu</dt>
+                      <dd>{(userInfo as Record<string, unknown>).zipCode as string}</dd>
+                    </div>
+                  )}
+                  {(userInfo as Record<string, unknown>).country && (
+                    <div>
+                      <dt className="font-medium text-muted-foreground">Ülke</dt>
+                      <dd>{(userInfo as Record<string, unknown>).country as string}</dd>
+                    </div>
+                  )}
                   {userInfo.bio && (
                     <div>
                       <dt className="font-medium text-muted-foreground">Bio</dt>
                       <dd>{userInfo.bio}</dd>
+                    </div>
+                  )}
+                  {(userInfo as Record<string, unknown>).website && (
+                    <div>
+                      <dt className="font-medium text-muted-foreground">Web sitesi</dt>
+                      <dd>
+                        {(() => {
+                          const url = (userInfo as Record<string, unknown>).website as string;
+                          const href =
+                            url.startsWith("http") || url.startsWith("//")
+                              ? url
+                              : `https://${url.replace(/^https?:\/\//, "")}`;
+                          return (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-primary underline"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              {url}
+                            </a>
+                          );
+                        })()}
+                      </dd>
                     </div>
                   )}
                 </>
