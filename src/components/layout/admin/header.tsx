@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 import { authClient } from "@/lib/better-auth/client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -17,6 +19,7 @@ import {
 
 export function AdminHeader() {
   const { data: session } = authClient.useSession();
+  const { theme, setTheme } = useTheme();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -54,6 +57,19 @@ export function AdminHeader() {
         </div>
       </div>
       <div className="ml-auto flex items-center gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="h-9 w-9"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-4 w-4" />
+          ) : (
+            <Moon className="h-4 w-4" />
+          )}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-9 w-9 rounded-full">
