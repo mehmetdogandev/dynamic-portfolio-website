@@ -3,7 +3,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from "@/lib/api/trpc";
+} from "@/lib/trpc/trpc";
 import { posts } from "@/lib/db/schemas";
 
 export const postRouter = createTRPCRouter({
