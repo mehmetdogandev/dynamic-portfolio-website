@@ -4,9 +4,11 @@ import {
   createTRPCRouter,
   createPermissionProcedure,
 } from "@/lib/trpc/trpc";
+import { TRPCError } from "@trpc/server";
 import { user as userTable, userInfo as userInfoTable } from "@/lib/db/schemas";
 import { listInputSchema, type ListOutput } from "@/lib/trpc/list-schema";
 import { uploadFile, getFileRecord, deleteFile } from "@/lib/minios3/utils";
+import { auth } from "@/lib/better-auth/config";
 
 const ALLOWED_SORT_COLUMNS = ["name", "email", "createdAt"] as const;
 const ALLOWED_FILTER_COLUMNS = ["name", "email"] as const;
@@ -14,7 +16,7 @@ const ALLOWED_FILTER_COLUMNS = ["name", "email"] as const;
 export const userRouter = createTRPCRouter({
   list: createPermissionProcedure("USERS", "READ")
     .input(listInputSchema)
-    .query(async ({ ctx, input }): Promise<ListOutput<typeof userTable.$inferSelect>> => {
+    .query(async ({ ctx, input }) => {
       const { page, limit, sortBy, sortOrder, columnFilters } = input;
       const offset = (page - 1) * limit;
 
@@ -22,7 +24,7 @@ export const userRouter = createTRPCRouter({
       const conditions = [];
       if (columnFilters) {
         for (const [key, value] of Object.entries(columnFilters)) {
-          if (ALLOWED_FILTER_COLUMNS.includes(key as typeof ALLOWED_FILTER_COLUMNS[number]) && value.trim()) {
+          if (ALLOWED_FILTER_COLUMNS.includes(key as (typeof ALLOWED_FILTER_COLUMNS)[number]) && value.trim()) {
             if (key === "name") {
               conditions.push(ilike(userTable.name, `%${value}%`));
             } else if (key === "email") {
@@ -43,7 +45,7 @@ export const userRouter = createTRPCRouter({
 
       // Build order by
       let orderByClause;
-      if (sortBy && ALLOWED_SORT_COLUMNS.includes(sortBy as typeof ALLOWED_SORT_COLUMNS[number])) {
+      if (sortBy && ALLOWED_SORT_COLUMNS.includes(sortBy as (typeof ALLOWED_SORT_COLUMNS)[number])) {
         if (sortBy === "name") {
           orderByClause = sortOrder === "desc" ? desc(userTable.name) : asc(userTable.name);
         } else if (sortBy === "email") {
@@ -57,17 +59,28 @@ export const userRouter = createTRPCRouter({
         orderByClause = desc(userTable.createdAt);
       }
 
-      // Get paginated items
-      const items = await ctx.db
-        .select()
+      // Get paginated items with userInfo profilePicture and displayName
+      const rows = await ctx.db
+        .select({
+          id: userTable.id,
+          name: userTable.name,
+          email: userTable.email,
+          emailVerified: userTable.emailVerified,
+          image: userTable.image,
+          createdAt: userTable.createdAt,
+          updatedAt: userTable.updatedAt,
+          profilePicture: userInfoTable.profilePicture,
+          displayName: userInfoTable.displayName,
+        })
         .from(userTable)
+        .leftJoin(userInfoTable, eq(userTable.id, userInfoTable.userId))
         .where(whereClause)
         .orderBy(orderByClause)
         .limit(limit)
         .offset(offset);
 
       return {
-        items,
+        items: rows,
         total,
         totalPages,
       };
@@ -94,55 +107,67 @@ export const userRouter = createTRPCRouter({
   create: createPermissionProcedure("USERS", "CREATE")
     .input(
       z.object({
-        name: z.string().min(1),
-        email: z.string().email(),
-        password: z.string().min(1).optional(),
+        name: z.string().min(1, "Ad zorunludur."),
+        email: z.string().email("Geçerli bir e-posta girin."),
+        password: z.string().min(1, "Şifre zorunludur."),
         profilePhotoBase64: z.string().optional(),
         profilePhotoMimeType: z.string().optional(),
         profilePictureUrl: z.string().optional(),
-        userInfo: z
-          .object({
-            lastName: z.string().optional(),
-            displayName: z.string().optional(),
-            phoneNumber: z.string().optional(),
-            address: z.string().optional(),
-            city: z.string().optional(),
-            state: z.string().optional(),
-            zipCode: z.string().optional(),
-            country: z.string().optional(),
-            bio: z.string().optional(),
-            website: z.string().optional(),
-            twitter: z.string().optional(),
-            facebook: z.string().optional(),
-            instagram: z.string().optional(),
-            linkedin: z.string().optional(),
-            youtube: z.string().optional(),
-            tiktok: z.string().optional(),
-            pinterest: z.string().optional(),
-            reddit: z.string().optional(),
-            telegram: z.string().optional(),
-            whatsapp: z.string().optional(),
-            viber: z.string().optional(),
-            skype: z.string().optional(),
-            discord: z.string().optional(),
-            twitch: z.string().optional(),
-            spotify: z.string().optional(),
-            appleMusic: z.string().optional(),
-            amazonMusic: z.string().optional(),
-            deezer: z.string().optional(),
-            soundcloud: z.string().optional(),
-          })
-          .optional(),
+        userInfo: z.object({
+          lastName: z
+            .string()
+            .transform((s) => (s ?? "").trim())
+            .refine((s) => s.length > 0, "Soyad zorunludur."),
+          phoneNumber: z.string().optional(),
+          address: z.string().optional(),
+          city: z.string().optional(),
+          state: z.string().optional(),
+          zipCode: z.string().optional(),
+          country: z.string().optional(),
+          bio: z.string().optional(),
+          website: z.string().optional(),
+          twitter: z.string().optional(),
+          facebook: z.string().optional(),
+          instagram: z.string().optional(),
+          linkedin: z.string().optional(),
+          youtube: z.string().optional(),
+          tiktok: z.string().optional(),
+          pinterest: z.string().optional(),
+          reddit: z.string().optional(),
+          telegram: z.string().optional(),
+          whatsapp: z.string().optional(),
+          viber: z.string().optional(),
+          skype: z.string().optional(),
+          discord: z.string().optional(),
+          twitch: z.string().optional(),
+          spotify: z.string().optional(),
+          appleMusic: z.string().optional(),
+          amazonMusic: z.string().optional(),
+          deezer: z.string().optional(),
+          soundcloud: z.string().optional(),
+        }),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const id = crypto.randomUUID();
-      await ctx.db.insert(userTable).values({
-        id,
-        name: input.name,
-        email: input.email,
-        emailVerified: false,
+      const result = await auth.api.signUpEmail({
+        body: {
+          name: input.name,
+          email: input.email,
+          password: input.password,
+        },
       });
+
+      const id = result?.user?.id;
+      if (!id) {
+        const msg =
+          typeof result === "object" && result && "error" in result
+            ? (result as { error?: { message?: string } }).error?.message
+            : undefined;
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: msg ?? "Kullanıcı oluşturulamadı. E-posta zaten kullanılıyor olabilir.",
+        });
+      }
 
       let profilePictureUrl: string | null = input.profilePictureUrl ?? null;
       if (!profilePictureUrl && input.profilePhotoBase64 && input.profilePhotoMimeType) {
@@ -153,46 +178,47 @@ export const userRouter = createTRPCRouter({
           : input.profilePhotoMimeType.includes("webp")
             ? ".webp"
             : ".jpg";
-        const result = await uploadFile(buffer, `photo${ext}`, input.profilePhotoMimeType, {
+        const uploadResult = await uploadFile(buffer, `photo${ext}`, input.profilePhotoMimeType, {
           prefix: `profilePhoto/${id}`,
           uploadedBy: id,
         });
-        profilePictureUrl = `/api/files/${result.id}/view`;
+        profilePictureUrl = `/api/files/${uploadResult.id}/view`;
       }
 
       const u = input.userInfo;
+      const displayName = `${input.name} ${u.lastName}`.trim();
       await ctx.db.insert(userInfoTable).values({
         userId: id,
-        lastName: u?.lastName ?? "",
-        displayName: u?.displayName ?? input.name,
-        phoneNumber: u?.phoneNumber ?? "",
-        address: u?.address ?? "",
-        city: u?.city ?? "",
-        state: u?.state ?? "",
-        zipCode: u?.zipCode ?? "",
-        country: u?.country ?? "",
+        lastName: u.lastName,
+        displayName,
+        phoneNumber: u.phoneNumber ?? null,
+        address: u.address ?? null,
+        city: u.city ?? null,
+        state: u.state ?? null,
+        zipCode: u.zipCode ?? null,
+        country: u.country ?? null,
         profilePicture: profilePictureUrl,
-        bio: u?.bio ?? "",
-        website: u?.website ?? "",
-        twitter: u?.twitter ?? "",
-        facebook: u?.facebook ?? "",
-        instagram: u?.instagram ?? "",
-        linkedin: u?.linkedin ?? "",
-        youtube: u?.youtube ?? "",
-        tiktok: u?.tiktok ?? "",
-        pinterest: u?.pinterest ?? "",
-        reddit: u?.reddit ?? "",
-        telegram: u?.telegram ?? "",
-        whatsapp: u?.whatsapp ?? "",
-        viber: u?.viber ?? "",
-        skype: u?.skype ?? "",
-        discord: u?.discord ?? "",
-        twitch: u?.twitch ?? "",
-        spotify: u?.spotify ?? "",
-        appleMusic: u?.appleMusic ?? "",
-        amazonMusic: u?.amazonMusic ?? "",
-        deezer: u?.deezer ?? "",
-        soundcloud: u?.soundcloud ?? "",
+        bio: u.bio ?? "",
+        website: u.website ?? "",
+        twitter: u.twitter ?? "",
+        facebook: u.facebook ?? "",
+        instagram: u.instagram ?? "",
+        linkedin: u.linkedin ?? "",
+        youtube: u.youtube ?? "",
+        tiktok: u.tiktok ?? "",
+        pinterest: u.pinterest ?? "",
+        reddit: u.reddit ?? "",
+        telegram: u.telegram ?? "",
+        whatsapp: u.whatsapp ?? "",
+        viber: u.viber ?? "",
+        skype: u.skype ?? "",
+        discord: u.discord ?? "",
+        twitch: u.twitch ?? "",
+        spotify: u.spotify ?? "",
+        appleMusic: u.appleMusic ?? "",
+        amazonMusic: u.amazonMusic ?? "",
+        deezer: u.deezer ?? "",
+        soundcloud: u.soundcloud ?? "",
       });
       return { id };
     }),
@@ -325,16 +351,22 @@ export const userRouter = createTRPCRouter({
           .set(infoUpdate)
           .where(eq(userInfoTable.userId, id));
       } else {
+        const [userRow] = await ctx.db
+          .select({ name: userTable.name })
+          .from(userTable)
+          .where(eq(userTable.id, id))
+          .limit(1);
+        const userName = userRow?.name ?? "";
         await ctx.db.insert(userInfoTable).values({
           userId: id,
           lastName: (u?.lastName as string) ?? "",
-          displayName: (u?.displayName as string) ?? "",
-          phoneNumber: (u?.phoneNumber as string) ?? "",
-          address: (u?.address as string) ?? "",
-          city: (u?.city as string) ?? "",
-          state: (u?.state as string) ?? "",
-          zipCode: (u?.zipCode as string) ?? "",
-          country: (u?.country as string) ?? "",
+          displayName: (u?.displayName as string) ?? `${userName} ${(u?.lastName as string) ?? ""}`.trim(),
+          phoneNumber: (u?.phoneNumber as string) ?? null,
+          address: (u?.address as string) ?? null,
+          city: (u?.city as string) ?? null,
+          state: (u?.state as string) ?? null,
+          zipCode: (u?.zipCode as string) ?? null,
+          country: (u?.country as string) ?? null,
           profilePicture: profilePictureUrl,
           bio: (u?.bio as string) ?? "",
           website: (u?.website as string) ?? "",

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, ChevronDown } from "lucide-react";
 import { authClient } from "@/lib/better-auth/client";
 import { useNavigationPermissions } from "@/lib/hooks/use-rbac-helpers";
@@ -31,11 +31,13 @@ import {
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: permissions, isLoading } = useNavigationPermissions();
   const { data: session } = authClient.useSession();
 
   async function handleSignOut() {
     await authClient.signOut();
+    router.push("/admin-panel/login");
   }
 
   // Helper function to get nav item by page

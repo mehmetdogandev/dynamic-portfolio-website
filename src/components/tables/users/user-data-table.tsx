@@ -10,6 +10,7 @@ import { CreateUserDialog } from "./create-user-dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { api } from "@/lib/trpc/react";
 import { DataTableWrapper, createActionColumn } from "@/components/ui/data-table-wrapper";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type User = {
   id: string;
@@ -19,6 +20,8 @@ type User = {
   emailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
+  profilePicture?: string | null;
+  displayName?: string | null;
 };
 
 export function UserDataTable() {
@@ -66,6 +69,30 @@ export function UserDataTable() {
   // Define columns
   const columns = useMemo<ColumnDef<User>[]>(() => {
     const cols: ColumnDef<User>[] = [
+      {
+        id: "profile",
+        header: "Profil",
+        enableSorting: false,
+        enableColumnFilter: false,
+        cell: ({ row }) => {
+          const u = row.original;
+          const src = u.profilePicture ?? u.image ?? null;
+          const label = (u.displayName ?? u.name ?? "?").trim();
+          const initial = label ? label.charAt(0).toUpperCase() : "?";
+          return (
+            <div className="flex items-center gap-2">
+              <Avatar className="size-8">
+                {src ? (
+                  <AvatarImage src={src} alt={label} />
+                ) : null}
+                <AvatarFallback>{initial}</AvatarFallback>
+              </Avatar>
+              <span className="truncate">{label || "—"}</span>
+            </div>
+          );
+        },
+        meta: { columnLabel: "Profil" },
+      },
       {
         accessorKey: "name",
         header: "Ad",

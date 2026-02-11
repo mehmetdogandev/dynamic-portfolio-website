@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Moon, Sun, ChevronRight } from "lucide-react";
 import { authClient } from "@/lib/better-auth/client";
@@ -23,6 +23,7 @@ export function AdminHeader() {
   const { data: session } = authClient.useSession();
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -58,6 +59,7 @@ export function AdminHeader() {
 
   async function handleSignOut() {
     await authClient.signOut();
+    router.push("/admin-panel/login");
   }
 
   return (

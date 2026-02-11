@@ -17,7 +17,7 @@ import {
     type Column,
     type Table as ReactTable,
 } from "@tanstack/react-table";
-import React, { useState, useMemo, useEffect, Children, isValidElement } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback, Children, isValidElement } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -155,6 +155,31 @@ export function DataTable<TData, TValue>({
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [rowSelection, setRowSelection] = useState({});
 
+    const hasServerColumnFilters = !!onColumnFiltersChange;
+    const [localFilterValues, setLocalFilterValues] = useState<Record<string, string>>(externalColumnFilters ?? {});
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    useEffect(() => {
+        setLocalFilterValues(externalColumnFilters ?? {});
+    }, [externalColumnFilters]);
+    const commitColumnFilters = useCallback(
+        (next: Record<string, string>) => {
+            onColumnFiltersChange?.(next);
+        },
+        [onColumnFiltersChange]
+    );
+    const handleFilterChange = useCallback(
+        (columnId: string, value: string) => {
+            setLocalFilterValues((prev) => {
+                const next = { ...prev, [columnId]: value };
+                if (debounceRef.current) clearTimeout(debounceRef.current);
+                debounceRef.current = setTimeout(() => commitColumnFilters(next), 350);
+                return next;
+            });
+        },
+        [commitColumnFilters]
+    );
+    useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current); }, []);
+
     // Automatically determine which columns have data and hide empty ones
     const columnsWithData = useMemo(() => {
         const result = getColumnsWithData(data, columns);
@@ -180,36 +205,30 @@ export function DataTable<TData, TValue>({
         {}
     );
 
-    // Update column visibility when data or loading state changes
+    // Update column visibility: when server-side column filters, keep all columns visible; else hide empty
     useEffect(() => {
         const newVisibility: VisibilityState = {};
 
         columns.forEach((column) => {
             if ("accessorKey" in column && column.accessorKey) {
                 const accessorKey = column.accessorKey as string;
-                // Show all columns if loading or no data, otherwise show only columns with data
-                newVisibility[accessorKey] =
-                    isLoading ||
-                    data.length === 0 ||
-                    columnsWithData.has(accessorKey);
+                newVisibility[accessorKey] = hasServerColumnFilters
+                    ? true
+                    : isLoading || data.length === 0 || columnsWithData.has(accessorKey);
             } else if ("id" in column && column.id) {
-                // Show all columns if loading or no data, otherwise show only columns with data
-                newVisibility[column.id] =
-                    isLoading ||
-                    data.length === 0 ||
-                    columnsWithData.has(column.id);
+                newVisibility[column.id] = hasServerColumnFilters
+                    ? true
+                    : isLoading || data.length === 0 || columnsWithData.has(column.id);
             }
         });
 
-        // Only update if visibility actually changed
         setColumnVisibility((prev) => {
             const hasChanged = Object.keys(newVisibility).some(
                 (key) => prev[key] !== newVisibility[key]
             ) || Object.keys(prev).length !== Object.keys(newVisibility).length;
-
             return hasChanged ? newVisibility : prev;
         });
-    }, [columnsWithData, columns, data.length, isLoading]);
+    }, [columnsWithData, columns, data.length, isLoading, hasServerColumnFilters]);
 
     const table = useReactTable({
         data,
@@ -352,6 +371,34 @@ export function DataTable<TData, TValue>({
                                 })}
                             </TableRow>
                         ))}
+                        {/* Filter row: one search input per filterable column (server-side) */}
+                        {hasServerColumnFilters && (
+                            <TableRow>
+                                {table.getVisibleLeafColumns().map((column) => {
+                                    const isActions = column.id === "actions";
+                                    const enableFilter = (column.columnDef as { enableColumnFilter?: boolean }).enableColumnFilter;
+                                    return (
+                                        <TableCell
+                                            key={column.id}
+                                            className={
+                                                isActions
+                                                    ? "!text-center w-[1%] whitespace-nowrap"
+                                                    : undefined
+                                            }
+                                        >
+                                            {enableFilter ? (
+                                                <Input
+                                                    placeholder="Ara..."
+                                                    value={localFilterValues[column.id] ?? ""}
+                                                    onChange={(e) => handleFilterChange(column.id, e.target.value)}
+                                                    className="h-8"
+                                                />
+                                            ) : null}
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        )}
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
