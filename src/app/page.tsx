@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { LatestPost } from "@/components/post";
 import { auth } from "@/lib/better-auth";
 import { getSession } from "@/lib/better-auth/server";
-import { api, HydrateClient } from "@/trpc/server";
+import { api, HydrateClient } from "@/lib/api/server";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
