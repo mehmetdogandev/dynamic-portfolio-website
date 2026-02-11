@@ -5,6 +5,12 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import {
+  createTable,
+  id,
+  thisProjectTimestamps,
+  thisProjectAuditMeta,
+} from "@/lib/db/utils";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -65,6 +71,47 @@ export const verification = pgTable("verification", {
     () => /* @__PURE__ */ new Date()
   ),
 });
+
+export const userInfo =createTable("user_info",{
+  id,
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+    lastName: text("last_name").notNull(),
+    displayName: text("display_name").notNull(),
+    phoneNumber: text("phone_number").notNull(),
+    address: text("address").notNull(),
+    city: text("city").notNull(),
+    state: text("state").notNull(),
+    zipCode: text("zip_code").notNull(),
+    country: text("country").notNull(),
+    profilePicture: text("profile_picture").notNull(),
+    bio: text("bio").notNull(),
+    website: text("website").notNull(),
+    twitter: text("twitter").notNull(),
+    facebook: text("facebook").notNull(),
+    instagram: text("instagram").notNull(),
+    linkedin: text("linkedin").notNull(),
+    youtube: text("youtube").notNull(),
+    tiktok: text("tiktok").notNull(),
+    pinterest: text("pinterest").notNull(),
+    reddit: text("reddit").notNull(),
+    telegram: text("telegram").notNull(),
+    whatsapp: text("whatsapp").notNull(),
+    viber: text("viber").notNull(),
+    skype: text("skype").notNull(),
+    discord: text("discord").notNull(),
+    twitch: text("twitch").notNull(),
+    spotify: text("spotify").notNull(),
+    appleMusic: text("apple_music").notNull(),
+    amazonMusic: text("amazon_music").notNull(),
+    deezer: text("deezer").notNull(),
+    soundcloud: text("soundcloud").notNull(),
+  ...thisProjectTimestamps,
+  ...thisProjectAuditMeta,
+});
+
+
 
 export const userRelations = relations(user, ({ many }) => ({
   account: many(account),
