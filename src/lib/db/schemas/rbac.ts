@@ -1,9 +1,11 @@
-import { pgEnum,text} from "drizzle-orm/pg-core";
+import { pgEnum,text, uuid} from "drizzle-orm/pg-core";
 import { createTable,id,thisProjectAuditMeta,thisProjectTimestamps } from "../utils";
 import {user} from '@/lib/db/schemas'
 
 /**
- * This enum 
+ * 
+ * RBA
+ * 
  */
 
 export const permissionEnum=pgEnum('permissionEnum',[
@@ -37,7 +39,7 @@ export const roleGroupTable=createTable('role_group_table',{
     id,
     name:text().notNull().unique(),
     description:text().notNull(),
-roleId: text('role_id')
+    roleId: uuid('role_id')
     .notNull()
     .references(() => roleTable.id, { onDelete: "cascade" }),
     ...thisProjectTimestamps,
@@ -47,10 +49,10 @@ roleId: text('role_id')
 
 export const userRoleGroupTable=createTable('user_role_group_table',{
     id,
-   userId: text("user_id")
+    userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-roleGroupId: text('role_group_id')
+    roleGroupId: uuid('role_group_id')
     .notNull()
     .references(() => roleGroupTable.id, { onDelete: "cascade" }),
     ...thisProjectTimestamps,
