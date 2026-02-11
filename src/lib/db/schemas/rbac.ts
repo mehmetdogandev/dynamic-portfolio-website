@@ -4,7 +4,7 @@ import {user} from '@/lib/db/schemas'
 
 /**
  * 
- * RBA
+ * RBAC Schemas
  * 
  */
 
@@ -39,6 +39,19 @@ export const roleGroupTable=createTable('role_group_table',{
     id,
     name:text().notNull().unique(),
     description:text().notNull(),
+    roleId: uuid('role_id')
+    .notNull()
+    .references(() => roleTable.id, { onDelete: "cascade" }),
+    ...thisProjectTimestamps,
+    ...thisProjectAuditMeta,
+});
+
+
+export const userRoleTable=createTable('user_role_table',{
+    id,
+    userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
     roleId: uuid('role_id')
     .notNull()
     .references(() => roleTable.id, { onDelete: "cascade" }),
