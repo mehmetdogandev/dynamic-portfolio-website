@@ -48,3 +48,4 @@ yarn-error.log*
 docker-compose.dev.yml
 
 /.pnpm-store/** */
+certificates
