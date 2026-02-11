@@ -31,12 +31,12 @@ export function DetailUserRoleGroupDialog({ userRoleGroupId, open, onOpenChange 
         ) : userRoleGroup ? (
           <dl className="space-y-2 text-sm">
             <div>
-              <dt className="font-medium text-muted-foreground">Kullanıcı ID</dt>
-              <dd className="font-mono text-xs">{userRoleGroup.userId}</dd>
+              <dt className="font-medium text-muted-foreground">Kullanıcı</dt>
+              <dd>{userRoleGroup.userName}</dd>
             </div>
             <div>
-              <dt className="font-medium text-muted-foreground">Rol Grubu ID</dt>
-              <dd className="font-mono text-xs">{userRoleGroup.roleGroupId}</dd>
+              <dt className="font-medium text-muted-foreground">Rol Grubu</dt>
+              <dd>{userRoleGroup.roleGroupName}</dd>
             </div>
           </dl>
         ) : (

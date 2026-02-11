@@ -30,6 +30,8 @@ type UserRole = {
   roleId: string;
   createdAt: Date;
   updatedAt: Date;
+  userName: string;
+  roleName: string;
 };
 
 type UserRoleDataTableProps = {
@@ -64,8 +66,8 @@ export function UserRoleDataTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Kullanıcı ID</TableHead>
-            <TableHead>Rol ID</TableHead>
+            <TableHead>Kullanıcı</TableHead>
+            <TableHead>Rol</TableHead>
             {(canRead || canDelete) && (
               <TableHead className="w-[120px]">İşlemler</TableHead>
             )}
@@ -74,8 +76,8 @@ export function UserRoleDataTable({
         <TableBody>
           {userRoles.map((ur) => (
             <TableRow key={ur.id}>
-              <TableCell className="font-mono text-xs">{ur.userId}</TableCell>
-              <TableCell className="font-mono text-xs">{ur.roleId}</TableCell>
+              <TableCell>{ur.userName}</TableCell>
+              <TableCell>{ur.roleName}</TableCell>
               {(canRead || canDelete) && (
                 <TableCell>
                   <div className="flex items-center gap-2">

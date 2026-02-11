@@ -30,6 +30,8 @@ type UserRoleGroup = {
   roleGroupId: string;
   createdAt: Date;
   updatedAt: Date;
+  userName: string;
+  roleGroupName: string;
 };
 
 type UserRoleGroupDataTableProps = {
@@ -64,8 +66,8 @@ export function UserRoleGroupDataTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Kullanıcı ID</TableHead>
-            <TableHead>Rol Grubu ID</TableHead>
+            <TableHead>Kullanıcı</TableHead>
+            <TableHead>Rol Grubu</TableHead>
             {(canRead || canDelete) && (
               <TableHead className="w-[120px]">İşlemler</TableHead>
             )}
@@ -74,8 +76,8 @@ export function UserRoleGroupDataTable({
         <TableBody>
           {userRoleGroups.map((urg) => (
             <TableRow key={urg.id}>
-              <TableCell className="font-mono text-xs">{urg.userId}</TableCell>
-              <TableCell className="font-mono text-xs">{urg.roleGroupId}</TableCell>
+              <TableCell>{urg.userName}</TableCell>
+              <TableCell>{urg.roleGroupName}</TableCell>
               {(canRead || canDelete) && (
                 <TableCell>
                   <div className="flex items-center gap-2">

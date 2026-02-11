@@ -4,19 +4,41 @@ import {
   createTRPCRouter,
   createPermissionProcedure,
 } from "@/lib/trpc/trpc";
-import { userRoleGroupTable } from "@/lib/db/schemas";
+import { user as userTable, userRoleGroupTable, roleGroupTable } from "@/lib/db/schemas";
 
 export const userRoleGroupRouter = createTRPCRouter({
   list: createPermissionProcedure("USER_ROLE_GROUPS", "READ").query(async ({ ctx }) => {
-    return ctx.db.select().from(userRoleGroupTable);
+    return ctx.db
+      .select({
+        id: userRoleGroupTable.id,
+        userId: userRoleGroupTable.userId,
+        roleGroupId: userRoleGroupTable.roleGroupId,
+        createdAt: userRoleGroupTable.createdAt,
+        updatedAt: userRoleGroupTable.updatedAt,
+        userName: userTable.name,
+        roleGroupName: roleGroupTable.name,
+      })
+      .from(userRoleGroupTable)
+      .innerJoin(userTable, eq(userRoleGroupTable.userId, userTable.id))
+      .innerJoin(roleGroupTable, eq(userRoleGroupTable.roleGroupId, roleGroupTable.id));
   }),
 
   getById: createPermissionProcedure("USER_ROLE_GROUPS", "READ")
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ ctx, input }) => {
       const rows = await ctx.db
-        .select()
+        .select({
+          id: userRoleGroupTable.id,
+          userId: userRoleGroupTable.userId,
+          roleGroupId: userRoleGroupTable.roleGroupId,
+          createdAt: userRoleGroupTable.createdAt,
+          updatedAt: userRoleGroupTable.updatedAt,
+          userName: userTable.name,
+          roleGroupName: roleGroupTable.name,
+        })
         .from(userRoleGroupTable)
+        .innerJoin(userTable, eq(userRoleGroupTable.userId, userTable.id))
+        .innerJoin(roleGroupTable, eq(userRoleGroupTable.roleGroupId, roleGroupTable.id))
         .where(eq(userRoleGroupTable.id, input.id))
         .limit(1);
       return rows[0] ?? null;
