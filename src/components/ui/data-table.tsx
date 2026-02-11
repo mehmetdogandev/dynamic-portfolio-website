@@ -317,7 +317,7 @@ export function DataTable<TData, TValue>({
                                             key={header.id}
                                             className={
                                                 isActions
-                                                    ? "text-right"
+                                                    ? "!text-center w-[1%] whitespace-nowrap"
                                                     : undefined
                                             }
                                         >
@@ -347,68 +347,6 @@ export function DataTable<TData, TValue>({
                                                     header.getContext()
                                                 );
                                             })()}
-                                        </TableHead>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                        {/* Filter Row */}
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={`filter-${headerGroup.id}`}>
-                                {headerGroup.headers.map((header) => {
-                                    const isActions = header.column.id === "actions";
-                                    const column = header.column;
-                                    const columnId = column.id;
-                                    const accessorKey = "accessorKey" in column.columnDef && column.columnDef.accessorKey 
-                                        ? (column.columnDef.accessorKey as string)
-                                        : columnId;
-                                    
-                                    // Use external column filters if provided, otherwise use internal state
-                                    const filterValue = externalColumnFilters && onColumnFiltersChange
-                                        ? (externalColumnFilters[accessorKey] ?? externalColumnFilters[columnId] ?? "")
-                                        : (column.getFilterValue() as string | undefined ?? "");
-                                    
-                                    if (isActions || !column.getCanFilter()) {
-                                        return (
-                                            <TableHead key={`filter-${header.id}`} className="h-10 p-2">
-                                                {/* Empty cell for actions column */}
-                                            </TableHead>
-                                        );
-                                    }
-
-                                    return (
-                                        <TableHead key={`filter-${header.id}`} className="h-10 p-2">
-                                            <Input
-                                                placeholder={`${getColumnLabel(column)} ara...`}
-                                                value={filterValue || ""}
-                                                onChange={(e) => {
-                                                    const value = e.target.value;
-                                                    // Try accessorKey first, then columnId
-                                                    const filterKey = accessorKey !== columnId ? accessorKey : columnId;
-                                                    
-                                                    if (onColumnFiltersChange && externalColumnFilters !== undefined) {
-                                                        // Update external filters
-                                                        const newFilters = { ...(externalColumnFilters || {}) };
-                                                        if (value === "" || !value.trim()) {
-                                                            // Remove both possible keys
-                                                            delete newFilters[accessorKey];
-                                                            delete newFilters[columnId];
-                                                        } else {
-                                                            // Set for both keys to be safe
-                                                            newFilters[filterKey] = value;
-                                                        }
-                                                        onColumnFiltersChange(newFilters);
-                                                    } else {
-                                                        // Update internal filters
-                                                        if (value === "") {
-                                                            column.setFilterValue(undefined);
-                                                        } else {
-                                                            column.setFilterValue(value);
-                                                        }
-                                                    }
-                                                }}
-                                                className="h-8 text-sm"
-                                            />
                                         </TableHead>
                                     );
                                 })}
@@ -572,6 +510,7 @@ export const createActionColumn = <TData,>(
     actions: (row: Row<TData>) => React.ReactNode
 ) => ({
     id: "actions",
+    header: "İşlemler",
     cell: ({ row }: { row: Row<TData> }) => actions(row),
     enableSorting: false,
     enableHiding: false,
