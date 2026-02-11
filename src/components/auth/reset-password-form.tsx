@@ -55,9 +55,9 @@ export function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Geçersiz bağlantı</CardTitle>
+      <Card className="w-full border shadow-lg rounded-lg">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-xl font-semibold">Geçersiz bağlantı</CardTitle>
           <CardDescription>
             Şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş.
           </CardDescription>
@@ -72,9 +72,9 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Yeni şifre</CardTitle>
+    <Card className="w-full border shadow-lg rounded-lg">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-xl font-semibold">Yeni şifre</CardTitle>
         <CardDescription>Yeni şifrenizi girin ve tekrar girin.</CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
@@ -122,7 +122,7 @@ export function ResetPasswordForm() {
           </Button>
           <Link
             href="/admin-panel/login"
-            className="text-center text-sm text-primary hover:underline"
+            className="text-center text-sm text-muted-foreground hover:text-primary hover:underline"
           >
             Giriş sayfasına dön
           </Link>

@@ -1,5 +1,5 @@
 import { pgEnum,text, uuid} from "drizzle-orm/pg-core";
-import { createTable,id,thisProjectAuditMeta,thisProjectTimestamps } from "../utils";
+import { createTable, id, thisProjectAuditMeta, thisProjectTimestamps } from "../utils";
 import {user} from '@/lib/db/schemas'
 
 /**
@@ -8,7 +8,7 @@ import {user} from '@/lib/db/schemas'
  * 
  */
 
-export const permissionEnum=pgEnum('permissionEnum',[
+export const permissionEnum=pgEnum('permission_enum',[
 'CREATE',
 'DELETE',
 'UPDATE',
@@ -16,7 +16,7 @@ export const permissionEnum=pgEnum('permissionEnum',[
 'READ'
 ]);
 
-export const pageEnum=pgEnum('adminPageEnum',[
+export const pageEnum=pgEnum('admin_page_enum',[
    'HOME_PAGE',
    'USERS',
    'ROLES',
@@ -25,7 +25,7 @@ export const pageEnum=pgEnum('adminPageEnum',[
 ]);
 
 
-export const roleTable=createTable('role_table',{
+export const roleTable = createTable("role_table", {
     id,
     name:text().notNull().unique(),
     description:text().notNull(),
@@ -35,7 +35,7 @@ export const roleTable=createTable('role_table',{
     ...thisProjectAuditMeta,
 });
 
-export const roleGroupTable=createTable('role_group_table',{
+export const roleGroupTable = createTable("role_group_table", {
     id,
     name:text().notNull().unique(),
     description:text().notNull(),
@@ -47,7 +47,7 @@ export const roleGroupTable=createTable('role_group_table',{
 });
 
 
-export const userRoleTable=createTable('user_role_table',{
+export const userRoleTable = createTable("user_role_table", {
     id,
     userId: text("user_id")
     .notNull()
@@ -60,7 +60,7 @@ export const userRoleTable=createTable('user_role_table',{
 });
 
 
-export const userRoleGroupTable=createTable('user_role_group_table',{
+export const userRoleGroupTable = createTable("user_role_group_table", {
     id,
     userId: text("user_id")
     .notNull()

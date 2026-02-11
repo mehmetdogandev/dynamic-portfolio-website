@@ -49,9 +49,9 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Şifremi unuttum</CardTitle>
+    <Card className="w-full border shadow-lg rounded-lg">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-xl font-semibold">Şifremi unuttum</CardTitle>
         <CardDescription>
           E-posta adresinizi giriniz. Şifre sıfırlama bağlantısı gönderilecektir.
         </CardDescription>
@@ -88,7 +88,7 @@ export function ForgotPasswordForm() {
           </Button>
           <Link
             href="/admin-panel/login"
-            className="text-center text-sm text-primary hover:underline"
+            className="text-center text-sm text-muted-foreground hover:text-primary hover:underline"
           >
             Giriş sayfasına dön
           </Link>

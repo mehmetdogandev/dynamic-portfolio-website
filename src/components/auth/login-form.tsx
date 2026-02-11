@@ -38,9 +38,9 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Giriş</CardTitle>
+    <Card className="w-full border shadow-lg rounded-lg">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-xl font-semibold">Giriş</CardTitle>
         <CardDescription>E-posta ve şifrenizle giriş yapın</CardDescription>
       </CardHeader>
       <form onSubmit={onSubmit}>
@@ -78,13 +78,13 @@ export function LoginForm() {
           <div className="text-right">
             <Link
               href="/admin-panel/forgot-password"
-              className="text-sm text-primary hover:underline"
+              className="text-sm text-muted-foreground hover:text-primary hover:underline"
             >
               Şifremi unuttum
             </Link>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col gap-2">
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Giriş yapılıyor..." : "Giriş"}
           </Button>
