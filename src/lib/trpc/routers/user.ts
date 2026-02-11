@@ -1,11 +1,12 @@
 import { z } from "zod";
-import { eq, sql, count, asc, desc, and, ilike, or } from "drizzle-orm";
+import { eq, count, asc, desc, and, ilike } from "drizzle-orm";
 import {
   createTRPCRouter,
   createPermissionProcedure,
 } from "@/lib/trpc/trpc";
-import { user as userTable } from "@/lib/db/schemas";
+import { user as userTable, userInfo as userInfoTable } from "@/lib/db/schemas";
 import { listInputSchema, type ListOutput } from "@/lib/trpc/list-schema";
+import { uploadFile, getFileRecord, deleteFile } from "@/lib/minios3/utils";
 
 const ALLOWED_SORT_COLUMNS = ["name", "email", "createdAt"] as const;
 const ALLOWED_FILTER_COLUMNS = ["name", "email"] as const;
@@ -80,7 +81,14 @@ export const userRouter = createTRPCRouter({
         .from(userTable)
         .where(eq(userTable.id, input.id))
         .limit(1);
-      return rows[0] ?? null;
+      const user = rows[0] ?? null;
+      if (!user) return null;
+      const [info] = await ctx.db
+        .select()
+        .from(userInfoTable)
+        .where(eq(userInfoTable.userId, input.id))
+        .limit(1);
+      return { ...user, userInfo: info ?? null };
     }),
 
   create: createPermissionProcedure("USERS", "CREATE")
@@ -89,17 +97,102 @@ export const userRouter = createTRPCRouter({
         name: z.string().min(1),
         email: z.string().email(),
         password: z.string().min(1).optional(),
+        profilePhotoBase64: z.string().optional(),
+        profilePhotoMimeType: z.string().optional(),
+        profilePictureUrl: z.string().optional(),
+        userInfo: z
+          .object({
+            lastName: z.string().optional(),
+            displayName: z.string().optional(),
+            phoneNumber: z.string().optional(),
+            address: z.string().optional(),
+            city: z.string().optional(),
+            state: z.string().optional(),
+            zipCode: z.string().optional(),
+            country: z.string().optional(),
+            bio: z.string().optional(),
+            website: z.string().optional(),
+            twitter: z.string().optional(),
+            facebook: z.string().optional(),
+            instagram: z.string().optional(),
+            linkedin: z.string().optional(),
+            youtube: z.string().optional(),
+            tiktok: z.string().optional(),
+            pinterest: z.string().optional(),
+            reddit: z.string().optional(),
+            telegram: z.string().optional(),
+            whatsapp: z.string().optional(),
+            viber: z.string().optional(),
+            skype: z.string().optional(),
+            discord: z.string().optional(),
+            twitch: z.string().optional(),
+            spotify: z.string().optional(),
+            appleMusic: z.string().optional(),
+            amazonMusic: z.string().optional(),
+            deezer: z.string().optional(),
+            soundcloud: z.string().optional(),
+          })
+          .optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Better Auth manages user creation; use auth.api or server action for full signup.
-      // For now we only allow listing/update/delete via tRPC; create can be done via auth signUp or admin API.
       const id = crypto.randomUUID();
       await ctx.db.insert(userTable).values({
         id,
         name: input.name,
         email: input.email,
         emailVerified: false,
+      });
+
+      let profilePictureUrl: string | null = input.profilePictureUrl ?? null;
+      if (!profilePictureUrl && input.profilePhotoBase64 && input.profilePhotoMimeType) {
+        const base64 = input.profilePhotoBase64.replace(/^data:[^;]+;base64,/, "");
+        const buffer = Buffer.from(base64, "base64");
+        const ext = input.profilePhotoMimeType.includes("png")
+          ? ".png"
+          : input.profilePhotoMimeType.includes("webp")
+            ? ".webp"
+            : ".jpg";
+        const result = await uploadFile(buffer, `photo${ext}`, input.profilePhotoMimeType, {
+          prefix: `profilePhoto/${id}`,
+          uploadedBy: id,
+        });
+        profilePictureUrl = `/api/files/${result.id}/view`;
+      }
+
+      const u = input.userInfo;
+      await ctx.db.insert(userInfoTable).values({
+        userId: id,
+        lastName: u?.lastName ?? "",
+        displayName: u?.displayName ?? input.name,
+        phoneNumber: u?.phoneNumber ?? "",
+        address: u?.address ?? "",
+        city: u?.city ?? "",
+        state: u?.state ?? "",
+        zipCode: u?.zipCode ?? "",
+        country: u?.country ?? "",
+        profilePicture: profilePictureUrl,
+        bio: u?.bio ?? null,
+        website: u?.website ?? null,
+        twitter: u?.twitter ?? null,
+        facebook: u?.facebook ?? null,
+        instagram: u?.instagram ?? null,
+        linkedin: u?.linkedin ?? null,
+        youtube: u?.youtube ?? null,
+        tiktok: u?.tiktok ?? null,
+        pinterest: u?.pinterest ?? null,
+        reddit: u?.reddit ?? null,
+        telegram: u?.telegram ?? null,
+        whatsapp: u?.whatsapp ?? null,
+        viber: u?.viber ?? null,
+        skype: u?.skype ?? null,
+        discord: u?.discord ?? null,
+        twitch: u?.twitch ?? null,
+        spotify: u?.spotify ?? null,
+        appleMusic: u?.appleMusic ?? null,
+        amazonMusic: u?.amazonMusic ?? null,
+        deezer: u?.deezer ?? null,
+        soundcloud: u?.soundcloud ?? null,
       });
       return { id };
     }),
@@ -110,20 +203,184 @@ export const userRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().min(1).optional(),
         email: z.string().email().optional(),
+        profilePhotoBase64: z.string().optional(),
+        profilePhotoMimeType: z.string().optional(),
+        profilePictureUrl: z.string().optional(),
+        userInfo: z
+          .object({
+            lastName: z.string().optional(),
+            displayName: z.string().optional(),
+            phoneNumber: z.string().optional(),
+            address: z.string().optional(),
+            city: z.string().optional(),
+            state: z.string().optional(),
+            zipCode: z.string().optional(),
+            country: z.string().optional(),
+            bio: z.string().optional(),
+            website: z.string().optional(),
+            twitter: z.string().optional(),
+            facebook: z.string().optional(),
+            instagram: z.string().optional(),
+            linkedin: z.string().optional(),
+            youtube: z.string().optional(),
+            tiktok: z.string().optional(),
+            pinterest: z.string().optional(),
+            reddit: z.string().optional(),
+            telegram: z.string().optional(),
+            whatsapp: z.string().optional(),
+            viber: z.string().optional(),
+            skype: z.string().optional(),
+            discord: z.string().optional(),
+            twitch: z.string().optional(),
+            spotify: z.string().optional(),
+            appleMusic: z.string().optional(),
+            amazonMusic: z.string().optional(),
+            deezer: z.string().optional(),
+            soundcloud: z.string().optional(),
+          })
+          .optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, ...rest } = input;
+      const {
+        id,
+        profilePhotoBase64,
+        profilePhotoMimeType,
+        profilePictureUrl: inputProfilePictureUrl,
+        userInfo: u,
+        ...userRest
+      } = input;
       await ctx.db
         .update(userTable)
-        .set({ ...rest, updatedAt: new Date() })
+        .set({ ...userRest, updatedAt: new Date() })
         .where(eq(userTable.id, id));
+
+      const [existingInfo] = await ctx.db
+        .select()
+        .from(userInfoTable)
+        .where(eq(userInfoTable.userId, id))
+        .limit(1);
+
+      let profilePictureUrl: string | null =
+        inputProfilePictureUrl ?? existingInfo?.profilePicture ?? null;
+      if (!profilePictureUrl && profilePhotoBase64 && profilePhotoMimeType) {
+        if (existingInfo?.profilePicture) {
+          const match = existingInfo.profilePicture.match(/\/api\/files\/([^/]+)\/view/);
+          if (match?.[1]) {
+            try {
+              const rec = await getFileRecord(match[1]);
+              if (rec) await deleteFile(rec.fileName, rec.bucket);
+            } catch {
+              // ignore
+            }
+          }
+        }
+        const base64 = profilePhotoBase64.replace(/^data:[^;]+;base64,/, "");
+        const buffer = Buffer.from(base64, "base64");
+        const ext = profilePhotoMimeType.includes("png") ? ".png" : profilePhotoMimeType.includes("webp") ? ".webp" : ".jpg";
+        const result = await uploadFile(buffer, `photo${ext}`, profilePhotoMimeType, {
+          prefix: `profilePhoto/${id}`,
+          uploadedBy: id,
+        });
+        profilePictureUrl = `/api/files/${result.id}/view`;
+      }
+
+      const infoUpdate: Partial<typeof userInfoTable.$inferInsert> = {
+        profilePicture: profilePictureUrl,
+      };
+      if (u) {
+        if (u.lastName !== undefined) infoUpdate.lastName = u.lastName;
+        if (u.displayName !== undefined) infoUpdate.displayName = u.displayName;
+        if (u.phoneNumber !== undefined) infoUpdate.phoneNumber = u.phoneNumber;
+        if (u.address !== undefined) infoUpdate.address = u.address;
+        if (u.city !== undefined) infoUpdate.city = u.city;
+        if (u.state !== undefined) infoUpdate.state = u.state;
+        if (u.zipCode !== undefined) infoUpdate.zipCode = u.zipCode;
+        if (u.country !== undefined) infoUpdate.country = u.country;
+        if (u.bio !== undefined) infoUpdate.bio = u.bio;
+        if (u.website !== undefined) infoUpdate.website = u.website;
+        if (u.twitter !== undefined) infoUpdate.twitter = u.twitter;
+        if (u.facebook !== undefined) infoUpdate.facebook = u.facebook;
+        if (u.instagram !== undefined) infoUpdate.instagram = u.instagram;
+        if (u.linkedin !== undefined) infoUpdate.linkedin = u.linkedin;
+        if (u.youtube !== undefined) infoUpdate.youtube = u.youtube;
+        if (u.tiktok !== undefined) infoUpdate.tiktok = u.tiktok;
+        if (u.pinterest !== undefined) infoUpdate.pinterest = u.pinterest;
+        if (u.reddit !== undefined) infoUpdate.reddit = u.reddit;
+        if (u.telegram !== undefined) infoUpdate.telegram = u.telegram;
+        if (u.whatsapp !== undefined) infoUpdate.whatsapp = u.whatsapp;
+        if (u.viber !== undefined) infoUpdate.viber = u.viber;
+        if (u.skype !== undefined) infoUpdate.skype = u.skype;
+        if (u.discord !== undefined) infoUpdate.discord = u.discord;
+        if (u.twitch !== undefined) infoUpdate.twitch = u.twitch;
+        if (u.spotify !== undefined) infoUpdate.spotify = u.spotify;
+        if (u.appleMusic !== undefined) infoUpdate.appleMusic = u.appleMusic;
+        if (u.amazonMusic !== undefined) infoUpdate.amazonMusic = u.amazonMusic;
+        if (u.deezer !== undefined) infoUpdate.deezer = u.deezer;
+        if (u.soundcloud !== undefined) infoUpdate.soundcloud = u.soundcloud;
+      }
+      if (existingInfo) {
+        await ctx.db
+          .update(userInfoTable)
+          .set(infoUpdate)
+          .where(eq(userInfoTable.userId, id));
+      } else {
+        await ctx.db.insert(userInfoTable).values({
+          userId: id,
+          lastName: (u?.lastName as string) ?? "",
+          displayName: (u?.displayName as string) ?? "",
+          phoneNumber: (u?.phoneNumber as string) ?? "",
+          address: (u?.address as string) ?? "",
+          city: (u?.city as string) ?? "",
+          state: (u?.state as string) ?? "",
+          zipCode: (u?.zipCode as string) ?? "",
+          country: (u?.country as string) ?? "",
+          profilePicture: profilePictureUrl,
+          bio: (u?.bio as string | null) ?? null,
+          website: (u?.website as string | null) ?? null,
+          twitter: (u?.twitter as string | null) ?? null,
+          facebook: (u?.facebook as string | null) ?? null,
+          instagram: (u?.instagram as string | null) ?? null,
+          linkedin: (u?.linkedin as string | null) ?? null,
+          youtube: (u?.youtube as string | null) ?? null,
+          tiktok: (u?.tiktok as string | null) ?? null,
+          pinterest: (u?.pinterest as string | null) ?? null,
+          reddit: (u?.reddit as string | null) ?? null,
+          telegram: (u?.telegram as string | null) ?? null,
+          whatsapp: (u?.whatsapp as string | null) ?? null,
+          viber: (u?.viber as string | null) ?? null,
+          skype: (u?.skype as string | null) ?? null,
+          discord: (u?.discord as string | null) ?? null,
+          twitch: (u?.twitch as string | null) ?? null,
+          spotify: (u?.spotify as string | null) ?? null,
+          appleMusic: (u?.appleMusic as string | null) ?? null,
+          amazonMusic: (u?.amazonMusic as string | null) ?? null,
+          deezer: (u?.deezer as string | null) ?? null,
+          soundcloud: (u?.soundcloud as string | null) ?? null,
+        });
+      }
       return { id };
     }),
 
   delete: createPermissionProcedure("USERS", "DELETE")
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const [info] = await ctx.db
+        .select()
+        .from(userInfoTable)
+        .where(eq(userInfoTable.userId, input.id))
+        .limit(1);
+      if (info?.profilePicture) {
+        const match = info.profilePicture.match(/\/api\/files\/([^/]+)\/view/);
+        if (match?.[1]) {
+          try {
+            const rec = await getFileRecord(match[1]);
+            if (rec) await deleteFile(rec.fileName, rec.bucket);
+          } catch {
+            // ignore
+          }
+        }
+      }
       await ctx.db.delete(userTable).where(eq(userTable.id, input.id));
       return { id: input.id };
     }),

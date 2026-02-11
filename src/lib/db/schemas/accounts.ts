@@ -72,50 +72,53 @@ export const verification = pgTable("verification", {
   ),
 });
 
-export const userInfo =createTable("user_info",{
+export const userInfo = createTable("user_info", {
   id,
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-    lastName: text("last_name").notNull(),
-    displayName: text("display_name").notNull(),
-    phoneNumber: text("phone_number").notNull(),
-    address: text("address").notNull(),
-    city: text("city").notNull(),
-    state: text("state").notNull(),
-    zipCode: text("zip_code").notNull(),
-    country: text("country").notNull(),
-    profilePicture: text("profile_picture").notNull(),
-    bio: text("bio").notNull(),
-    website: text("website").notNull(),
-    twitter: text("twitter").notNull(),
-    facebook: text("facebook").notNull(),
-    instagram: text("instagram").notNull(),
-    linkedin: text("linkedin").notNull(),
-    youtube: text("youtube").notNull(),
-    tiktok: text("tiktok").notNull(),
-    pinterest: text("pinterest").notNull(),
-    reddit: text("reddit").notNull(),
-    telegram: text("telegram").notNull(),
-    whatsapp: text("whatsapp").notNull(),
-    viber: text("viber").notNull(),
-    skype: text("skype").notNull(),
-    discord: text("discord").notNull(),
-    twitch: text("twitch").notNull(),
-    spotify: text("spotify").notNull(),
-    appleMusic: text("apple_music").notNull(),
-    amazonMusic: text("amazon_music").notNull(),
-    deezer: text("deezer").notNull(),
-    soundcloud: text("soundcloud").notNull(),
+  lastName: text("last_name").notNull(),
+  displayName: text("display_name").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  state: text("state").notNull(),
+  zipCode: text("zip_code").notNull(),
+  country: text("country").notNull(),
+  profilePicture: text("profile_picture"),
+  bio: text("bio"),
+  website: text("website"),
+  twitter: text("twitter"),
+  facebook: text("facebook"),
+  instagram: text("instagram"),
+  linkedin: text("linkedin"),
+  youtube: text("youtube"),
+  tiktok: text("tiktok"),
+  pinterest: text("pinterest"),
+  reddit: text("reddit"),
+  telegram: text("telegram"),
+  whatsapp: text("whatsapp"),
+  viber: text("viber"),
+  skype: text("skype"),
+  discord: text("discord"),
+  twitch: text("twitch"),
+  spotify: text("spotify"),
+  appleMusic: text("apple_music"),
+  amazonMusic: text("amazon_music"),
+  deezer: text("deezer"),
+  soundcloud: text("soundcloud"),
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });
 
-
-
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(user, ({ many, one }) => ({
   account: many(account),
   session: many(session),
+  userInfo: one(userInfo),
+}));
+
+export const userInfoRelations = relations(userInfo, ({ one }) => ({
+  user: one(user, { fields: [userInfo.userId], references: [user.id] }),
 }));
 
 export const accountRelations = relations(account, ({ one }) => ({

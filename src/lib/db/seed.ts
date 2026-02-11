@@ -15,6 +15,7 @@ import {
   roleGroupRoleTable,
   userRoleTable,
   userRoleGroupTable,
+  userInfo as userInfoTable,
 } from "@/lib/db/schemas";
 
 const PAGES = [
@@ -213,6 +214,55 @@ async function seedUserRoleGroups(
   console.log("[seed] Assigned role group to user:", adminEmail, "-> ADMIN");
 }
 
+async function seedUserInfo(emailToUserId: Map<string, string>): Promise<void> {
+  const adminEmail = "mehmet.dogan@gmail.com";
+  const userId = emailToUserId.get(adminEmail);
+  if (!userId) return;
+  const existing = await db
+    .select({ id: userInfoTable.id })
+    .from(userInfoTable)
+    .where(eq(userInfoTable.userId, userId))
+    .limit(1);
+  if (existing.length > 0) {
+    console.log("[seed] User info already exists:", adminEmail);
+    return;
+  }
+  await db.insert(userInfoTable).values({
+    userId,
+    lastName: "Doğan",
+    displayName: "Mehmet Doğan",
+    phoneNumber: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    profilePicture: null,
+    bio: null,
+    website: null,
+    twitter: null,
+    facebook: null,
+    instagram: null,
+    linkedin: null,
+    youtube: null,
+    tiktok: null,
+    pinterest: null,
+    reddit: null,
+    telegram: null,
+    whatsapp: null,
+    viber: null,
+    skype: null,
+    discord: null,
+    twitch: null,
+    spotify: null,
+    appleMusic: null,
+    amazonMusic: null,
+    deezer: null,
+    soundcloud: null,
+  });
+  console.log("[seed] Created user info for:", adminEmail);
+}
+
 async function seedUserRoles(
   emailToUserId: Map<string, string>,
   roleNameToId: Map<string, string>
@@ -244,6 +294,7 @@ async function main() {
   const adminGroupId = await seedRoleGroups(roleNameToId);
   await seedUserRoleGroups(emailToUserId, adminGroupId);
   await seedUserRoles(emailToUserId, roleNameToId);
+  await seedUserInfo(emailToUserId);
   console.log("[seed] Done.");
 }
 
