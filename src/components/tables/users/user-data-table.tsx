@@ -66,7 +66,7 @@ export function UserDataTable() {
     },
   });
 
-  // Define columns
+  // Define columns: 1) Profil (avatar), 2) Ad Soyad (displayName), 3) E-posta
   const columns = useMemo<ColumnDef<User>[]>(() => {
     const cols: ColumnDef<User>[] = [
       {
@@ -80,27 +80,27 @@ export function UserDataTable() {
           const label = (u.displayName ?? u.name ?? "?").trim();
           const initial = label ? label.charAt(0).toUpperCase() : "?";
           return (
-            <div className="flex items-center gap-2">
-              <Avatar className="size-8">
-                {src ? (
-                  <AvatarImage src={src} alt={label} />
-                ) : null}
-                <AvatarFallback>{initial}</AvatarFallback>
-              </Avatar>
-              <span className="truncate">{label || "—"}</span>
-            </div>
+            <Avatar className="size-8">
+              {src ? (
+                <AvatarImage src={src} alt={label} />
+              ) : null}
+              <AvatarFallback>{initial}</AvatarFallback>
+            </Avatar>
           );
         },
         meta: { columnLabel: "Profil" },
       },
       {
-        accessorKey: "name",
-        header: "Ad",
+        id: "displayName",
+        header: "Ad Soyad",
+        accessorFn: (row) => (row.displayName ?? row.name ?? "").trim(),
         enableSorting: true,
         enableColumnFilter: true,
-        meta: {
-          columnLabel: "Ad",
+        cell: ({ row }) => {
+          const value = (row.original.displayName ?? row.original.name ?? "").trim();
+          return <span className="truncate">{value || "—"}</span>;
         },
+        meta: { columnLabel: "Ad Soyad" },
       },
       {
         accessorKey: "email",
