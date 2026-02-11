@@ -49,7 +49,7 @@ export function AdminHeader() {
       <Link href="/admin-panel" className="flex items-center gap-2 font-semibold">
         <span className="text-lg">Admin</span>
       </Link>
-      <div className="flex flex-1 justify-center">
+      <div className="hidden flex-1 justify-center md:flex">
         <div className="flex items-center justify-center gap-3 text-center">
           <time className="text-sm tabular-nums text-muted-foreground">{formattedDate}</time>
           <span className="text-muted-foreground/50">·</span>
