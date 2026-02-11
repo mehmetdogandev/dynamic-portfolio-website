@@ -29,7 +29,7 @@ export function UpdateRoleGroupDialog({ roleGroupId, open, onOpenChange }: Updat
     { id: roleGroupId },
     { enabled: open && !!roleGroupId }
   );
-  const { data: roles, isLoading: rolesLoading } = api.role.list.useQuery(undefined, { enabled: open });
+  const { data: roles, isLoading: rolesLoading } = api.role.list.useQuery({ page: 1, limit: 100 }, { enabled: open });
   const utils = api.useUtils();
   const updateMutation = api.roleGroup.update.useMutation({
     onSuccess: () => {
@@ -95,10 +95,10 @@ export function UpdateRoleGroupDialog({ roleGroupId, open, onOpenChange }: Updat
               <Label>Roller (role.list üzerinden)</Label>
               {rolesLoading ? (
                 <p className="text-sm text-muted-foreground">Roller yükleniyor...</p>
-              ) : roles?.length ? (
+              ) : roles?.items.length ? (
                 <ScrollArea className="h-[200px] rounded-md border p-3">
                   <div className="flex flex-col gap-2">
-                    {roles.map((r) => (
+                    {roles.items.map((r) => (
                       <label
                         key={r.id}
                         className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/50"

@@ -1,17 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import type { ColumnDef, SortingState, PaginationState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Trash2, Plus } from "lucide-react";
 import { DetailUserRoleGroupDialog } from "./detail-user-role-group-dialog";
+import { CreateUserRoleGroupDialog } from "./create-user-role-group-dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +17,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { api } from "@/lib/trpc/react";
+import { DataTableWrapper, createActionColumn } from "@/components/ui/data-table-wrapper";
 
 type UserRoleGroup = {
   id: string;
@@ -34,21 +29,38 @@ type UserRoleGroup = {
   roleGroupName: string;
 };
 
-type UserRoleGroupDataTableProps = {
-  userRoleGroups: UserRoleGroup[];
-  isLoading: boolean;
-  canRead: boolean;
-  canDelete: boolean;
-};
-
-export function UserRoleGroupDataTable({
-  userRoleGroups,
-  isLoading,
-  canRead,
-  canDelete,
-}: UserRoleGroupDataTableProps) {
+export function UserRoleGroupDataTable() {
   const [detailId, setDetailId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  
+  // Pagination, sorting, filtering state
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
+
+  // Get permissions
+  const { data: permissions } = api.permissions.getMyPermissionsFull.useQuery();
+  const canCreate = permissions?.USER_ROLE_GROUPS?.includes("CREATE") ?? false;
+  const canRead = permissions?.USER_ROLE_GROUPS?.includes("READ") ?? false;
+  const canDelete = permissions?.USER_ROLE_GROUPS?.includes("DELETE") ?? false;
+
+  // Convert sorting state to backend format
+  const sortBy = sorting[0]?.id;
+  const sortOrder = sorting[0]?.desc ? "desc" : "asc";
+
+  // Fetch data with pagination, sorting, filtering
+  const { data, isLoading } = api.userRoleGroup.list.useQuery({
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    sortBy: sortBy as string | undefined,
+    sortOrder: sortBy ? (sortOrder as "asc" | "desc") : undefined,
+    columnFilters: Object.keys(columnFilters).length > 0 ? columnFilters : undefined,
+  });
+
   const utils = api.useUtils();
   const deleteMutation = api.userRoleGroup.delete.useMutation({
     onSuccess: () => {
@@ -57,57 +69,101 @@ export function UserRoleGroupDataTable({
     },
   });
 
-  if (isLoading) {
-    return <p className="text-muted-foreground">Yükleniyor...</p>;
-  }
+  // Define columns
+  const columns = useMemo<ColumnDef<UserRoleGroup>[]>(() => {
+    const cols: ColumnDef<UserRoleGroup>[] = [
+      {
+        accessorKey: "userName",
+        header: "Kullanıcı",
+        enableSorting: true,
+        enableColumnFilter: true,
+        meta: {
+          columnLabel: "Kullanıcı",
+        },
+      },
+      {
+        accessorKey: "roleGroupName",
+        header: "Rol Grubu",
+        enableSorting: true,
+        enableColumnFilter: true,
+        meta: {
+          columnLabel: "Rol Grubu",
+        },
+      },
+    ];
+
+    // Add actions column if user has any permission
+    if (canRead || canDelete) {
+      cols.push(
+        createActionColumn<UserRoleGroup>((row) => (
+          <div className="flex items-center gap-2 justify-center">
+            {canRead && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setDetailId(row.original.id)}
+                aria-label="Detay"
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+            )}
+            {canDelete && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setDeleteId(row.original.id)}
+                aria-label="Sil"
+              >
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            )}
+          </div>
+        ))
+      );
+    }
+
+    return cols;
+  }, [canRead, canDelete]);
+
+  // Toolbar with create button
+  const toolbar = canCreate ? (
+    <Button onClick={() => setCreateOpen(true)}>
+      <Plus className="h-4 w-4 mr-2" />
+      Yeni Kullanıcı Rol Grubu
+    </Button>
+  ) : undefined;
+
+  // Handle pagination change
+  const handlePaginationChange = (updater: PaginationState | ((old: PaginationState) => PaginationState)) => {
+    setPagination((old) => {
+      const newPagination = typeof updater === "function" ? updater(old) : updater;
+      return newPagination;
+    });
+  };
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Kullanıcı</TableHead>
-            <TableHead>Rol Grubu</TableHead>
-            {(canRead || canDelete) && (
-              <TableHead className="w-[120px]">İşlemler</TableHead>
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {userRoleGroups.map((urg) => (
-            <TableRow key={urg.id}>
-              <TableCell>{urg.userName}</TableCell>
-              <TableCell>{urg.roleGroupName}</TableCell>
-              {(canRead || canDelete) && (
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    {canRead && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDetailId(urg.id)}
-                        aria-label="Detay"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    )}
-                    {canDelete && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeleteId(urg.id)}
-                        aria-label="Sil"
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    )}
-                  </div>
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <DataTableWrapper
+        columns={columns}
+        data={data?.items ?? []}
+        pagination={
+          data
+            ? {
+                page: pagination.pageIndex + 1,
+                limit: pagination.pageSize,
+                total: data.total,
+                totalPages: data.totalPages,
+              }
+            : undefined
+        }
+        onPaginationChange={handlePaginationChange}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        columnFilters={columnFilters}
+        onColumnFiltersChange={setColumnFilters}
+        isLoading={isLoading}
+        toolbar={toolbar}
+      />
       {detailId && (
         <DetailUserRoleGroupDialog
           userRoleGroupId={detailId}
@@ -115,6 +171,10 @@ export function UserRoleGroupDataTable({
           onOpenChange={(open) => !open && setDetailId(null)}
         />
       )}
+      <CreateUserRoleGroupDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      />
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

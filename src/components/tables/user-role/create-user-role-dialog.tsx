@@ -21,8 +21,8 @@ type CreateUserRoleDialogProps = {
 export function CreateUserRoleDialog({ open, onOpenChange }: CreateUserRoleDialogProps) {
   const [userId, setUserId] = useState("");
   const [roleId, setRoleId] = useState("");
-  const { data: users } = api.user.list.useQuery(undefined, { enabled: open });
-  const { data: roles } = api.role.list.useQuery(undefined, { enabled: open });
+  const { data: users } = api.user.list.useQuery({ page: 1, limit: 100 }, { enabled: open });
+  const { data: roles } = api.role.list.useQuery({ page: 1, limit: 100 }, { enabled: open });
   const utils = api.useUtils();
   const createMutation = api.userRole.create.useMutation({
     onSuccess: () => {
@@ -58,7 +58,7 @@ export function CreateUserRoleDialog({ open, onOpenChange }: CreateUserRoleDialo
               disabled={createMutation.isPending}
             >
               <option value="">Seçin</option>
-              {users?.map((u) => (
+              {users?.items.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.name} ({u.email})
                 </option>
@@ -76,7 +76,7 @@ export function CreateUserRoleDialog({ open, onOpenChange }: CreateUserRoleDialo
               disabled={createMutation.isPending}
             >
               <option value="">Seçin</option>
-              {roles?.map((r) => (
+              {roles?.items.map((r) => (
                 <option key={r.id} value={r.id}>
                   {r.name}
                 </option>
