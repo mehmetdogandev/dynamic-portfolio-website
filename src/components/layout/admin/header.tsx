@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { authClient } from "@/lib/better-auth/client";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -15,6 +17,24 @@ import {
 
 export function AdminHeader() {
   const { data: session } = authClient.useSession();
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedDate = currentTime.toLocaleDateString("tr-TR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const formattedTime = currentTime.toLocaleTimeString("tr-TR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
 
   async function handleSignOut() {
     await authClient.signOut();
@@ -22,9 +42,17 @@ export function AdminHeader() {
 
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
+      <SidebarTrigger />
       <Link href="/admin-panel" className="flex items-center gap-2 font-semibold">
         <span className="text-lg">Admin</span>
       </Link>
+      <div className="flex flex-1 justify-center">
+        <div className="flex items-center justify-center gap-3 text-center">
+          <time className="text-sm tabular-nums text-muted-foreground">{formattedDate}</time>
+          <span className="text-muted-foreground/50">·</span>
+          <time className="text-sm font-semibold tabular-nums">{formattedTime}</time>
+        </div>
+      </div>
       <div className="ml-auto flex items-center gap-3">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

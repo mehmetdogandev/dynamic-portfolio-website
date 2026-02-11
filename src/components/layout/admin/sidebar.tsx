@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, ChevronDown } from "lucide-react";
 import { authClient } from "@/lib/better-auth/client";
 import { useNavigationPermissions } from "@/lib/hooks/use-rbac-helpers";
-import { NAV_ITEMS } from "@/lib/rbac/navigation";
+import { NAV_ITEMS, NAV_GROUPS } from "@/lib/rbac/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -18,8 +18,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,15 +34,21 @@ export function AdminSidebar() {
   const { data: permissions, isLoading } = useNavigationPermissions();
   const { data: session } = authClient.useSession();
 
-  const visibleItems = NAV_ITEMS.filter((item) => {
-    if (item.page === "HOME_PAGE") return true;
-    if (isLoading) return false;
-    return permissions?.[item.page] === true;
-  });
-
   async function handleSignOut() {
     await authClient.signOut();
   }
+
+  // Helper function to get nav item by page
+  const getNavItem = (page: string) => {
+    return NAV_ITEMS.find((item) => item.page === page);
+  };
+
+  // Check if a page is visible
+  const isPageVisible = (page: string) => {
+    if (page === "HOME_PAGE") return true;
+    if (isLoading) return false;
+    return permissions?.[page as keyof typeof permissions] === true;
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -61,28 +67,106 @@ export function AdminSidebar() {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {visibleItems.map((item) => {
-                const Icon = item.icon;
-                const active =
-                  pathname === item.href ||
-                  (item.href !== "/admin-panel" && pathname.startsWith(item.href + "/"));
-                return (
-                  <SidebarMenuItem key={item.page}>
-                    <SidebarMenuButton asChild isActive={active}>
-                      <Link href={item.href}>
-                        <Icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Ana Sayfa - at the top */}
+        {isPageVisible("HOME_PAGE") && (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {(() => {
+                  const homeItem = getNavItem("HOME_PAGE");
+                  if (!homeItem) return null;
+                  const Icon = homeItem.icon;
+                  const active = pathname === homeItem.href;
+                  return (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={active}>
+                        <Link href={homeItem.href}>
+                          <Icon className="h-4 w-4" />
+                          <span>{homeItem.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })()}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {/* Navigation Groups (collapsible) */}
+        {NAV_GROUPS.map((group) => {
+          const groupItems = group.pages
+            .map((page) => getNavItem(page))
+            .filter((item): item is NonNullable<typeof item> => item !== undefined && isPageVisible(item.page));
+
+          if (groupItems.length === 0) return null;
+
+          const groupHasActivePage = groupItems.some(
+            (item) =>
+              pathname === item.href || (item.href !== "/admin-panel" && pathname.startsWith(item.href + "/"))
+          );
+
+          return (
+            <Collapsible key={group.label} defaultOpen={groupHasActivePage}>
+              <SidebarGroup>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton className="group data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+                    <span>{group.label}</span>
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {groupItems.map((item) => {
+                        const Icon = item.icon;
+                        const active =
+                          pathname === item.href ||
+                          (item.href !== "/admin-panel" && pathname.startsWith(item.href + "/"));
+                        return (
+                          <SidebarMenuItem key={item.page}>
+                            <SidebarMenuButton asChild isActive={active}>
+                              <Link href={item.href}>
+                                <Icon className="h-4 w-4" />
+                                <span>{item.title}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </CollapsibleContent>
+              </SidebarGroup>
+            </Collapsible>
+          );
+        })}
+
+        {/* Ayarlar - at the bottom */}
+        {isPageVisible("SETTINGS") && (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {(() => {
+                  const settingsItem = getNavItem("SETTINGS");
+                  if (!settingsItem) return null;
+                  const Icon = settingsItem.icon;
+                  const active = pathname === settingsItem.href;
+                  return (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={active}>
+                        <Link href={settingsItem.href}>
+                          <Icon className="h-4 w-4" />
+                          <span>{settingsItem.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })()}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter className="border-t">
         <SidebarMenu>

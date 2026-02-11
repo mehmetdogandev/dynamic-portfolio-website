@@ -57,3 +57,8 @@ export const NAV_ITEMS: { page: Page; title: string; href: string; icon: LucideI
   { page: "LOGO", title: PAGE_TO_TITLE.LOGO, href: PAGE_TO_HREF.LOGO, icon: PAGE_TO_ICON.LOGO },
   { page: "SETTINGS", title: PAGE_TO_TITLE.SETTINGS, href: PAGE_TO_HREF.SETTINGS, icon: PAGE_TO_ICON.SETTINGS },
 ];
+
+export const NAV_GROUPS: { label: string; pages: Page[] }[] = [
+  { label: "Site Yönetimi", pages: ["POST", "LOGO"] },
+  { label: "Panel Yönetimi", pages: ["USERS", "ROLES", "ROLE_GROUPS", "USER_ROLES", "USER_ROLE_GROUPS"] },
+];

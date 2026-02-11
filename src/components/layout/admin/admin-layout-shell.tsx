@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { AdminSidebar } from "@/components/layout/admin/sidebar";
-import { AdminTopBar } from "@/components/layout/admin/admin-top-bar";
+import { AdminHeader } from "@/components/layout/admin/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 const ADMIN_PUBLIC_PATHS = [
@@ -37,7 +37,7 @@ export function AdminLayoutShell({
       <SidebarProvider>
         <AdminSidebar />
         <SidebarInset>
-          <AdminTopBar />
+          <AdminHeader />
           <main className="flex-1 overflow-auto p-4 lg:p-6">{children}</main>
         </SidebarInset>
       </SidebarProvider>
