@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 
 import { auth } from "@/lib/better-auth";
 import { db } from "@/lib/db";
+import { can, type Page, type Permission } from "@/lib/rbac/permissions";
 
 /**
  * 1. CONTEXT
@@ -132,3 +133,27 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+/**
+ * Builds a procedure that requires a specific permission on a page.
+ * Use for user.list (USERS, READ), user.create (USERS, CREATE), etc.
+ */
+function requirePermission(page: Page, permission: Permission) {
+  return t.middleware(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    const allowed = await can(ctx.session.user.id, page, permission);
+    if (!allowed) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Insufficient permission",
+      });
+    }
+    return next({ ctx });
+  });
+}
+
+export function createPermissionProcedure(page: Page, permission: Permission) {
+  return protectedProcedure.use(requirePermission(page, permission));
+}
