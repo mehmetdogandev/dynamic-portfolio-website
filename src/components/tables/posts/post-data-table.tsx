@@ -10,8 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, Trash2 } from "lucide-react";
-import { DetailUserRoleDialog } from "./detail-user-role-dialog";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { DetailPostDialog } from "./detail-post-dialog";
+import { UpdatePostDialog } from "./update-post-dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,33 +25,36 @@ import {
 } from "@/components/ui/alert-dialog";
 import { api } from "@/lib/trpc/react";
 
-type UserRole = {
+type Post = {
   id: string;
+  name: string;
   userId: string;
-  roleId: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
-type UserRoleDataTableProps = {
-  userRoles: UserRole[];
+type PostDataTableProps = {
+  posts: Post[];
   isLoading: boolean;
   canRead: boolean;
+  canUpdate: boolean;
   canDelete: boolean;
 };
 
-export function UserRoleDataTable({
-  userRoles,
+export function PostDataTable({
+  posts,
   isLoading,
   canRead,
+  canUpdate,
   canDelete,
-}: UserRoleDataTableProps) {
+}: PostDataTableProps) {
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [updateId, setUpdateId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const utils = api.useUtils();
-  const deleteMutation = api.userRole.delete.useMutation({
+  const deleteMutation = api.post.delete.useMutation({
     onSuccess: () => {
-      void utils.userRole.list.invalidate();
+      void utils.post.list.invalidate();
       setDeleteId(null);
     },
   });
@@ -64,36 +68,46 @@ export function UserRoleDataTable({
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Ad</TableHead>
             <TableHead>Kullanıcı ID</TableHead>
-            <TableHead>Rol ID</TableHead>
-            {(canRead || canDelete) && (
+            {(canRead || canUpdate || canDelete) && (
               <TableHead className="w-[120px]">İşlemler</TableHead>
             )}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {userRoles.map((ur) => (
-            <TableRow key={ur.id}>
-              <TableCell className="font-mono text-xs">{ur.userId}</TableCell>
-              <TableCell className="font-mono text-xs">{ur.roleId}</TableCell>
-              {(canRead || canDelete) && (
+          {posts.map((post) => (
+            <TableRow key={post.id}>
+              <TableCell>{post.name}</TableCell>
+              <TableCell className="font-mono text-xs">{post.userId}</TableCell>
+              {(canRead || canUpdate || canDelete) && (
                 <TableCell>
                   <div className="flex items-center gap-2">
                     {canRead && (
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setDetailId(ur.id)}
+                        onClick={() => setDetailId(post.id)}
                         aria-label="Detay"
                       >
                         <Eye className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {canUpdate && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setUpdateId(post.id)}
+                        aria-label="Düzenle"
+                      >
+                        <Pencil className="h-4 w-4" />
                       </Button>
                     )}
                     {canDelete && (
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setDeleteId(ur.id)}
+                        onClick={() => setDeleteId(post.id)}
                         aria-label="Sil"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
@@ -107,18 +121,25 @@ export function UserRoleDataTable({
         </TableBody>
       </Table>
       {detailId && (
-        <DetailUserRoleDialog
-          userRoleId={detailId}
+        <DetailPostDialog
+          postId={detailId}
           open={!!detailId}
           onOpenChange={(open) => !open && setDetailId(null)}
+        />
+      )}
+      {updateId && (
+        <UpdatePostDialog
+          postId={updateId}
+          open={!!updateId}
+          onOpenChange={(open) => !open && setUpdateId(null)}
         />
       )}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Kullanıcı rolünü kaldır</AlertDialogTitle>
+            <AlertDialogTitle>Postu sil</AlertDialogTitle>
             <AlertDialogDescription>
-              Bu işlem geri alınamaz. Kullanıcıdan bu rolü kaldırmak istediğinize emin misiniz?
+              Bu işlem geri alınamaz. Postu silmek istediğinize emin misiniz?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

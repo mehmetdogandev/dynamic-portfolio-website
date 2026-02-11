@@ -12,7 +12,11 @@ export type Page =
   | "USERS"
   | "ROLES"
   | "ROLE_GROUPS"
-  | "SETTINGS";
+  | "SETTINGS"
+  | "USER_ROLES"
+  | "USER_ROLE_GROUPS"
+  | "POST"
+  | "LOGO";
 export type Permission =
   | "CREATE"
   | "DELETE"

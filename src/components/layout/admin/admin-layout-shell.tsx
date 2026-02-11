@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { AdminHeader } from "@/components/layout/admin/header";
 import { AdminSidebar } from "@/components/layout/admin/sidebar";
+import { AdminTopBar } from "@/components/layout/admin/admin-top-bar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 const ADMIN_PUBLIC_PATHS = [
@@ -34,12 +34,12 @@ export function AdminLayoutShell({
 
   return (
     <div className="admin-theme flex min-h-screen flex-col">
-      <AdminHeader />
       <SidebarProvider>
-        <div className="flex flex-1">
-          <AdminSidebar />
-          <SidebarInset>{children}</SidebarInset>
-        </div>
+        <AdminSidebar />
+        <SidebarInset>
+          <AdminTopBar />
+          <main className="flex-1 overflow-auto p-4 lg:p-6">{children}</main>
+        </SidebarInset>
       </SidebarProvider>
     </div>
   );

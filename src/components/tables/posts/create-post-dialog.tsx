@@ -14,71 +14,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/trpc/react";
 
-type CreateLogosDialogProps = {
+type CreatePostDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
-export function CreateLogosDialog({ open, onOpenChange }: CreateLogosDialogProps) {
+export function CreatePostDialog({ open, onOpenChange }: CreatePostDialogProps) {
   const [name, setName] = useState("");
-  const [path, setPath] = useState("");
-  const [status, setStatus] = useState<"ACTIVE" | "PASSIVE">("PASSIVE");
   const utils = api.useUtils();
-  const createMutation = api.logo.create.useMutation({
+  const createMutation = api.post.create.useMutation({
     onSuccess: () => {
-      void utils.logo.list.invalidate();
+      void utils.post.list.invalidate();
       onOpenChange(false);
       setName("");
-      setPath("");
-      setStatus("PASSIVE");
     },
   });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    createMutation.mutate({ name, path, status });
+    createMutation.mutate({ name });
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Yeni Logo</DialogTitle>
-          <DialogDescription>Yeni logo bilgilerini girin.</DialogDescription>
+          <DialogTitle>Yeni Post</DialogTitle>
+          <DialogDescription>Yeni post bilgilerini girin.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="create-logo-name">Ad</Label>
+            <Label htmlFor="create-post-name">Ad</Label>
             <Input
-              id="create-logo-name"
+              id="create-post-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               disabled={createMutation.isPending}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="create-logo-path">Yol</Label>
-            <Input
-              id="create-logo-path"
-              value={path}
-              onChange={(e) => setPath(e.target.value)}
-              required
-              disabled={createMutation.isPending}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="create-logo-status">Durum</Label>
-            <select
-              id="create-logo-status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value as "ACTIVE" | "PASSIVE")}
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
-              disabled={createMutation.isPending}
-            >
-              <option value="ACTIVE">Aktif</option>
-              <option value="PASSIVE">Pasif</option>
-            </select>
           </div>
           {createMutation.error && (
             <p className="text-sm text-destructive">{createMutation.error.message}</p>
