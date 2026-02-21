@@ -58,24 +58,23 @@ export function WebsiteHeader() {
             <SheetHeader>
               <SheetTitle className="sr-only">Menü</SheetTitle>
             </SheetHeader>
-            <div className="flex flex-1 flex-col" aria-hidden="true" />
-            <div className="mt-auto flex flex-col items-center justify-center gap-6 pb-8">
+            <div className="flex flex-col gap-6 pt-6">
               <NavLinks
                 links={siteConfig.navLinks}
-                className="flex flex-col items-center justify-center gap-0 text-center"
+                className="flex flex-col items-stretch gap-0"
                 onLinkClick={() => setOpen(false)}
               />
-              <div className="flex w-full flex-col items-center border-t pt-4">
-                <p className="text-muted-foreground mb-2 text-sm">İletişim ve sosyal medya</p>
-                <SocialLinks
-                  linkedin={siteConfig.socialLinks.linkedin}
-                  github={siteConfig.socialLinks.github}
-                  medium={siteConfig.socialLinks.medium}
-                  email={siteConfig.contact.email}
-                  variant="footer"
-                  className="justify-center"
-                />
-              </div>
+            </div>
+            <div className="mt-auto flex flex-col items-center border-t pt-6 pb-8">
+              <p className="text-muted-foreground mb-2 text-sm">İletişim ve sosyal medya</p>
+              <SocialLinks
+                linkedin={siteConfig.socialLinks.linkedin}
+                github={siteConfig.socialLinks.github}
+                medium={siteConfig.socialLinks.medium}
+                email={siteConfig.contact.email}
+                variant="footer"
+                className="justify-center"
+              />
             </div>
           </SheetContent>
         </Sheet>
