@@ -13,7 +13,14 @@ export function WebsiteFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-muted/30">
+    <footer className="relative border-t bg-muted/30 overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08] dark:opacity-[0.05]"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&q=80')",
+        }}
+      />
+      <div className="relative z-10">
       <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 md:gap-12">
           {siteConfig.footer.columns.map((col, i) => {
@@ -66,6 +73,7 @@ export function WebsiteFooter() {
             © {currentYear} {siteConfig.footer.copyright}. Tüm hakları saklıdır.
           </p>
         </div>
+      </div>
       </div>
     </footer>
   );

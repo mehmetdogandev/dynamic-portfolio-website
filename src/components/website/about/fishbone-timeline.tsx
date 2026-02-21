@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { experiences } from "@/data/mock-experiences";
 import { cn } from "@/lib/utils";
 
@@ -31,61 +32,92 @@ export function FishboneTimeline() {
   });
 
   return (
-    <div className="relative">
-      {/* Mobile: simple vertical line on left */}
-      <div className="absolute left-[11px] top-0 bottom-0 w-0.5 bg-primary/30 md:hidden" />
+    <div className="relative w-full py-6">
+      {/* Horizontal central spine */}
+      <div className="absolute left-0 right-0 top-1/2 z-0 h-0.5 -translate-y-1/2 bg-primary/30" />
 
-      {/* Desktop: central spine */}
-      <div className="absolute left-1/2 top-0 bottom-0 hidden w-0.5 -translate-x-1/2 bg-primary/30 md:block" />
-
-      <div className="space-y-0">
-        {sorted.map((exp, i) => {
-          const isLeft = i % 2 === 0;
-          return (
-            <div
-              key={exp.id}
-              className={cn(
-                "relative flex items-stretch py-4 pl-8 md:pl-0",
-                isLeft ? "flex-row md:flex-row" : "flex-row md:flex-row-reverse"
-              )}
-            >
-              {/* Content card - full width on mobile (with left offset), half on desktop */}
+      <div className="relative z-10 overflow-x-auto overflow-y-visible pb-4 scroll-smooth md:pb-6">
+        <div className="flex min-w-max items-center justify-start gap-8 px-4 md:gap-12 md:px-8">
+          {sorted.map((exp, i) => {
+            const isTop = i % 2 === 0;
+            return (
               <div
-                className={cn(
-                  "z-10 min-w-0 flex-1 rounded-lg border bg-card p-4 shadow-sm transition-all hover:shadow-md md:flex-none md:w-[calc(50%-1.5rem)]",
-                  isLeft ? "md:text-right" : "text-left"
-                )}
+                key={exp.id}
+                className="flex shrink-0 flex-col items-center"
+                style={{ width: "min(300px, 80vw)" }}
               >
-                <div className="flex flex-col gap-1">
-                  <span className="text-muted-foreground text-xs">
-                    {formatDate(exp.startDate)} – {formatDate(exp.endDate)}
-                  </span>
-                  <h3 className="font-heading font-semibold text-foreground">{exp.title}</h3>
-                  <p className="text-primary text-sm font-medium">{exp.company}</p>
-                  <p className="text-muted-foreground text-xs">{exp.location}</p>
-                  <p className="mt-2 text-muted-foreground text-sm leading-relaxed">{exp.description}</p>
-                </div>
+                {/* Card above spine */}
+                {isTop && (
+                  <>
+                    <div className="mb-2 w-full max-w-[260px] overflow-hidden rounded-lg border bg-card shadow-sm transition-all hover:shadow-md">
+                      {exp.image && (
+                        <div className="relative aspect-video w-full overflow-hidden bg-muted">
+                          <Image
+                            src={exp.image}
+                            alt={exp.imageAlt ?? exp.company}
+                            fill
+                            className="object-cover"
+                            sizes="260px"
+                          />
+                        </div>
+                      )}
+                      <div className="p-3">
+                        <span className="text-muted-foreground text-xs">
+                          {formatDate(exp.startDate)} – {formatDate(exp.endDate)}
+                        </span>
+                        <h3 className="font-heading mt-1 font-semibold text-foreground">
+                          {exp.title}
+                        </h3>
+                        <p className="text-primary text-sm font-medium">{exp.company}</p>
+                        <p className="text-muted-foreground text-xs">{exp.location}</p>
+                        <p className="mt-1 line-clamp-2 text-muted-foreground text-sm">
+                          {exp.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="h-3 w-0.5 bg-primary/50" />
+                  </>
+                )}
+
+                {/* Node on spine */}
+                <div className="size-3 shrink-0 rounded-full border-2 border-primary bg-background" />
+
+                {/* Card below spine */}
+                {!isTop && (
+                  <>
+                    <div className="mt-3 h-3 w-0.5 bg-primary/50" />
+                    <div className="mt-2 w-full max-w-[260px] overflow-hidden rounded-lg border bg-card shadow-sm transition-all hover:shadow-md">
+                      {exp.image && (
+                        <div className="relative aspect-video w-full overflow-hidden bg-muted">
+                          <Image
+                            src={exp.image}
+                            alt={exp.imageAlt ?? exp.company}
+                            fill
+                            className="object-cover"
+                            sizes="260px"
+                          />
+                        </div>
+                      )}
+                      <div className="p-3">
+                        <span className="text-muted-foreground text-xs">
+                          {formatDate(exp.startDate)} – {formatDate(exp.endDate)}
+                        </span>
+                        <h3 className="font-heading mt-1 font-semibold text-foreground">
+                          {exp.title}
+                        </h3>
+                        <p className="text-primary text-sm font-medium">{exp.company}</p>
+                        <p className="text-muted-foreground text-xs">{exp.location}</p>
+                        <p className="mt-1 line-clamp-2 text-muted-foreground text-sm">
+                          {exp.description}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
-
-              {/* Mobile: dot on left */}
-              <div className="absolute left-0 top-8 z-10 size-[23px] shrink-0 rounded-full border-2 border-primary bg-background md:hidden" />
-
-              {/* Desktop: spacer + branch + node */}
-              <div className="relative hidden w-12 shrink-0 items-center justify-center md:flex">
-                <div
-                  className={cn(
-                    "absolute top-1/2 h-0.5 w-full -translate-y-1/2 bg-primary/50",
-                    isLeft ? "left-0" : "right-0"
-                  )}
-                />
-                <div className="relative z-10 size-3 shrink-0 rounded-full border-2 border-primary bg-background" />
-              </div>
-
-              {/* Desktop: empty space on other side */}
-              <div className="hidden w-[calc(50%-1.5rem)] shrink-0 md:block" />
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

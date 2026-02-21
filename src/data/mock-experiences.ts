@@ -10,6 +10,8 @@ export const experiences: Experience[] = [
     endDate: "Devam",
     description:
       "ERP sistemi geliştirme ve şirket web sitesi altyapısı oluşturma. Dahili süreçleri verimlileştirme ve dijitalleştirme.",
+    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80",
+    imageAlt: "ERP ve yazılım geliştirme",
   },
   {
     id: "2",
@@ -20,6 +22,8 @@ export const experiences: Experience[] = [
     endDate: "2024-08",
     description:
       "Vue.js ve Django ile frontend/backend geliştirme. Yazılım geliştirme süreçlerinde pratik deneyim.",
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&q=80",
+    imageAlt: "Yazılım geliştirme",
   },
   {
     id: "3",
@@ -30,6 +34,8 @@ export const experiences: Experience[] = [
     endDate: "2024-09",
     description:
       "İç yazılım sistemlerini geliştirme ve sürdürme. Web uygulamaları, API'ler ve veritabanı sistemleri.",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80",
+    imageAlt: "Web uygulamaları ve API",
   },
   {
     id: "4",
@@ -39,6 +45,8 @@ export const experiences: Experience[] = [
     startDate: "2023-04",
     endDate: "2023-10",
     description: "Üretim veri takibi ve kalite standartları uyumu. Dahili yazılım için pratik çözümler.",
+    image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&q=80",
+    imageAlt: "Üretim ve veri takibi",
   },
   {
     id: "5",
@@ -49,6 +57,8 @@ export const experiences: Experience[] = [
     endDate: "Devam",
     description:
       "Tam yığın web uygulamaları, backend API'leri ve veritabanı sistemleri. İhtiyaç analizi, geliştirme, dağıtım.",
+    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=80",
+    imageAlt: "Full-stack geliştirme",
   },
   {
     id: "6",
@@ -59,6 +69,8 @@ export const experiences: Experience[] = [
     endDate: "2025-03",
     description:
       "Deneyap merkezinde teknik eğitim ve mentorluk. Genç bireylerin teknoloji alanında beceri geliştirmesine destek.",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80",
+    imageAlt: "Eğitim ve mentorluk",
   },
   {
     id: "7",
@@ -68,6 +80,8 @@ export const experiences: Experience[] = [
     startDate: "2024-01",
     endDate: "2025-01",
     description: "T3 Vakfı projelerinde gönüllü destek. Teknoloji ve yenilik odaklı topluluk faaliyetleri.",
+    image: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&q=80",
+    imageAlt: "Gönüllü çalışma",
   },
   {
     id: "8",
@@ -78,6 +92,8 @@ export const experiences: Experience[] = [
     endDate: "Devam",
     description:
       "Doğal dil işleme modeli üzerinde yapay zeka araştırması. Veri toplama ve ön işleme faaliyetleri.",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=80",
+    imageAlt: "Yapay zeka araştırması",
   },
   {
     id: "9",
@@ -88,6 +104,8 @@ export const experiences: Experience[] = [
     endDate: "2024-11",
     description:
       "MOGA elektrikli araç projesi. Hey MOGA yapay zeka projesi ve araç veri dashboard geliştirme.",
+    image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=400&q=80",
+    imageAlt: "Proje liderliği",
   },
   {
     id: "10",
@@ -98,6 +116,8 @@ export const experiences: Experience[] = [
     endDate: "2024-10",
     description:
       "Teknoloji Atölyesi Topluluğu denetim kurulu üyesi. Teknoloji etkinlikleri ve proje organizasyonu.",
+    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=80",
+    imageAlt: "Teknoloji topluluğu",
   },
   {
     id: "11",
@@ -108,6 +128,8 @@ export const experiences: Experience[] = [
     endDate: "2023-11",
     description:
       "ASÜ Teknoloji Atölyesi'nin kurucu başkanı. Üniversitede teknoloji odaklı topluluk kurma ve yönetme.",
+    image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&q=80",
+    imageAlt: "Topluluk başkanlığı",
   },
   {
     id: "12",
@@ -118,6 +140,8 @@ export const experiences: Experience[] = [
     endDate: "2024-01",
     description:
       "Ortaokul öğrencilerine yapay zeka dersi. Python programlama ve model eğitimi.",
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400&q=80",
+    imageAlt: "Yapay zeka eğitimi",
   },
   {
     id: "13",
@@ -127,5 +151,7 @@ export const experiences: Experience[] = [
     startDate: "2022-09",
     endDate: "2026-06",
     description: "Yazılım Mühendisliği lisans eğitimi. GPA: 3.11",
+    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&q=80",
+    imageAlt: "Üniversite eğitimi",
   },
 ];
