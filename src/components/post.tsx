@@ -5,7 +5,12 @@ import { useState } from "react";
 import { api } from "@/lib/trpc/react";
 
 export function LatestPost() {
-  const [latestPost] = api.post.list.useSuspenseQuery();
+  const [data] = api.post.list.useSuspenseQuery({
+    limit: 1,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+  const latestPost = data.items[0];
 
   const utils = api.useUtils();
   const [name, setName] = useState("");
