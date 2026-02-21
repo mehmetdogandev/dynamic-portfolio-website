@@ -28,7 +28,7 @@ services:
 
   minio:
     image: minio/minio:RELEASE.2025-04-22T22-12-26Z
-    container_name: minios3-dynamic-website
+    container_name: minios3-portfolio-website
     command: server /data --console-address ":9001"
     restart: unless-stopped
     environment:
