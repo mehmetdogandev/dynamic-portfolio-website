@@ -2,8 +2,6 @@ import Link from "next/link";
 import { Building2, Link2, Mail, Share2 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { SocialLinks } from "@/components/website/ui/social-links";
-import { cn } from "@/lib/utils";
-
 const iconMap = {
   building: Building2,
   link: Link2,
@@ -51,9 +49,10 @@ export function WebsiteFooter() {
                 )}
                 {"social" in col && col.social && (
                   <SocialLinks
-                    youtube={siteConfig.socialLinks.youtube}
                     linkedin={siteConfig.socialLinks.linkedin}
-                    instagram={siteConfig.socialLinks.instagram}
+                    github={siteConfig.socialLinks.github}
+                    medium={siteConfig.socialLinks.medium}
+                    email={siteConfig.contact.email}
                     variant="footer"
                     className="mt-2"
                   />
@@ -66,19 +65,6 @@ export function WebsiteFooter() {
           <p className="text-muted-foreground text-sm">
             © {currentYear} {siteConfig.footer.copyright}. Tüm hakları saklıdır.
           </p>
-          {siteConfig.footer.legalLinks.length > 0 && (
-            <div className="flex flex-wrap gap-4">
-              {siteConfig.footer.legalLinks.map((legal) => (
-                <Link
-                  key={legal.href}
-                  href={legal.href}
-                  className="text-muted-foreground text-sm underline-offset-4 hover:text-foreground hover:underline"
-                >
-                  {legal.label}
-                </Link>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </footer>

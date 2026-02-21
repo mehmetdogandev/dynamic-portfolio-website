@@ -7,7 +7,7 @@ export default function IletisimPage() {
     <div className="container max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <SectionTitle
         title="İletişim"
-        subtitle="Bizimle iletişime geçin"
+        subtitle="Benimle iletişime geçin"
         className="mb-10"
       />
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">

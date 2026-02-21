@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Card, CardContent } from "@/components/ui/card";
-import { Phone, Mail, MessageCircle, MapPin } from "lucide-react";
+import { Phone, Mail, MessageCircle } from "lucide-react";
+import { SocialLinks } from "@/components/website/ui/social-links";
 
 export function ContactInfo() {
-  const { contact } = siteConfig;
+  const { contact, socialLinks } = siteConfig;
 
   return (
     <div className="space-y-4">
@@ -66,15 +67,14 @@ export function ContactInfo() {
       </Card>
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-start gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <MapPin className="size-5" />
-            </div>
-            <div>
-              <p className="font-medium text-foreground">Adres</p>
-              <p className="text-muted-foreground text-sm">{contact.address}</p>
-            </div>
-          </div>
+          <p className="font-medium text-foreground mb-3">Sosyal Medya</p>
+          <SocialLinks
+            linkedin={socialLinks.linkedin}
+            github={socialLinks.github}
+            medium={socialLinks.medium}
+            email={contact.email}
+            variant="footer"
+          />
         </CardContent>
       </Card>
     </div>

@@ -1,1 +1,2 @@
-export { AboutSections } from "./about-sections";
+export { FishboneTimeline } from "./fishbone-timeline";
+export { SkillsInterests } from "./skills-interests";

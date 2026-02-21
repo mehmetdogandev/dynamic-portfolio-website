@@ -14,8 +14,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
-
 export function WebsiteHeader() {
   const [open, setOpen] = useState(false);
 
@@ -25,7 +23,7 @@ export function WebsiteHeader() {
         <Link
           href="/"
           className="flex shrink-0 items-center gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
-          aria-label="Mimlevip ana sayfa"
+          aria-label="Mehmet Doğan ana sayfa"
         >
           <span className="text-xl font-bold text-primary">{siteConfig.name}</span>
         </Link>
@@ -37,13 +35,10 @@ export function WebsiteHeader() {
 
         <div className="hidden lg:flex items-center gap-1">
           <SocialLinks
-            youtube={siteConfig.socialLinks.youtube}
             linkedin={siteConfig.socialLinks.linkedin}
-            instagram={siteConfig.socialLinks.instagram}
+            github={siteConfig.socialLinks.github}
+            medium={siteConfig.socialLinks.medium}
             email={siteConfig.contact.email}
-            phone={siteConfig.contact.phone}
-            phoneRaw={siteConfig.contact.phoneRaw}
-            whatsapp={siteConfig.contact.whatsapp}
             variant="header"
           />
         </div>
@@ -72,13 +67,10 @@ export function WebsiteHeader() {
               <div className="border-t pt-4">
                 <p className="text-muted-foreground text-sm mb-2">İletişim ve sosyal medya</p>
                 <SocialLinks
-                  youtube={siteConfig.socialLinks.youtube}
                   linkedin={siteConfig.socialLinks.linkedin}
-                  instagram={siteConfig.socialLinks.instagram}
+                  github={siteConfig.socialLinks.github}
+                  medium={siteConfig.socialLinks.medium}
                   email={siteConfig.contact.email}
-                  phone={siteConfig.contact.phone}
-                  phoneRaw={siteConfig.contact.phoneRaw}
-                  whatsapp={siteConfig.contact.whatsapp}
                   variant="footer"
                 />
               </div>

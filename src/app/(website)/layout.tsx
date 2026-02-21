@@ -3,9 +3,9 @@ import { WebsiteFooter } from "@/components/website/layout/website-footer";
 import { WebsiteHeader } from "@/components/website/layout/website-header";
 
 export const metadata: Metadata = {
-  title: { default: "Mimlevip | Eğitim Kurumu", template: "%s | Mimlevip" },
+  title: { default: "Mehmet Doğan | Software Engineer", template: "%s | Mehmet Doğan" },
   description:
-    "Mimlevip Eğitim Kurumu – Kaliteli eğitim, özel ders ve online ders videoları ile hedeflerinize ulaşın.",
+    "Mehmet Doğan – Software Engineer. Yazılım mühendisliği, full-stack geliştirme ve teknoloji odaklı projeler.",
 };
 
 export default function WebsiteLayout({

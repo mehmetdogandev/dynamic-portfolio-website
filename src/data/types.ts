@@ -9,22 +9,32 @@ export type BlogPost = {
   date: string;
 };
 
-export type Lesson = {
+export type Project = {
   id: string;
   slug: string;
   title: string;
   description: string;
-  image: string;
+  longDescription: string;
+  images: string[];
   imageAlt: string;
-  videoCount: number;
-  videoIds: string[];
+  stack: string[];
+  links?: { label: string; url: string }[];
+  date: string;
+  featured?: boolean;
 };
 
-export type Teacher = {
+export type Experience = {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+};
+
+export type GalleryCategory = {
   id: string;
   name: string;
-  branch: string;
-  image: string;
-  imageAlt: string;
-  shortInfo: string;
+  images: { url: string; alt: string }[];
 };
