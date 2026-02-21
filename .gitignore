@@ -49,3 +49,5 @@ docker-compose.dev.yml
 
 /.pnpm-store/** */
 certificates
+
+.env.prod
