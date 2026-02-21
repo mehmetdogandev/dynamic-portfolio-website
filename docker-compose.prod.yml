@@ -1,5 +1,5 @@
 # Production - dynamic-portfolio-website (mehmetdogandev.com)
-# Uses external Postgres on host. MinIO 9010/9011, Drizzle 7711, Next.js 8081
+# Uses external Postgres. Ports: Next 8081, MinIO 9020/9021, Drizzle 7712 (dynamic-website uses 9010/9011, 7711)
 
 services:
   minio:
@@ -11,8 +11,8 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
-      - "${MINIO_API_PORT:-9010}:9000"
-      - "${MINIO_CONSOLE_PORT:-9011}:9001"
+      - "${MINIO_API_PORT:-9020}:9000"
+      - "${MINIO_CONSOLE_PORT:-9021}:9001"
     volumes:
       - minio_storage:/data
     networks:
@@ -28,9 +28,9 @@ services:
     container_name: portfolio-website-drizzle-gateway
     restart: unless-stopped
     ports:
-      - "${DRIZZLE_GATEWAY_PORT:-7711}:${DRIZZLE_GATEWAY_PORT:-7711}"
+      - "${DRIZZLE_GATEWAY_PORT:-7712}:${DRIZZLE_GATEWAY_PORT:-7712}"
     environment:
-      PORT: ${DRIZZLE_GATEWAY_PORT:-7711}
+      PORT: ${DRIZZLE_GATEWAY_PORT:-7712}
       STORE_PATH: /app
       MASTERPASS: ${DRIZZLE_GATEWAY_PASSWORD:-admin123}
       DATABASE_URL_main: ${DATABASE_URL}
