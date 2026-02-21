@@ -12,9 +12,9 @@ export default function WebsiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-x-hidden">
       <WebsiteHeader />
-      <main className="flex-1">{children}</main>
+      <main className="min-h-[calc(100vh-theme(spacing.32))] flex-1">{children}</main>
       <WebsiteFooter />
     </div>
   );

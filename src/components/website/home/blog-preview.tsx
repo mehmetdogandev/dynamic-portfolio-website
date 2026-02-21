@@ -9,13 +9,13 @@ export function BlogPreview() {
   const posts = blogPosts.slice(0, 3);
 
   return (
-    <section className="container max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:py-16 lg:px-8">
       <SectionTitle
         title="Blog"
         subtitle="Yazılım ve kariyer üzerine yazılarım"
         className="mb-8"
       />
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
         {posts.map((post) => (
           <Link key={post.id} href={`/blog/${post.slug}`}>
             <Card className="group h-full overflow-hidden border shadow-sm transition-shadow hover:shadow-md">

@@ -9,13 +9,13 @@ export function FeaturedProjects() {
   const projects = getFeaturedProjects().slice(0, 4);
 
   return (
-    <section className="container max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:py-16 lg:px-8">
       <SectionTitle
         title="Öne Çıkan Projeler"
         subtitle="Son dönemde üzerinde çalıştığım projeler"
         className="mb-8"
       />
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
         {projects.map((project) => (
           <Link key={project.id} href={`/projeler/${project.slug}`}>
             <Card className="group h-full overflow-hidden border shadow-sm transition-shadow hover:shadow-md">

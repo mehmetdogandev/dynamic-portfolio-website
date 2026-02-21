@@ -4,7 +4,7 @@ import { SectionTitle } from "@/components/website/ui/section-title";
 
 export default function GaleriPage() {
   return (
-    <div className="container max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
       <SectionTitle
         title="Galeri"
         subtitle="Konferanslar, projeler ve topluluk etkinliklerinden görüntüler"

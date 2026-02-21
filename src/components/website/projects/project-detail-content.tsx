@@ -11,7 +11,7 @@ type ProjectDetailContentProps = {
 
 export function ProjectDetailContent({ project }: ProjectDetailContentProps) {
   return (
-    <div className="container max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="container mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <Link href="/projeler">
         <Button variant="ghost" size="sm" className="mb-8 -ml-2">
           <ArrowLeft className="size-4 mr-2" />

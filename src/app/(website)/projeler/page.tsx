@@ -8,14 +8,14 @@ export default function ProjelerPage() {
   );
 
   return (
-    <div className="container max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
       <SectionTitle
         title="Projeler"
         subtitle="Geliştirdiğim yazılım projeleri"
         className="mb-12"
       />
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {sorted.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}

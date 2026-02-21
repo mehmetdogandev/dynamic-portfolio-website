@@ -19,7 +19,7 @@ export function WebsiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
           className="flex shrink-0 items-center gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
@@ -54,24 +54,26 @@ export function WebsiteHeader() {
               <Menu className="size-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-full max-w-xs sm:max-w-sm">
+          <SheetContent side="right" className="flex min-h-full w-full max-w-xs flex-col sm:max-w-sm">
             <SheetHeader>
               <SheetTitle className="sr-only">Menü</SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col gap-6 pt-6">
+            <div className="flex flex-1 flex-col" aria-hidden="true" />
+            <div className="mt-auto flex flex-col items-center justify-center gap-6 pb-8">
               <NavLinks
                 links={siteConfig.navLinks}
-                className="flex-col items-stretch gap-0"
+                className="flex flex-col items-center justify-center gap-0 text-center"
                 onLinkClick={() => setOpen(false)}
               />
-              <div className="border-t pt-4">
-                <p className="text-muted-foreground text-sm mb-2">İletişim ve sosyal medya</p>
+              <div className="flex w-full flex-col items-center border-t pt-4">
+                <p className="text-muted-foreground mb-2 text-sm">İletişim ve sosyal medya</p>
                 <SocialLinks
                   linkedin={siteConfig.socialLinks.linkedin}
                   github={siteConfig.socialLinks.github}
                   medium={siteConfig.socialLinks.medium}
                   email={siteConfig.contact.email}
                   variant="footer"
+                  className="justify-center"
                 />
               </div>
             </div>

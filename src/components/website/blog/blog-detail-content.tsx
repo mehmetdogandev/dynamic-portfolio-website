@@ -9,7 +9,7 @@ type BlogDetailContentProps = {
 
 export function BlogDetailContent({ post, className }: BlogDetailContentProps) {
   return (
-    <article className={cn("container max-w-3xl px-4 py-8 sm:px-6 lg:px-8", className)}>
+    <article className={cn("container mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8", className)}>
       <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted mb-8">
         <Image
           src={post.image}

@@ -14,13 +14,13 @@ export function WebsiteFooter() {
 
   return (
     <footer className="border-t bg-muted/30">
-      <div className="container max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 md:gap-12">
           {siteConfig.footer.columns.map((col, i) => {
             const Icon = iconMap[col.icon as keyof typeof iconMap] ?? Building2;
             return (
-              <div key={i} className="space-y-4">
-                <div className="flex items-center gap-2">
+              <div key={i} className="space-y-4 text-center md:text-left">
+                <div className="flex items-center justify-center gap-2 md:justify-start">
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Icon className="size-5" />
                   </div>
@@ -54,14 +54,14 @@ export function WebsiteFooter() {
                     medium={siteConfig.socialLinks.medium}
                     email={siteConfig.contact.email}
                     variant="footer"
-                    className="mt-2"
+                    className="mt-2 justify-center md:justify-start"
                   />
                 )}
               </div>
             );
           })}
         </div>
-        <div className="mt-10 flex flex-col gap-4 border-t pt-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t pt-8 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
           <p className="text-muted-foreground text-sm">
             © {currentYear} {siteConfig.footer.copyright}. Tüm hakları saklıdır.
           </p>

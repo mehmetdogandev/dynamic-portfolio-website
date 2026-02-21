@@ -42,8 +42,8 @@ export function GallerySlider({ category }: GallerySliderProps) {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-0" />
-        <CarouselNext className="right-0" />
+        <CarouselPrevious className="left-0 size-10 min-h-10 min-w-10" />
+        <CarouselNext className="right-0 size-10 min-h-10 min-w-10" />
       </Carousel>
     </section>
   );

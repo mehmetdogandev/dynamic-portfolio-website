@@ -32,8 +32,11 @@ export function FishboneTimeline() {
 
   return (
     <div className="relative">
-      {/* Central spine - vertical line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-primary/30" />
+      {/* Mobile: simple vertical line on left */}
+      <div className="absolute left-[11px] top-0 bottom-0 w-0.5 bg-primary/30 md:hidden" />
+
+      {/* Desktop: central spine */}
+      <div className="absolute left-1/2 top-0 bottom-0 hidden w-0.5 -translate-x-1/2 bg-primary/30 md:block" />
 
       <div className="space-y-0">
         {sorted.map((exp, i) => {
@@ -42,15 +45,15 @@ export function FishboneTimeline() {
             <div
               key={exp.id}
               className={cn(
-                "relative flex items-stretch py-4",
-                isLeft ? "flex-row" : "flex-row-reverse"
+                "relative flex items-stretch py-4 pl-8 md:pl-0",
+                isLeft ? "flex-row md:flex-row" : "flex-row md:flex-row-reverse"
               )}
             >
-              {/* Content card */}
+              {/* Content card - full width on mobile (with left offset), half on desktop */}
               <div
                 className={cn(
-                  "z-10 w-[calc(50%-1.5rem)] min-w-0 rounded-lg border bg-card p-4 shadow-sm transition-all hover:shadow-md",
-                  isLeft ? "text-right" : "text-left"
+                  "z-10 min-w-0 flex-1 rounded-lg border bg-card p-4 shadow-sm transition-all hover:shadow-md md:flex-none md:w-[calc(50%-1.5rem)]",
+                  isLeft ? "md:text-right" : "text-left"
                 )}
               >
                 <div className="flex flex-col gap-1">
@@ -64,21 +67,22 @@ export function FishboneTimeline() {
                 </div>
               </div>
 
-              {/* Spacer + branch + node */}
-              <div className="relative flex w-12 shrink-0 items-center justify-center">
-                {/* Horizontal branch line */}
+              {/* Mobile: dot on left */}
+              <div className="absolute left-0 top-8 z-10 size-[23px] shrink-0 rounded-full border-2 border-primary bg-background md:hidden" />
+
+              {/* Desktop: spacer + branch + node */}
+              <div className="relative hidden w-12 shrink-0 items-center justify-center md:flex">
                 <div
                   className={cn(
                     "absolute top-1/2 h-0.5 w-full -translate-y-1/2 bg-primary/50",
                     isLeft ? "left-0" : "right-0"
                   )}
                 />
-                {/* Node on spine */}
                 <div className="relative z-10 size-3 shrink-0 rounded-full border-2 border-primary bg-background" />
               </div>
 
-              {/* Empty space on other side */}
-              <div className="w-[calc(50%-1.5rem)] shrink-0" />
+              {/* Desktop: empty space on other side */}
+              <div className="hidden w-[calc(50%-1.5rem)] shrink-0 md:block" />
             </div>
           );
         })}
