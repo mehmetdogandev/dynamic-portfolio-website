@@ -15,23 +15,23 @@ export function WebsiteFooter() {
   return (
     <footer className="relative border-t bg-muted/30 overflow-hidden">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08] dark:opacity-[0.05]"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.06] dark:opacity-[0.04]"
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&q=80')",
         }}
       />
       <div className="relative z-10">
-      <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 md:gap-12">
+      <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4 md:gap-6 lg:gap-8">
           {siteConfig.footer.columns.map((col, i) => {
             const Icon = iconMap[col.icon as keyof typeof iconMap] ?? Building2;
             return (
-              <div key={i} className="space-y-4 text-center md:text-left">
+              <div key={i} className="space-y-3 text-center md:text-left">
                 <div className="flex items-center justify-center gap-2 md:justify-start">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="size-5" />
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="size-4" />
                   </div>
-                  <h3 className="font-semibold text-foreground">{col.title}</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{col.title}</h3>
                 </div>
                 {"links" in col && col.links && (
                   <ul className="space-y-2 text-sm text-muted-foreground">
@@ -68,8 +68,8 @@ export function WebsiteFooter() {
             );
           })}
         </div>
-        <div className="mt-10 flex flex-col gap-4 border-t pt-8 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
-          <p className="text-muted-foreground text-sm">
+        <div className="mt-6 flex justify-center border-t pt-5">
+          <p className="text-muted-foreground text-center text-sm">
             © {currentYear} {siteConfig.footer.copyright}. Tüm hakları saklıdır.
           </p>
         </div>
