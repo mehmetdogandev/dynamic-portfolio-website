@@ -61,7 +61,7 @@ export function WebsiteHeader() {
             <div className="flex flex-col gap-6 pt-6">
               <NavLinks
                 links={siteConfig.navLinks}
-                className="flex flex-col items-stretch gap-0"
+                className="flex flex-col items-stretch gap-0 [&_a]:rounded-none"
                 onLinkClick={() => setOpen(false)}
               />
             </div>
