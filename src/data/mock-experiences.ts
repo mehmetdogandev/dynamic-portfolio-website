@@ -151,7 +151,7 @@ export const experiences: Experience[] = [
     startDate: "2022-09",
     endDate: "2026-06",
     description: "Yazılım Mühendisliği lisans eğitimi. GPA: 3.11",
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&q=80",
     imageAlt: "Üniversite eğitimi",
   },
 ];

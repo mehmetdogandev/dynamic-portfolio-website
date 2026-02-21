@@ -11,7 +11,7 @@
     "db:push": "drizzle-kit push",
     "db:seed": "node --import tsconfig-paths/register.js --import tsx src/lib/db/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "dev": "docker-compose -f docker-compose.dev.yml up -d && next dev --turbo --experimental-https",
+    "dev": "docker-compose -f docker-compose.dev.yml up -d && next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "lint": "next lint",

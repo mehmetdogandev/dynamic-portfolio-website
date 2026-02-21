@@ -1,20 +1,9 @@
-"use client";
-
 import { siteConfig } from "@/config/site";
 import { SectionTitle } from "@/components/website/ui/section-title";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { FishboneTimeline } from "@/components/website/about/fishbone-timeline";
 import { SkillsInterests } from "@/components/website/about/skills-interests";
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
 
 export default function HakkimdaPage() {
-  const [open, setOpen] = useState(false);
-
   return (
     <div className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
       <SectionTitle
@@ -29,19 +18,12 @@ export default function HakkimdaPage() {
         </p>
       </div>
 
-      <Collapsible open={open} onOpenChange={setOpen} className="mt-12">
-        <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border bg-card px-4 py-3 font-heading text-lg font-semibold shadow-sm hover:bg-accent/50">
+      <section className="mt-12">
+        <h2 className="font-heading mb-8 text-2xl font-bold text-foreground">
           Deneyimlerim
-          <ChevronDown
-            className={`size-5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="mt-8">
-            <FishboneTimeline />
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </h2>
+        <FishboneTimeline />
+      </section>
 
       <SkillsInterests />
     </div>
