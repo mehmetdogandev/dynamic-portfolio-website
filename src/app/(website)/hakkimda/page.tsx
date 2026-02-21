@@ -12,17 +12,20 @@ export default function HakkimdaPage() {
         className="mb-8"
       />
 
-      <div className="prose prose-neutral dark:prose-invert max-w-none space-y-5 [font-family:var(--font-prose)]">
-        <p className="text-muted-foreground text-lg leading-[1.8]">
+      <div className="prose prose-neutral dark:prose-invert max-w-none space-y-6 [font-family:var(--font-prose)]">
+        <p className="text-foreground/90 text-xl font-medium italic leading-[1.9] sm:text-2xl">
+          {siteConfig.about.lead}
+        </p>
+        <p className="text-muted-foreground text-lg leading-[1.9]">
           {siteConfig.about.intro}
         </p>
-        <p className="text-muted-foreground text-lg leading-[1.8]">
+        <p className="text-muted-foreground text-lg leading-[1.9]">
           {siteConfig.about.introPart2}
         </p>
-        <p className="text-muted-foreground text-lg leading-[1.8]">
+        <p className="text-muted-foreground text-lg leading-[1.9]">
           {siteConfig.about.introPart3}
         </p>
-        <p className="text-muted-foreground text-lg leading-[1.8]">
+        <p className="text-muted-foreground text-lg leading-[1.9]">
           {siteConfig.about.introPart4}
         </p>
       </div>

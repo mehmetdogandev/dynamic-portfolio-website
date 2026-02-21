@@ -67,14 +67,16 @@ export const siteConfig = {
   },
 
   about: {
+    lead:
+      "Yazılım, benim için sadece bir meslek değil; problemleri çözmek, sistemleri tasarlamak ve insanların işini kolaylaştırmak anlamına geliyor. Bu tutkuyla yola çıkarak hem kurumsal dünyada hem de topluluk ve girişim tarafında deneyim kazanmaya devam ediyorum.",
     intro:
-      "Aksaray Üniversitesi Yazılım Mühendisliği bölümünde lisans eğitimime devam ederken, sektörde hem kurumsal hem de girişimci tarafında deneyim kazanıyorum. Anadolu Mikronize'de Yazılım Destek Uzmanı olarak çalışıyorum; şirketin dijital dönüşümü için ERP sistemi ve web altyapısı geliştiriyorum. Daha önce N2Mobile ve Kuzeyboru gibi firmalarda staj ve tam zamanlı roller üstlendim. Bu süreçte Vue.js, Django, web uygulamaları, API tasarımı ve veritabanı sistemleri üzerinde pratik deneyim edindim.",
+      "Aksaray Üniversitesi Yazılım Mühendisliği bölümünde lisans eğitimime devam ederken, Anadolu Mikronize'de Yazılım Destek Uzmanı olarak çalışıyorum. Şirketin dijital dönüşümü için ERP sistemi ve web altyapısı geliştiriyorum. N2Mobile ve Kuzeyboru'da edindiğim staj ve tam zamanlı deneyimlerle Vue.js, Django, API tasarımı ve veritabanı sistemleri konusunda sağlam bir temel oluşturdum.",
     introPart2:
-      "Teknolojiye olan tutkum sadece iş hayatıyla sınırlı değil. ASÜ Teknoloji Atölyesi'nin kurucu başkanı olarak üniversitede teknoloji topluluğu kurdum ve yönettim; etkinlikler düzenledim, proje organizasyonlarına liderlik ettim. T3 Vakfı bünyesinde Deneyap merkezinde mentorluk yapıyorum; gençlere yazılım ve yapay zeka alanında eğitim veriyorum. T3 AI'LE topluluğunda doğal dil işleme üzerine araştırma faaliyetlerine katılıyorum. Gürman İnovasyon'da proje lideri olarak elektrikli araç projelerinde ve yapay zeka entegrasyonlarında çalıştım. Ayrıca MDKARE ~ SOFT adıyla freelance olarak tam yığın web uygulamaları ve backend sistemleri geliştiriyorum.",
+      "Teknoloji tutkum ofis duvarlarının ötesine uzanıyor. ASÜ Teknoloji Atölyesi'nin kurucu başkanı olarak üniversitede bir teknoloji topluluğu kurdum; etkinlikler düzenledim, projelere liderlik ettim. T3 Vakfı Deneyap merkezinde mentorluk yapıyorum, gençlere yazılım ve yapay zeka eğitimi veriyorum. T3 AI'LE topluluğunda doğal dil işleme araştırmalarına katılıyorum. Gürman İnovasyon'da proje lideri olarak elektrikli araç ve yapay zeka entegrasyonları üzerinde çalıştım. MDKARE ~ SOFT ile freelance tam yığın projeler geliştiriyorum.",
     introPart3:
-      "TÜBİTAK DENEYAP kapsamında ortaokul öğrencilerine yapay zeka dersi verdim; Python programlama ve model eğitimi konularında içerik hazırladım. Teknoloji ve yenilik odaklı projelerde çalışmak, sürekli öğrenmek ve başkalarının bu alanda gelişmesine katkı sağlamak benim için motive edici bir unsur. ERP, web geliştirme, yapay zeka ve veritabanı sistemleri konularında hem teorik hem pratik birikimimi projelerde kullanmaya devam ediyorum.",
+      "TÜBİTAK DENEYAP'ta ortaokul öğrencilerine yapay zeka dersi verdim. Sürekli öğrenmek ve başkalarının gelişimine katkıda bulunmak benim için güçlü bir motivasyon. ERP, web geliştirme, yapay zeka ve veritabanı sistemleri alanındaki birikimimi hem iş projelerinde hem de topluluk çalışmalarında kullanıyorum.",
     introPart4:
-      "İleride daha karmaşık sistemler tasarlamak, açık kaynak projelere katkıda bulunmak ve teknoloji alanında sürdürülebilir bir kariyer inşa etmek hedeflerim arasında. İş birlikleri, proje fırsatları veya sadece sohbet etmek için benimle iletişime geçmekten çekinmeyin.",
+      "Gelecekte daha karmaşık sistemler tasarlamak, açık kaynağa katkı sağlamak ve teknoloji alanında anlamlı bir iz bırakmak istiyorum. Proje fırsatları, iş birlikleri veya sadece sohbet için benimle iletişime geçebilirsiniz.",
   },
 } as const;
 

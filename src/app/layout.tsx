@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist, Lora, Prata } from "next/font/google";
+import { Cormorant_Garamond, Geist, Prata } from "next/font/google";
 
 import { TRPCReactProvider } from "@/lib/trpc/react";
 import { siteConfig } from "@/config/site";
@@ -22,16 +22,17 @@ const prata = Prata({
   variable: "--font-prata",
 });
 
-const lora = Lora({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-lora",
+  weight: ["400", "500", "600"],
+  variable: "--font-cormorant",
 });
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="tr" className={`${geist.variable} ${prata.variable} ${lora.variable}`} suppressHydrationWarning>
+    <html lang="tr" className={`${geist.variable} ${prata.variable} ${cormorant.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>

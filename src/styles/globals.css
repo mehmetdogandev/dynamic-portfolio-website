@@ -95,7 +95,7 @@
   --sidebar-ring: oklch(0.925 0.012 277);
   --font-sans: var(--font-geist-sans), "Geist", sans-serif;
   --font-heading: var(--font-prata), "Prata", serif;
-  --font-prose: var(--font-lora), "Lora", Georgia, serif;
+  --font-prose: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-mono: ui-monospace, monospace;
   --radius: 0.75rem;
   --shadow-2xs: 0 1px 0 0 oklch(0.55 0.035 277 / 0.05);
