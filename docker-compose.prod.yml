@@ -4,7 +4,7 @@
 services:
   minio:
     image: minio/minio:RELEASE.2025-04-22T22-12-26Z
-    container_name: dynamic-website-minio
+    container_name: portfolio-website-minio
     command: server /data --console-address ":9001"
     restart: unless-stopped
     environment:
@@ -25,7 +25,7 @@ services:
 
   drizzle-gateway:
     image: ghcr.io/drizzle-team/gateway:latest
-    container_name: dynamic-website-drizzle-gateway
+    container_name: portfolio-website-drizzle-gateway
     restart: unless-stopped
     ports:
       - "${DRIZZLE_GATEWAY_PORT:-7711}:${DRIZZLE_GATEWAY_PORT:-7711}"
@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://mehmetdogandev.com}
-    container_name: dynamic-website-nextjs
+    container_name: portfolio-website-nextjs
     restart: unless-stopped
     user: "0:0"
     ports:
