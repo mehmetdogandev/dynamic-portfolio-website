@@ -81,7 +81,7 @@ echo -e "${GREEN}═════════════════════
 echo -e "${GREEN}  dynamic-portfolio-website (mehmetdogandev.com)${NC}"
 echo -e "${GREEN}══════════════════════════════════════════════════════════${NC}"
 echo ""
-echo -e "${BLUE}Next.js${NC}     http://localhost:${PORT:-1188}"
+echo -e "${BLUE}Next.js${NC}     http://localhost:${PORT:-8081}"
 echo -e "${BLUE}MinIO API${NC}   http://localhost:${MINIO_API_PORT:-9010}"
 echo -e "${BLUE}MinIO Console${NC} http://localhost:${MINIO_CONSOLE_PORT:-9011}"
 echo -e "${BLUE}Drizzle${NC}     http://localhost:${DRIZZLE_GATEWAY_PORT:-7711}"
