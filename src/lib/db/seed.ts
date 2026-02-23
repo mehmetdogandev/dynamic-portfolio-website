@@ -17,6 +17,7 @@ import {
   userRoleGroupTable,
   userInfo as userInfoTable,
 } from "@/lib/db/schemas";
+import { closeDb } from "@/lib/db";
 
 const PAGES = [
   "HOME_PAGE",
@@ -296,9 +297,17 @@ async function main() {
   await seedUserRoles(emailToUserId, roleNameToId);
   await seedUserInfo(emailToUserId);
   console.log("[seed] Done.");
+  await closeDb();
 }
 
-main().catch((err) => {
-  console.error("[seed] Fatal:", err);
-  process.exit(1);
-});
+main()
+  .then(() => process.exit(0))
+  .catch(async (err) => {
+    console.error("[seed] Fatal:", err);
+    try {
+      await closeDb();
+    } catch {
+      // ignore
+    }
+    process.exit(1);
+  });
