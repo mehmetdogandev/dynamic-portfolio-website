@@ -41,7 +41,7 @@ export async function sendContactFormEmails(
         <td align="center" style="padding:40px 16px;">
           <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
             <tr>
-              <td style="background:linear-gradient(90deg,#4F46E5,#6366F1); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
+              <td style="background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
                 mehmetdogandev.com
               </td>
             </tr>
@@ -75,7 +75,7 @@ export async function sendContactFormEmails(
         <td align="center" style="padding:40px 16px;">
           <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
             <tr>
-              <td style="background:linear-gradient(90deg,#4F46E5,#6366F1); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
+              <td style="background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
                 İletişim Formu – mehmetdogandev.com
               </td>
             </tr>
@@ -99,7 +99,7 @@ export async function sendContactFormEmails(
     </table>
     `.trim();
 
-    await transporter.sendMail({
+    const autoReplyInfo = await transporter.sendMail({
       from: fromAddress,
       to: data.email,
       subject: "Mesajınız Alındı – mehmetdogandev.com",
@@ -107,8 +107,10 @@ export async function sendContactFormEmails(
       text: `Merhaba ${data.name},\n\nMailinizi aldık. Size en kısa sürede döneceğiz.`,
     });
 
+    let adminInfo: Awaited<ReturnType<typeof transporter.sendMail>> | null =
+      null;
     if (recipients.length > 0) {
-      await transporter.sendMail({
+      adminInfo = await transporter.sendMail({
         from: fromAddress,
         to: recipients,
         replyTo: data.email,
@@ -120,6 +122,16 @@ export async function sendContactFormEmails(
 
     if (!hasSmtpConfig && testAccount) {
       console.log("=== Ethereal test mail (contact form) gönderildi ===");
+      const autoReplyUrl = nodemailer.getTestMessageUrl(autoReplyInfo);
+      if (autoReplyUrl) {
+        console.log("[1] Otomatik yanıt önizleme:", autoReplyUrl);
+      }
+      if (adminInfo) {
+        const adminUrl = nodemailer.getTestMessageUrl(adminInfo);
+        if (adminUrl) {
+          console.log("[2] Admin bildirimi önizleme:", adminUrl);
+        }
+      }
       console.log("====================================");
     }
 

@@ -25,7 +25,7 @@ export async function sendResetPasswordEmail({
   
           <!-- Top Brand Bar -->
           <tr>
-            <td style="background:linear-gradient(90deg,#4F46E5,#6366F1); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
+            <td style="background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
               mehmetdogandev.com
             </td>
           </tr>
@@ -53,14 +53,14 @@ export async function sendResetPasswordEmail({
             <td align="center" style="padding:30px 40px;">
               <a href="${url}"
                 style="display:inline-block;
-                       background:#4F46E5;
+                       background:#2d4a7c;
                        color:#ffffff;
                        padding:16px 34px;
                        border-radius:10px;
                        text-decoration:none;
                        font-size:16px;
                        font-weight:600;
-                       box-shadow:0 6px 14px rgba(79,70,229,0.25);">
+                       box-shadow:0 6px 14px rgba(45,74,124,0.25);">
                 Şifremi Yenile
               </a>
             </td>
@@ -77,7 +77,7 @@ export async function sendResetPasswordEmail({
           <tr>
             <td style="padding:20px 40px; font-size:14px; color:#475569; line-height:1.6;">
               Buton çalışmazsa aşağıdaki bağlantıyı tarayıcınıza yapıştırabilirsiniz:<br><br>
-              <span style="word-break:break-all; color:#4F46E5; font-weight:500;">
+              <span style="word-break:break-all; color:#2d4a7c; font-weight:500;">
                 ${url}
               </span>
             </td>
