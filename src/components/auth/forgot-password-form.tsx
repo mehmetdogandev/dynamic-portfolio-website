@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,19 +14,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { checkEmailExists } from "@/lib/actions/auth-actions";
 
 const AUTH_BASE = "/api/auth";
 
 export function ForgotPasswordForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState<"idle" | "success" | "error">("idle");
+  const [message, setMessage] = useState<"idle" | "success" | "error" | "notFound">("idle");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (message !== "success") return;
+    const timer = setTimeout(() => {
+      router.push("/admin-panel/login");
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [message, router]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage("idle");
     setLoading(true);
     try {
+      const exists = await checkEmailExists(email);
+      if (!exists) {
+        setMessage("notFound");
+        return;
+      }
       const base = typeof window !== "undefined" ? window.location.origin : "";
       const res = await fetch(`${base}${AUTH_BASE}/request-password-reset`, {
         method: "POST",
@@ -60,7 +76,12 @@ export function ForgotPasswordForm() {
         <CardContent className="space-y-4">
           {message === "success" && (
             <p className="text-sm text-green-600 dark:text-green-400" role="status">
-              E-posta gönderildi. Gelen kutunuzu kontrol edin.
+              Şifre sıfırlama bağlantısı gönderildi. Giriş sayfasına yönlendiriliyorsunuz...
+            </p>
+          )}
+          {message === "notFound" && (
+            <p className="text-sm text-destructive" role="alert">
+              Bu mail sistemde kayıtlı bir mail değildir. Lütfen üst yöneticinizle iletişime geçin.
             </p>
           )}
           {message === "error" && (
@@ -78,12 +99,12 @@ export function ForgotPasswordForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              disabled={loading}
+              disabled={loading || message === "success"}
             />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || message === "success"}>
             {loading ? "Gönderiliyor..." : "Gönder"}
           </Button>
           <Link

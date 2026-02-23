@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,12 +18,21 @@ import {
 const AUTH_BASE = "/api/auth";
 
 export function ResetPasswordForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState<"idle" | "success" | "error">("idle");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (message !== "success") return;
+    const timer = setTimeout(() => {
+      router.push("/admin-panel/login");
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [message, router]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -81,7 +90,7 @@ export function ResetPasswordForm() {
         <CardContent className="space-y-4">
           {message === "success" && (
             <p className="text-sm text-green-600 dark:text-green-400" role="status">
-              Şifreniz güncellendi. Giriş sayfasına yönlendirilebilirsiniz.
+              Şifreniz güncellendi. Giriş sayfasına yönlendiriliyorsunuz...
             </p>
           )}
           {message === "error" && (
@@ -99,7 +108,7 @@ export function ResetPasswordForm() {
               required
               minLength={8}
               autoComplete="new-password"
-              disabled={loading}
+              disabled={loading || message === "success"}
             />
           </div>
           <div className="space-y-2">
@@ -112,12 +121,12 @@ export function ResetPasswordForm() {
               required
               minLength={8}
               autoComplete="new-password"
-              disabled={loading}
+              disabled={loading || message === "success"}
             />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || message === "success"}>
             {loading ? "Kaydediliyor..." : "Kaydet"}
           </Button>
           <Link
