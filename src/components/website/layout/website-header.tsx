@@ -25,7 +25,15 @@ export function WebsiteHeader() {
           className="flex shrink-0 items-center gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           aria-label="Mehmet Doğan ana sayfa"
         >
-          <span className="text-xl font-bold text-primary">{siteConfig.name}</span>
+          <span className="font-mono text-xl font-bold tracking-tight text-primary">
+            {siteConfig.headerBranding.logotype}
+          </span>
+          <span className="hidden text-muted-foreground sm:inline" aria-hidden>
+            ·
+          </span>
+          <span className="hidden text-muted-foreground text-sm font-medium sm:inline">
+            {siteConfig.headerBranding.tagline}
+          </span>
         </Link>
 
         <NavLinks

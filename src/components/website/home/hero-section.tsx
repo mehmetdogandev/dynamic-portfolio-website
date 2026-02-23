@@ -1,6 +1,7 @@
 import { siteConfig } from "@/config/site";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { YoutubeEmbed } from "@/components/website/ui/youtube-embed";
+import { TypewriterText } from "@/components/website/ui/typewriter-text";
 
 export function HeroSection() {
   const { title, subtitle, youtubeVideoId, quote } = siteConfig.hero;
@@ -12,9 +13,12 @@ export function HeroSection() {
           <div className="order-2 md:order-1 md:col-span-1">
             <Card className="h-full border-primary/20 bg-primary/5 py-4 shadow-md md:py-6">
               <CardHeader className="px-4 md:px-6">
-                <h2 className="font-heading text-xl font-bold tracking-tight md:text-2xl text-foreground">
-                  {title}
-                </h2>
+                <TypewriterText
+                  text={title}
+                  speed={90}
+                  as="h2"
+                  className="font-heading text-xl font-bold tracking-tight md:text-2xl text-foreground"
+                />
               </CardHeader>
               <CardContent className="space-y-3 px-4 md:px-6">
                 <p className="text-muted-foreground text-sm md:text-base">{subtitle}</p>

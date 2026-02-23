@@ -1,6 +1,11 @@
 export const siteConfig = {
   name: "Mehmet Doğan",
   domain: "mehmetdogandev.com",
+
+  headerBranding: {
+    logotype: "MD",
+    tagline: "Software Engineer",
+  },
   description:
     "Mehmet Doğan – Software Engineer. Yazılım mühendisliği, full-stack geliştirme ve teknoloji odaklı projeler.",
   logo: "/logo.png",
