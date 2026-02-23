@@ -52,12 +52,12 @@ export const auth = betterAuth({
       user: { email: string };
       url: string;
     }) => {
+      const { sendResetPasswordEmail } = await import("@/lib/email/send-reset");
+
       if (process.env.NODE_ENV === "development") {
         console.log("[Better Auth] Password reset URL for", user.email, ":", url);
-        return;
       }
-      // Production: Zoho SMTP
-      const { sendResetPasswordEmail } = await import("@/lib/email/send-reset");
+
       await sendResetPasswordEmail({ to: user.email, url });
     },
   },
