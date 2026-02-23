@@ -25,8 +25,8 @@ export async function sendResetPasswordEmail({
   
           <!-- Top Brand Bar -->
           <tr>
-            <td style="background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
-              mehmetdogandev.com
+            <td style="background-color:#2d4a7c; background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; font-size:18px; font-weight:600;">
+              <span style="color:#ffffff !important;">mehmetdogandev.com</span>
             </td>
           </tr>
   
@@ -96,8 +96,8 @@ export async function sendResetPasswordEmail({
         <!-- Sub Footer -->
         <table width="600" cellpadding="0" cellspacing="0">
           <tr>
-            <td align="center" style="padding-top:18px; font-size:12px; color:#94a3b8;">
-              © ${new Date().getFullYear()} mehmetdogandev.com — Tüm hakları saklıdır
+            <td align="center" style="padding-top:18px; font-size:12px; color:#475569;">
+              © ${new Date().getFullYear()} <span style="color:#475569;">mehmetdogandev.com</span> — Tüm hakları saklıdır
             </td>
           </tr>
         </table>

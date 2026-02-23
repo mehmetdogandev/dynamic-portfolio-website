@@ -41,8 +41,8 @@ export async function sendContactFormEmails(
         <td align="center" style="padding:40px 16px;">
           <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
             <tr>
-              <td style="background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
-                mehmetdogandev.com
+              <td style="background-color:#2d4a7c; background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; font-size:18px; font-weight:600;">
+                <span style="color:#ffffff !important;">mehmetdogandev.com</span>
               </td>
             </tr>
             <tr>
@@ -59,8 +59,8 @@ export async function sendContactFormEmails(
               </td>
             </tr>
             <tr>
-              <td style="background:#f8fafc; padding:24px 40px; text-align:center; font-size:13px; color:#64748b;">
-                © ${new Date().getFullYear()} mehmetdogandev.com
+              <td style="background:#f8fafc; padding:24px 40px; text-align:center; font-size:13px; color:#475569;">
+                © ${new Date().getFullYear()} <span style="color:#475569;">mehmetdogandev.com</span>
               </td>
             </tr>
           </table>
@@ -75,8 +75,8 @@ export async function sendContactFormEmails(
         <td align="center" style="padding:40px 16px;">
           <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
             <tr>
-              <td style="background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; color:#ffffff; font-size:18px; font-weight:600;">
-                İletişim Formu – mehmetdogandev.com
+              <td style="background-color:#2d4a7c; background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; font-size:18px; font-weight:600;">
+                <span style="color:#ffffff !important;">İletişim Formu – mehmetdogandev.com</span>
               </td>
             </tr>
             <tr>
