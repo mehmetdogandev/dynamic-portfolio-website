@@ -13,8 +13,8 @@ export const id= uuid("id").primaryKey().defaultRandom().notNull();
 export const thisProjectTimestamps = {
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").$onUpdate(() => new Date()).notNull(),
-    deletedAt: timestamp("deleted_at").defaultNow().notNull(),
-}
+    deletedAt: timestamp('deleted_at'),
+  }
 
 
 export const thisProjectAuditMeta= {

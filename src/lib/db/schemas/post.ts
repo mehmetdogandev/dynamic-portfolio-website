@@ -1,4 +1,4 @@
-import { text, boolean } from "drizzle-orm/pg-core";
+import { text, boolean, uuid } from "drizzle-orm/pg-core";
 import {
   createTable,
   id,
@@ -14,7 +14,7 @@ export const post = createTable("post", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  imageId: text("image_id")
+  imageId: uuid("image_id")
     .notNull()
     .references(() => file.id, { onDelete: "cascade" }), // Gönderinin Kapak görselinin ID'si
   content: text("content").notNull(),
@@ -25,24 +25,12 @@ export const post = createTable("post", {
 
 export const postImages = createTable("post_images", {
   id,
-  postId: text("post_id")
+  postId: uuid("post_id")
     .notNull()
     .references(() => post.id, { onDelete: "cascade" }),
-  imageId: text("image_id")
+  imageId: uuid("image_id")
     .notNull()
     .references(() => file.id, { onDelete: "cascade" }),
-  ...thisProjectTimestamps,
-  ...thisProjectAuditMeta,
-});
-
-export const postGallery = createTable("post_gallery", {
-  id,
-  postId: text("post_id")
-    .notNull()
-    .references(() => post.id, { onDelete: "cascade" }),
-  galleryId: text("gallery_id")
-    .notNull()
-    .references(() => gallery.id, { onDelete: "cascade" }),
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });
@@ -56,12 +44,25 @@ export const gallery = createTable("gallery", {
 
 export const galleryImages = createTable("gallery_images", {
   id,
-  galleryId: text("gallery_id")
+  galleryId: uuid("gallery_id")
     .notNull()
     .references(() => gallery.id, { onDelete: "cascade" }),
-  imageId: text("image_id")
+  imageId: uuid("image_id")
     .notNull()
     .references(() => file.id, { onDelete: "cascade" }),
+  ...thisProjectTimestamps,
+  ...thisProjectAuditMeta,
+});
+
+export const postGallery = createTable("post_gallery", {
+  id,
+  postId: uuid("post_id")
+    .notNull()
+    .references(() => post.id, { onDelete: "cascade" }),
+  galleryId: uuid("gallery_id")
+    .notNull()
+    .references(() => gallery.id, { onDelete: "cascade" }),
+  isActive: boolean("is_active").notNull().default(true), // Gönderinin aktif olup olmadığını belirtir. Örneğin: true
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });
