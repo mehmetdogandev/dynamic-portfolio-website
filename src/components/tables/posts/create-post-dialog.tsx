@@ -22,18 +22,24 @@ type CreatePostDialogProps = {
 
 export function CreatePostDialog({ open, onOpenChange }: CreatePostDialogProps) {
   const [name, setName] = useState("");
+  const [content, setContent] = useState("");
+  const [imageId, setImageId] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const utils = api.useUtils();
   const createMutation = api.post.create.useMutation({
     onSuccess: () => {
       void utils.post.list.invalidate();
       onOpenChange(false);
       setName("");
+      setContent("");
+      setImageId("");
+      setCategoryId("");
     },
   });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    createMutation.mutate({ name });
+    createMutation.mutate({ name, content, imageId, categoryId });
   }
 
   return (
@@ -50,6 +56,36 @@ export function CreatePostDialog({ open, onOpenChange }: CreatePostDialogProps) 
               id="create-post-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
+              disabled={createMutation.isPending}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="create-post-content">İçerik</Label>
+            <Input
+              id="create-post-content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+              disabled={createMutation.isPending}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="create-post-image-id">Kapak görseli ID (imageId)</Label>
+            <Input
+              id="create-post-image-id"
+              value={imageId}
+              onChange={(e) => setImageId(e.target.value)}
+              required
+              disabled={createMutation.isPending}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="create-post-category-id">Kategori ID (categoryId)</Label>
+            <Input
+              id="create-post-category-id"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
               required
               disabled={createMutation.isPending}
             />
