@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { submitContactForm } from "@/lib/actions/contact-actions";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Ad Soyad gerekli"),
@@ -27,6 +28,7 @@ type ContactFormValues = z.infer<typeof contactSchema>;
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
@@ -38,10 +40,15 @@ export function ContactForm() {
     },
   });
 
-  function onSubmit(values: ContactFormValues) {
-    console.log("Contact form submitted:", values);
-    setSubmitted(true);
-    form.reset();
+  async function onSubmit(values: ContactFormValues) {
+    setError(null);
+    const result = await submitContactForm(values);
+    if (result.success) {
+      setSubmitted(true);
+      form.reset();
+    } else {
+      setError(result.error ?? "Mesaj gönderilemedi. Lütfen tekrar deneyin.");
+    }
   }
 
   if (submitted) {
@@ -66,6 +73,11 @@ export function ContactForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {error && (
+          <p className="text-destructive text-sm" role="alert">
+            {error}
+          </p>
+        )}
         <FormField
           control={form.control}
           name="name"
@@ -118,8 +130,13 @@ export function ContactForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" size="lg" className="min-h-[44px] min-w-[120px]">
-          Gönder
+        <Button
+          type="submit"
+          size="lg"
+          className="min-h-[44px] min-w-[120px]"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting ? "Gönderiliyor..." : "Gönder"}
         </Button>
       </form>
     </Form>

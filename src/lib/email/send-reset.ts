@@ -1,12 +1,5 @@
 import nodemailer from "nodemailer";
-import type SMTPTransport from "nodemailer/lib/smtp-transport";
-
-const SMTP_HOST = process.env.SMTP_HOST ?? "";
-const SMTP_PORT = Number(process.env.SMTP_PORT) || 587;
-const SMTP_SECURE = process.env.SMTP_SECURE === "true";
-const SMTP_USER = process.env.SMTP_USER ?? "";
-const SMTP_PASSWORD = process.env.SMTP_PASSWORD ?? "";
-const MAIL_FROM_NAME = process.env.MAIL_FROM_NAME ?? "Mehmet Doğan";
+import { getMailTransporter } from "./get-transporter";
 
 export interface SendResetPasswordEmailParams {
   to: string;
@@ -17,39 +10,8 @@ export async function sendResetPasswordEmail({
   to,
   url,
 }: SendResetPasswordEmailParams): Promise<void> {
-  const hasSmtpConfig = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASSWORD);
-
-  let transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
-  let fromAddress: string;
-  let testAccount: nodemailer.TestAccount | undefined;
-
-  if (hasSmtpConfig) {
-    transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_SECURE,
-      requireTLS: !SMTP_SECURE,
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASSWORD,
-      },
-    });
-    fromAddress = `"${MAIL_FROM_NAME}" <${SMTP_USER}>`;
-  } else {
-    testAccount = await nodemailer.createTestAccount();
-
-    transporter = nodemailer.createTransport({
-      host: testAccount.smtp.host,
-      port: testAccount.smtp.port,
-      secure: testAccount.smtp.secure,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
-
-    fromAddress = `"${MAIL_FROM_NAME}" <${testAccount.user}>`;
-  }
+  const { transporter, fromAddress, hasSmtpConfig, testAccount } =
+    await getMailTransporter();
 
   const subject = "Şifre Sıfırlama – mehmetdogandev.com";
 

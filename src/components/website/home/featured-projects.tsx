@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 export function FeaturedProjects() {
-  const projects = getFeaturedProjects().slice(0, 4);
+  const projects = getFeaturedProjects().slice(0, 3);
 
   return (
     <section className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:py-16 lg:px-8">
@@ -15,7 +15,7 @@ export function FeaturedProjects() {
         subtitle="Son dönemde üzerinde çalıştığım projeler"
         className="mb-8"
       />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3">
         {projects.map((project) => (
           <Link key={project.id} href={`/projeler/${project.slug}`}>
             <Card className="group h-full overflow-hidden border shadow-sm transition-shadow hover:shadow-md">
@@ -25,7 +25,7 @@ export function FeaturedProjects() {
                   alt={project.imageAlt}
                   fill
                   className="object-cover transition-transform group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
               <CardContent className="p-4">

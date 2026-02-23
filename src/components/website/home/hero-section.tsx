@@ -1,10 +1,16 @@
 import { siteConfig } from "@/config/site";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { YoutubeEmbed } from "@/components/website/ui/youtube-embed";
-import { TypewriterText } from "@/components/website/ui/typewriter-text";
+import { SequentialTypewriter } from "@/components/website/ui/sequential-typewriter";
 
 export function HeroSection() {
   const { title, subtitle, youtubeVideoId, quote } = siteConfig.hero;
+
+  const heroTexts = [
+    title,
+    subtitle,
+    ...(quote ? [quote] : []),
+  ];
 
   return (
     <section className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 md:py-12">
@@ -12,21 +18,14 @@ export function HeroSection() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-8">
           <div className="order-2 md:order-1 md:col-span-1">
             <Card className="h-full border-primary/20 bg-primary/5 py-4 shadow-md md:py-6">
-              <CardHeader className="px-4 md:px-6">
-                <TypewriterText
-                  text={title}
-                  speed={90}
-                  as="h2"
-                  className="font-heading text-xl font-bold tracking-tight md:text-2xl text-foreground"
+              <CardContent className="space-y-3 px-4 md:px-6 pt-6">
+                <SequentialTypewriter
+                  texts={heroTexts}
+                  speed={55}
+                  blinkCount={3}
+                  blinkInterval={450}
+                  playKeySound={false}
                 />
-              </CardHeader>
-              <CardContent className="space-y-3 px-4 md:px-6">
-                <p className="text-muted-foreground text-sm md:text-base">{subtitle}</p>
-                {quote && (
-                  <blockquote className="border-l-2 border-primary/50 pl-4 italic text-muted-foreground text-sm">
-                    &ldquo;{quote}&rdquo;
-                  </blockquote>
-                )}
               </CardContent>
             </Card>
           </div>
