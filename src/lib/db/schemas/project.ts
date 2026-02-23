@@ -7,7 +7,6 @@ import {
 } from "@/lib/db/utils";
 import { user } from "./accounts";
 import { file } from "./file";
-import { post, postCategory } from "./post";
 
 export const projectCategory = createTable("project_category", {
   id,
@@ -25,9 +24,9 @@ export const project = createTable("project", {
     .references(() => user.id, { onDelete: "cascade" }),
   imageId: uuid("image_id")
     .notNull()
-    .references(() => file.id, { onDelete: "cascade" }), // Gönderinin Kapak görselinin ID'si
+    .references(() => file.id, { onDelete: "cascade" }), // Projenin Kapak görselinin ID'si
   content: text("content").notNull(),
-  isPublished: boolean("is_published").notNull().default(false), // Gönderinin yayınlanıp yayınlanmadığını belirtir. Örneğin: true
+  isPublished: boolean("is_published").notNull().default(false), // Projenin yayınlanıp yayınlanmadığını belirtir. Örneğin: true
   categoryId: uuid("category_id")
     .notNull()
     .references(() => projectCategory.id, { onDelete: "cascade" }),
@@ -75,7 +74,7 @@ export const projectGallery = createTable("project_gallery", {
   galleryId: uuid("gallery_id")
     .notNull()
     .references(() => gallery.id, { onDelete: "cascade" }),
-  isActive: boolean("is_active").notNull().default(true), // Gönderinin aktif olup olmadığını belirtir. Örneğin: true
+  isActive: boolean("is_active").notNull().default(true), // Projenin aktif olup olmadığını belirtir. Örneğin: true
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });
