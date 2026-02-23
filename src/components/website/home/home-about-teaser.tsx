@@ -6,7 +6,7 @@ export function HomeAboutTeaser() {
   const lead = siteConfig.about.lead;
 
   return (
-    <section className="border-t bg-muted/10 py-10 sm:py-12 lg:py-16">
+    <section className="border-t bg-muted/10 pt-6 pb-10 sm:pt-8 sm:pb-12 lg:pt-8 lg:pb-16">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <h2 className="font-heading text-2xl font-bold text-foreground md:text-3xl">

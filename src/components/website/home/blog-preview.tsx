@@ -9,7 +9,7 @@ export function BlogPreview() {
   const posts = blogPosts.slice(0, 3);
 
   return (
-    <section className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:py-16 lg:px-8">
+    <section className="container mx-auto max-w-7xl px-4 pt-10 pb-6 sm:px-6 sm:pt-12 sm:pb-8 lg:pt-16 lg:pb-10 lg:px-8">
       <SectionTitle
         title="Blog"
         subtitle="Yazılım ve kariyer üzerine yazılarım"
