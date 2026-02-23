@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   Dialog,
@@ -76,7 +77,7 @@ function userInfoToState(info: Record<string, unknown> | null): Record<string, s
   const base = emptyUserInfo();
   for (const key of Object.keys(base)) {
     const v = info[key];
-    base[key] = v != null ? String(v) : "";
+    base[key] = typeof v === "string" ? v : "";
   }
   return base;
 }
@@ -134,7 +135,7 @@ export function UpdateUserDialog({
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file?.type.startsWith("image/")) {
       setProfileFile(file);
       setProfilePreview(URL.createObjectURL(file));
     }
@@ -285,7 +286,7 @@ export function UpdateUserDialog({
                     Kamerayı kapat
                   </Button>
                 )}
-                {(profileFile || (profilePreview && !(apiUserInfo as { profilePicture?: string })?.profilePicture)) && (
+                {(profileFile != null || (profilePreview != null && !(apiUserInfo as { profilePicture?: string })?.profilePicture)) && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -312,9 +313,11 @@ export function UpdateUserDialog({
                 </div>
               )}
               {profilePreview && !cameraOpen && (
-                <img
+                <Image
                   src={profilePreview}
                   alt="Önizleme"
+                  width={96}
+                  height={96}
                   className="h-24 w-24 rounded-full object-cover border"
                 />
               )}

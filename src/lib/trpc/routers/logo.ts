@@ -58,9 +58,7 @@ export const logoRouter = createTRPCRouter({
         }
       }
       // Default order by createdAt desc if no sort specified
-      if (!orderByClause) {
-        orderByClause = desc(logo.createdAt);
-      }
+      orderByClause ??= desc(logo.createdAt);
 
       // Get paginated items
       const items = await ctx.db
@@ -146,6 +144,7 @@ export const logoRouter = createTRPCRouter({
   setActive: createPermissionProcedure("LOGO", "UPDATE")
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
+      // eslint-disable-next-line drizzle/enforce-update-with-where
       await ctx.db
         .update(logo)
         .set({ status: "PASSIVE", updatedAt: new Date() });

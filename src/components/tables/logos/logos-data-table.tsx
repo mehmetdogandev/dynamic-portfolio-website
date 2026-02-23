@@ -58,8 +58,8 @@ export function LogosDataTable() {
   const { data, isLoading } = api.logo.list.useQuery({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
-    sortBy: sortBy as string | undefined,
-    sortOrder: sortBy ? (sortOrder as "asc" | "desc") : undefined,
+    sortBy,
+    sortOrder: sortBy ? sortOrder : undefined,
     columnFilters: Object.keys(columnFilters).length > 0 ? columnFilters : undefined,
   });
 

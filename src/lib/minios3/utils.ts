@@ -120,7 +120,7 @@ function validateFile(
     throw new Error(`File type "${mimeType}" is not allowed.`);
   }
   const extension = originalName.substring(originalName.lastIndexOf(".")).toLowerCase();
-  const expectedExtensions = ALLOWED_FILE_TYPES[mimeType as AllowedMimeType];
+  const expectedExtensions = ALLOWED_FILE_TYPES[mimeType];
   if (expectedExtensions && !expectedExtensions.includes(extension)) {
     throw new Error(
       `File extension "${extension}" does not match MIME type "${mimeType}"`
@@ -223,7 +223,7 @@ export async function getFile(
     const stream = await s3Client.getObject(bucket, fileName);
     const chunks: Buffer[] = [];
     return new Promise((resolve, reject) => {
-      stream.on("data", (chunk) => chunks.push(chunk));
+      stream.on("data", (chunk: Buffer) => chunks.push(chunk));
       stream.on("end", () => resolve(Buffer.concat(chunks)));
       stream.on("error", reject);
     });
@@ -352,14 +352,14 @@ export async function getFileMetadata(
     size: stat.size,
     lastModified: stat.lastModified,
     etag: stat.etag ?? "",
-    contentType: stat.metaData?.["content-type"] ?? "application/octet-stream",
+    contentType: (stat.metaData as Record<string, string> | undefined)?.["content-type"] ?? "application/octet-stream",
   };
 }
 
 export async function listFiles(
   bucket: string = S3_BUCKET,
   prefix?: string,
-  maxFiles: number = 1000
+  maxFiles = 1000
 ): Promise<Array<{ name: string; size: number; lastModified: Date; etag: string }>> {
   const files: Array<{ name: string; size: number; lastModified: Date; etag: string }> = [];
   return new Promise((resolve, reject) => {
@@ -425,7 +425,7 @@ export async function getFileRecordByName(
 export async function getFileWithLogging(
   fileName: string,
   bucket: string = S3_BUCKET,
-  _accessType: string = "download"
+  _accessType = "download"
 ): Promise<Buffer> {
   const fileRecord = await getFileRecordByName(fileName, bucket);
   if (!fileRecord) throw new Error("File record not found");
@@ -435,7 +435,7 @@ export async function getFileWithLogging(
 export async function listFilesWithRecords(
   uploadedBy?: string,
   isPublic?: boolean,
-  limit: number = 100
+  limit = 100
 ): Promise<Array<typeof fileTable.$inferSelect>> {
   const conditions = [eq(fileTable.isDeleted, false)];
   if (uploadedBy) conditions.push(eq(fileTable.uploadedBy, uploadedBy));
@@ -455,7 +455,7 @@ export async function getFileFromS3(
   const bucketName = bucket ?? S3_BUCKET;
   const stream = await s3Client.getObject(bucketName, fileName);
   const chunks: Buffer[] = [];
-  for await (const chunk of stream) {
+  for await (const chunk of stream as AsyncIterable<Buffer>) {
     chunks.push(chunk);
   }
   return Buffer.concat(chunks);

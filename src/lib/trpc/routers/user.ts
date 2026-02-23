@@ -6,7 +6,7 @@ import {
 } from "@/lib/trpc/trpc";
 import { TRPCError } from "@trpc/server";
 import { user as userTable, userInfo as userInfoTable } from "@/lib/db/schemas";
-import { listInputSchema, type ListOutput } from "@/lib/trpc/list-schema";
+import { listInputSchema } from "@/lib/trpc/list-schema";
 import { uploadFile, getFileRecord, deleteFile } from "@/lib/minios3/utils";
 import { auth } from "@/lib/better-auth/config";
 
@@ -55,9 +55,7 @@ export const userRouter = createTRPCRouter({
         }
       }
       // Default order by createdAt desc if no sort specified
-      if (!orderByClause) {
-        orderByClause = desc(userTable.createdAt);
-      }
+      orderByClause ??= desc(userTable.createdAt);
 
       // Get paginated items with userInfo profilePicture and displayName
       const rows = await ctx.db
@@ -291,7 +289,7 @@ export const userRouter = createTRPCRouter({
         inputProfilePictureUrl ?? existingInfo?.profilePicture ?? null;
       if (!profilePictureUrl && profilePhotoBase64 && profilePhotoMimeType) {
         if (existingInfo?.profilePicture) {
-          const match = existingInfo.profilePicture.match(/\/api\/files\/([^/]+)\/view/);
+          const match = /\/api\/files\/([^/]+)\/view/.exec(existingInfo.profilePicture);
           if (match?.[1]) {
             try {
               const rec = await getFileRecord(match[1]);
@@ -359,36 +357,36 @@ export const userRouter = createTRPCRouter({
         const userName = userRow?.name ?? "";
         await ctx.db.insert(userInfoTable).values({
           userId: id,
-          lastName: (u?.lastName as string) ?? "",
-          displayName: (u?.displayName as string) ?? `${userName} ${(u?.lastName as string) ?? ""}`.trim(),
-          phoneNumber: (u?.phoneNumber as string) ?? null,
-          address: (u?.address as string) ?? null,
-          city: (u?.city as string) ?? null,
-          state: (u?.state as string) ?? null,
-          zipCode: (u?.zipCode as string) ?? null,
-          country: (u?.country as string) ?? null,
+          lastName: u?.lastName ?? "",
+          displayName: u?.displayName ?? `${userName} ${u?.lastName ?? ""}`.trim(),
+          phoneNumber: u?.phoneNumber ?? null,
+          address: u?.address ?? null,
+          city: u?.city ?? null,
+          state: u?.state ?? null,
+          zipCode: u?.zipCode ?? null,
+          country: u?.country ?? null,
           profilePicture: profilePictureUrl,
-          bio: (u?.bio as string) ?? "",
-          website: (u?.website as string) ?? "",
-          twitter: (u?.twitter as string) ?? "",
-          facebook: (u?.facebook as string) ?? "",
-          instagram: (u?.instagram as string) ?? "",
-          linkedin: (u?.linkedin as string) ?? "",
-          youtube: (u?.youtube as string) ?? "",
-          tiktok: (u?.tiktok as string) ?? "",
-          pinterest: (u?.pinterest as string) ?? "",
-          reddit: (u?.reddit as string) ?? "",
-          telegram: (u?.telegram as string) ?? "",
-          whatsapp: (u?.whatsapp as string) ?? "",
-          viber: (u?.viber as string) ?? "",
-          skype: (u?.skype as string) ?? "",
-          discord: (u?.discord as string) ?? "",
-          twitch: (u?.twitch as string) ?? "",
-          spotify: (u?.spotify as string) ?? "",
-          appleMusic: (u?.appleMusic as string) ?? "",
-          amazonMusic: (u?.amazonMusic as string) ?? "",
-          deezer: (u?.deezer as string) ?? "",
-          soundcloud: (u?.soundcloud as string) ?? "",
+          bio: u?.bio ?? "",
+          website: u?.website ?? "",
+          twitter: u?.twitter ?? "",
+          facebook: u?.facebook ?? "",
+          instagram: u?.instagram ?? "",
+          linkedin: u?.linkedin ?? "",
+          youtube: u?.youtube ?? "",
+          tiktok: u?.tiktok ?? "",
+          pinterest: u?.pinterest ?? "",
+          reddit: u?.reddit ?? "",
+          telegram: u?.telegram ?? "",
+          whatsapp: u?.whatsapp ?? "",
+          viber: u?.viber ?? "",
+          skype: u?.skype ?? "",
+          discord: u?.discord ?? "",
+          twitch: u?.twitch ?? "",
+          spotify: u?.spotify ?? "",
+          appleMusic: u?.appleMusic ?? "",
+          amazonMusic: u?.amazonMusic ?? "",
+          deezer: u?.deezer ?? "",
+          soundcloud: u?.soundcloud ?? "",
         });
       }
       return { id };
@@ -403,7 +401,7 @@ export const userRouter = createTRPCRouter({
         .where(eq(userInfoTable.userId, input.id))
         .limit(1);
       if (info?.profilePicture) {
-        const match = info.profilePicture.match(/\/api\/files\/([^/]+)\/view/);
+        const match = /\/api\/files\/([^/]+)\/view/.exec(info.profilePicture);
         if (match?.[1]) {
           try {
             const rec = await getFileRecord(match[1]);

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 import {
   Dialog,
@@ -100,7 +101,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file?.type.startsWith("image/")) {
       setProfileFile(file);
       const url = URL.createObjectURL(file);
       setProfilePreview(url);
@@ -192,16 +193,19 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     }
     const ui = {
       lastName: (userInfo.lastName ?? "").trim(),
-      phoneNumber: userInfo.phoneNumber || undefined,
-      address: userInfo.address || undefined,
-      city: userInfo.city || undefined,
-      state: userInfo.state || undefined,
-      zipCode: userInfo.zipCode || undefined,
-      country: userInfo.country || undefined,
-      bio: userInfo.bio || undefined,
-      website: userInfo.website || undefined,
+      phoneNumber: userInfo.phoneNumber !== "" ? userInfo.phoneNumber : undefined,
+      address: userInfo.address !== "" ? userInfo.address : undefined,
+      city: userInfo.city !== "" ? userInfo.city : undefined,
+      state: userInfo.state !== "" ? userInfo.state : undefined,
+      zipCode: userInfo.zipCode !== "" ? userInfo.zipCode : undefined,
+      country: userInfo.country !== "" ? userInfo.country : undefined,
+      bio: userInfo.bio !== "" ? userInfo.bio : undefined,
+      website: userInfo.website !== "" ? userInfo.website : undefined,
       ...Object.fromEntries(
-        SOCIAL_FIELDS.map((f) => [f.key, userInfo[f.key] || undefined])
+        SOCIAL_FIELDS.map((f) => {
+          const value = userInfo[f.key];
+          return [f.key, value !== "" ? value : undefined];
+        })
       ),
     };
     createMutation.mutate({
@@ -313,7 +317,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
                   Kamerayı kapat
                 </Button>
               )}
-              {(profilePreview || cameraOpen) && (
+              {(profilePreview != null || cameraOpen) && (
                 <Button
                   type="button"
                   variant="ghost"
@@ -343,9 +347,11 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               </div>
             )}
             {profilePreview && !cameraOpen && (
-              <img
+              <Image
                 src={profilePreview}
                 alt="Önizleme"
+                width={96}
+                height={96}
                 className="h-24 w-24 rounded-full object-cover border"
               />
             )}
@@ -470,7 +476,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
             </>
           )}
 
-          {(validationError || createMutation.error) && (
+          {(validationError != null || createMutation.error != null) && (
             <p className="text-sm text-destructive">
               {validationError ?? getErrorMessage(createMutation.error!)}
             </p>

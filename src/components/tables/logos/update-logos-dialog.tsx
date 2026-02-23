@@ -39,7 +39,9 @@ export function UpdateLogosDialog({ logoId, open, onOpenChange }: UpdateLogosDia
     if (logo) {
       setName(logo.name);
       setPath(logo.path);
-      setStatus(logo.status as "ACTIVE" | "PASSIVE");
+      if (logo.status === "ACTIVE" || logo.status === "PASSIVE") {
+        setStatus(logo.status);
+      }
     }
   }, [logo]);
 

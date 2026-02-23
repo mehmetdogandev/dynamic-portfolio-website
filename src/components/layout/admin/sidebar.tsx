@@ -49,7 +49,7 @@ export function AdminSidebar() {
   const isPageVisible = (page: string) => {
     if (page === "HOME_PAGE") return true;
     if (isLoading) return false;
-    return permissions?.[page as keyof typeof permissions] === true;
+    return permissions?.[page] === true;
   };
 
   return (

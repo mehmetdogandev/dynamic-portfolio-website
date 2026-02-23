@@ -52,9 +52,7 @@ export const postRouter = createTRPCRouter({
         }
       }
       // Default order by createdAt desc if no sort specified
-      if (!orderByClause) {
-        orderByClause = desc(post.createdAt);
-      }
+      orderByClause ??= desc(post.createdAt);
 
       // Get paginated items
       const items = await ctx.db

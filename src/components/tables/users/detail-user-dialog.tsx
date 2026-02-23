@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -53,7 +54,7 @@ export function DetailUserDialog({
   const socialLinks = userInfo
     ? SOCIAL_FIELDS.filter((f) => {
         const v = (userInfo as Record<string, unknown>)[f.key];
-        return v != null && String(v).trim() !== "";
+        return typeof v === "string" && v.trim() !== "";
       })
     : [];
 
@@ -73,9 +74,15 @@ export function DetailUserDialog({
             {userInfo?.profilePicture && (
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-1">Profil fotoğrafı</p>
-                <img
-                  src={userInfo.profilePicture.startsWith("/") ? userInfo.profilePicture : `/${userInfo.profilePicture}`}
+                <Image
+                  src={
+                    userInfo.profilePicture.startsWith("/")
+                      ? userInfo.profilePicture
+                      : `/${userInfo.profilePicture}`
+                  }
                   alt="Profil"
+                  width={96}
+                  height={96}
                   className="h-24 w-24 rounded-full object-cover border"
                 />
               </div>
@@ -183,7 +190,8 @@ export function DetailUserDialog({
                 <ul className="flex flex-wrap gap-2">
                   {socialLinks.map(({ key, label }) => {
                     const url = (userInfo as Record<string, unknown>)?.[key];
-                    const href = typeof url === "string" && (url.startsWith("http") || url.startsWith("//")) ? url : (url ? `https://${String(url).replace(/^https?:\/\//, "")}` : "");
+                    const urlStr = typeof url === "string" ? url : "";
+                    const href = urlStr.startsWith("http") || urlStr.startsWith("//") ? urlStr : urlStr !== "" ? `https://${urlStr.replace(/^https?:\/\//, "")}` : "";
                     return (
                       <li key={key}>
                         <a

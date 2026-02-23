@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, sql, count, asc, desc, and, ilike, or } from "drizzle-orm";
+import { eq, count, asc, desc, and, ilike } from "drizzle-orm";
 import {
   createTRPCRouter,
   createPermissionProcedure,
@@ -40,7 +40,10 @@ export const roleRouter = createTRPCRouter({
             } else if (key === "description") {
               conditions.push(ilike(roleTable.description, `%${value}%`));
             } else if (key === "page") {
-              conditions.push(eq(roleTable.page, value as any));
+              const parsed = pageSchema.safeParse(value);
+              if (parsed.success) {
+                conditions.push(eq(roleTable.page, parsed.data));
+              }
             }
           }
         }
@@ -69,9 +72,7 @@ export const roleRouter = createTRPCRouter({
         }
       }
       // Default order by createdAt desc if no sort specified
-      if (!orderByClause) {
-        orderByClause = desc(roleTable.createdAt);
-      }
+      orderByClause ??= desc(roleTable.createdAt);
 
       // Get paginated items
       const items = await ctx.db

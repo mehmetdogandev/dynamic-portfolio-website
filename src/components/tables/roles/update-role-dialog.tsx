@@ -55,7 +55,7 @@ export function UpdateRoleDialog({ roleId, open, onOpenChange }: UpdateRoleDialo
       setDescription(role.description);
       setPage(role.page);
       setPermissions(
-        Array.isArray(role.permissions) ? (role.permissions as Permission[]) : []
+        Array.isArray(role.permissions) ? role.permissions : []
       );
     }
   }, [role]);

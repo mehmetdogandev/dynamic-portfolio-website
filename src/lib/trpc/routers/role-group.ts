@@ -52,9 +52,7 @@ export const roleGroupRouter = createTRPCRouter({
         }
       }
       // Default order by createdAt desc if no sort specified
-      if (!orderByClause) {
-        orderByClause = desc(roleGroupTable.createdAt);
-      }
+      orderByClause ??= desc(roleGroupTable.createdAt);
 
       // Get paginated items
       const items = await ctx.db

@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
 const SMTP_HOST = process.env.SMTP_HOST ?? "";
 const SMTP_PORT = Number(process.env.SMTP_PORT) || 465;
@@ -18,7 +19,7 @@ export async function sendResetPasswordEmail({
 }: SendResetPasswordEmailParams): Promise<void> {
   const hasSmtpConfig = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASSWORD);
 
-  let transporter: nodemailer.Transporter;
+  let transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
   let fromAddress: string;
   let testAccount: nodemailer.TestAccount | undefined;
 
