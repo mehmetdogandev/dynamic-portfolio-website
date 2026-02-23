@@ -14,10 +14,9 @@ import {
     type VisibilityState,
     type PaginationState,
     type Row,
-    type Column,
     type Table as ReactTable,
 } from "@tanstack/react-table";
-import React, { useState, useMemo, useEffect, useRef, useCallback, Children, isValidElement } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -266,48 +265,6 @@ export function DataTable<TData, TValue>({
         onGlobalFilterChange,
         manualFiltering: !!onGlobalFilterChange,
     });
-
-
-    const getColumnLabel = (column: Column<TData, unknown>) => {
-        const meta = column.columnDef.meta as
-            | {
-                columnLabel?: string;
-            }
-            | undefined;
-
-        if (meta?.columnLabel) {
-            return meta.columnLabel;
-        }
-
-        const headerContent = column.columnDef.header;
-
-        if (typeof headerContent === "string") {
-            return headerContent;
-        }
-
-        const staticHeader: React.ReactNode | undefined =
-            typeof headerContent === "function"
-                ? undefined
-                : (headerContent as React.ReactNode);
-
-        if (staticHeader && isValidElement(staticHeader)) {
-            const headerElement = staticHeader as React.ReactElement<{
-                children?: React.ReactNode;
-            }>;
-            const textContent = Children.toArray(
-                headerElement.props?.children
-            )
-                .filter((child): child is string => typeof child === "string")
-                .join(" ")
-                .trim();
-
-            if (textContent) {
-                return textContent;
-            }
-        }
-
-        return column.id;
-    };
 
 
     return (

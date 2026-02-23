@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { experiences } from "@/data/mock-experiences";
-import { cn } from "@/lib/utils";
 
 function formatDate(dateStr: string) {
   if (dateStr === "Devam") return "Devam";
