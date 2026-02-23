@@ -1,4 +1,4 @@
-import { text, boolean, uuid } from "drizzle-orm/pg-core";
+import { text, boolean, uuid, integer } from "drizzle-orm/pg-core";
 import {
   createTable,
   id,
@@ -7,8 +7,17 @@ import {
 } from "@/lib/db/utils";
 import { user } from "./accounts";
 import { file } from "./file";
+import { post, postCategory } from "./post";
 
-export const post = createTable("post", {
+export const projectCategory = createTable("project_category", {
+  id,
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  ...thisProjectTimestamps,
+  ...thisProjectAuditMeta,
+})
+
+export const project = createTable("project", {
   id,
   name: text("name").notNull(),
   userId: text("user_id")
@@ -19,15 +28,19 @@ export const post = createTable("post", {
     .references(() => file.id, { onDelete: "cascade" }), // Gönderinin Kapak görselinin ID'si
   content: text("content").notNull(),
   isPublished: boolean("is_published").notNull().default(false), // Gönderinin yayınlanıp yayınlanmadığını belirtir. Örneğin: true
+  categoryId: uuid("category_id")
+    .notNull()
+    .references(() => projectCategory.id, { onDelete: "cascade" }),
+  order: integer("order").notNull().default(0),
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });
 
-export const postImages = createTable("post_images", {
+export const projectImages = createTable("project_images", {
   id,
-  postId: uuid("post_id")
+  projectId: uuid("project_id")
     .notNull()
-    .references(() => post.id, { onDelete: "cascade" }),
+    .references(() => project.id, { onDelete: "cascade" }),
   imageId: uuid("image_id")
     .notNull()
     .references(() => file.id, { onDelete: "cascade" }),
@@ -54,11 +67,11 @@ export const galleryImages = createTable("gallery_images", {
   ...thisProjectAuditMeta,
 });
 
-export const postGallery = createTable("post_gallery", {
+export const projectGallery = createTable("project_gallery", {
   id,
-  postId: uuid("post_id")
+  projectId: uuid("project_id")
     .notNull()
-    .references(() => post.id, { onDelete: "cascade" }),
+    .references(() => project.id, { onDelete: "cascade" }),
   galleryId: uuid("gallery_id")
     .notNull()
     .references(() => gallery.id, { onDelete: "cascade" }),

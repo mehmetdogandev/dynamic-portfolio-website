@@ -15,11 +15,6 @@ import { logger } from "@/lib/logger";
 const S3_BUCKET = process.env.S3_BUCKET_NAME ?? "uploads";
 const S3_REGION = process.env.S3_REGION ?? "us-east-1";
 
-/** Default year for file table (schema requires it; no partitioning) */
-function getDefaultYear(): string {
-  return new Date().getFullYear().toString();
-}
-
 /**
  * Supported file types and their MIME types
  */
@@ -83,7 +78,6 @@ export interface UploadResult {
 
 export interface UploadFileOptions extends UploadConfig {
   uploadedBy?: string;
-  organizationId?: string;
   isPublic?: boolean;
 }
 
@@ -145,7 +139,6 @@ export async function uploadFile(
     const bucket = config.bucket ?? S3_BUCKET;
     const fileName =
       config.customFileName ?? generateFileName(originalName, config.prefix);
-    const year = getDefaultYear();
 
     const bucketExists = await s3Client.bucketExists(bucket);
     if (!bucketExists) {
@@ -176,9 +169,7 @@ export async function uploadFile(
         etag: uploadResult.etag ?? "",
         prefix: config.prefix ?? null,
         uploadedBy: config.uploadedBy ?? null,
-        organizationId: config.organizationId ?? null,
         isPublic: config.isPublic ?? false,
-        year,
       })
       .returning({ id: fileTable.id });
 
@@ -442,13 +433,11 @@ export async function getFileWithLogging(
 }
 
 export async function listFilesWithRecords(
-  organizationId?: string,
   uploadedBy?: string,
   isPublic?: boolean,
   limit: number = 100
 ): Promise<Array<typeof fileTable.$inferSelect>> {
   const conditions = [eq(fileTable.isDeleted, false)];
-  if (organizationId) conditions.push(eq(fileTable.organizationId, organizationId));
   if (uploadedBy) conditions.push(eq(fileTable.uploadedBy, uploadedBy));
   if (isPublic !== undefined) conditions.push(eq(fileTable.isPublic, isPublic));
   return db

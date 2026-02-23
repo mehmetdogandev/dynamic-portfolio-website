@@ -25,6 +25,7 @@ export const pageEnum=pgEnum('admin_page_enum',[
    'USER_ROLE_GROUPS',
    'LOGO',
    'POST',
+   'PROJECT',
 ]);
 
 

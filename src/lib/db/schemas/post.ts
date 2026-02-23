@@ -1,4 +1,4 @@
-import { text, boolean, uuid } from "drizzle-orm/pg-core";
+import { text, boolean, uuid, integer } from "drizzle-orm/pg-core";
 import {
   createTable,
   id,
@@ -7,6 +7,13 @@ import {
 } from "@/lib/db/utils";
 import { user } from "./accounts";
 import { file } from "./file";
+
+export const postCategory = createTable("post_category", {
+  id,
+  name: text("name").notNull(),
+  ...thisProjectTimestamps,
+  ...thisProjectAuditMeta,
+});
 
 export const post = createTable("post", {
   id,
@@ -19,6 +26,10 @@ export const post = createTable("post", {
     .references(() => file.id, { onDelete: "cascade" }), // Gönderinin Kapak görselinin ID'si
   content: text("content").notNull(),
   isPublished: boolean("is_published").notNull().default(false), // Gönderinin yayınlanıp yayınlanmadığını belirtir. Örneğin: true
+  categoryId: uuid("category_id")
+    .notNull()
+    .references(() => postCategory.id, { onDelete: "cascade" }),
+  order: integer("order").notNull().default(0),
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });
