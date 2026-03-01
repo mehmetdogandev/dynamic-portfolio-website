@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { logEtherealPreview } from "./log-ethereal-preview";
 import { getMailTransporter } from "./get-transporter";
 
 export interface ContactFormData {
@@ -121,18 +121,20 @@ export async function sendContactFormEmails(
     }
 
     if (!hasSmtpConfig && testAccount) {
-      console.log("=== Ethereal test mail (contact form) gönderildi ===");
-      const autoReplyUrl = nodemailer.getTestMessageUrl(autoReplyInfo);
-      if (autoReplyUrl) {
-        console.log("[1] Otomatik yanıt önizleme:", autoReplyUrl);
-      }
+      logEtherealPreview({
+        info: autoReplyInfo,
+        to: data.email,
+        sender: fromAddress,
+        context: "İletişim formu – otomatik yanıt",
+      });
       if (adminInfo) {
-        const adminUrl = nodemailer.getTestMessageUrl(adminInfo);
-        if (adminUrl) {
-          console.log("[2] Admin bildirimi önizleme:", adminUrl);
-        }
+        logEtherealPreview({
+          info: adminInfo,
+          to: recipients.join(", "),
+          sender: fromAddress,
+          context: "İletişim formu – admin bildirimi",
+        });
       }
-      console.log("====================================");
     }
 
     return { success: true };

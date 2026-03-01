@@ -16,6 +16,7 @@ import {
   userRoleTable,
   userRoleGroupTable,
   userInfo as userInfoTable,
+  user,
 } from "@/lib/db/schemas";
 import { closeDb } from "@/lib/db";
 
@@ -50,6 +51,7 @@ async function ensureUser(
     const userId = result?.user?.id;
     if (userId) {
       console.log("[seed] Created user:", email);
+      await db.update(user).set({ emailVerified: true }).where(eq(user.id, userId));
       return userId;
     }
   } catch (err) {
@@ -61,7 +63,10 @@ async function ensureUser(
           where: (users, { eq }) => eq(users.email, email),
           columns: { id: true },
         });
-        if (existing) return existing.id;
+        if (existing) {
+          await db.update(user).set({ emailVerified: true }).where(eq(user.id, existing.id));
+          return existing.id;
+        }
       } catch {
         // ignore
       }

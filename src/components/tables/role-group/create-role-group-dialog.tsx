@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +27,12 @@ export function CreateRoleGroupDialog({ open, onOpenChange }: CreateRoleGroupDia
   const [description, setDescription] = useState("");
   const [roleIds, setRoleIds] = useState<string[]>([]);
   const { data: roles, isLoading: rolesLoading } = api.role.list.useQuery({ page: 1, limit: 100 }, { enabled: open });
+  const router = useRouter();
   const utils = api.useUtils();
   const createMutation = api.roleGroup.create.useMutation({
     onSuccess: () => {
       void utils.roleGroup.list.invalidate();
+      router.refresh();
       onOpenChange(false);
       setName("");
       setDescription("");

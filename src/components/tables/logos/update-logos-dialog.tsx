@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -33,12 +34,14 @@ export function UpdateLogosDialog({ logoId, open, onOpenChange }: UpdateLogosDia
     { id: logoId },
     { enabled: open && !!logoId }
   );
+  const router = useRouter();
   const utils = api.useUtils();
   const updateMutation = api.logo.update.useMutation({
     onSuccess: () => {
       void utils.logo.list.invalidate();
       void utils.logo.getActivePublic.invalidate();
       void utils.logo.getById.invalidate({ id: logoId });
+      router.refresh();
       onOpenChange(false);
     },
   });

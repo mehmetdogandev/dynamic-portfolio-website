@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -103,11 +104,13 @@ export function UpdateUserDialog({
   );
   const apiUserInfo = user && "userInfo" in user ? user.userInfo : null;
 
+  const router = useRouter();
   const utils = api.useUtils();
   const updateMutation = api.user.update.useMutation({
     onSuccess: () => {
       void utils.user.list.invalidate();
       void utils.user.getById.invalidate({ id: userId });
+      router.refresh();
       onOpenChange(false);
     },
   });

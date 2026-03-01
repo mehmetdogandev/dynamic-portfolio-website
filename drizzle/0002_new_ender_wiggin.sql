@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "last_change_email_sent_at" timestamp;

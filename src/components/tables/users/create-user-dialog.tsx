@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -83,10 +84,12 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
   const streamRef = useRef<MediaStream | null>(null);
   const [cameraOpen, setCameraOpen] = useState(false);
 
+  const router = useRouter();
   const utils = api.useUtils();
   const createMutation = api.user.create.useMutation({
     onSuccess: () => {
       void utils.user.list.invalidate();
+      router.refresh();
       onOpenChange(false);
       setStep(0);
       setName("");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/trpc/react";
 
 export function LatestPost() {
@@ -20,10 +20,11 @@ export function LatestPost() {
   const [imageId, setImageId] = useState("");
   const [categoryId, setCategoryId] = useState("");
 
+  const router = useRouter();
   const createPost = api.post.create.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
-
+      router.refresh();
       // formu sıfırla
       setName("");
       setContent("");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import type { ColumnDef, SortingState, PaginationState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Eye, Trash2, Plus } from "lucide-react";
@@ -61,10 +62,12 @@ export function UserRoleDataTable() {
     columnFilters: Object.keys(columnFilters).length > 0 ? columnFilters : undefined,
   });
 
+  const router = useRouter();
   const utils = api.useUtils();
   const deleteMutation = api.userRole.delete.useMutation({
     onSuccess: () => {
       void utils.userRole.list.invalidate();
+      router.refresh();
       setDeleteId(null);
     },
   });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -25,10 +26,12 @@ export function CreatePostDialog({ open, onOpenChange }: CreatePostDialogProps) 
   const [content, setContent] = useState("");
   const [imageId, setImageId] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const router = useRouter();
   const utils = api.useUtils();
   const createMutation = api.post.create.useMutation({
     onSuccess: () => {
       void utils.post.list.invalidate();
+      router.refresh();
       onOpenChange(false);
       setName("");
       setContent("");

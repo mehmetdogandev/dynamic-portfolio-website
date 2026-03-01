@@ -14,7 +14,26 @@ import {
 } from "@/lib/db/schemas";
 import { uploadFile, getFileRecord, deleteFile } from "@/lib/minios3/utils";
 
+const CHANGE_EMAIL_COOLDOWN_SECONDS = 90;
+
 export const profileRouter = createTRPCRouter({
+  getChangeEmailCooldown: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+    const [row] = await ctx.db
+      .select({ lastChangeEmailSentAt: userTable.lastChangeEmailSentAt })
+      .from(userTable)
+      .where(eq(userTable.id, userId))
+      .limit(1);
+    const sentAt = row?.lastChangeEmailSentAt;
+    if (!sentAt) return { canSend: true, retryAfterSeconds: 0 };
+    const elapsed = (Date.now() - sentAt.getTime()) / 1000;
+    const remaining = Math.ceil(CHANGE_EMAIL_COOLDOWN_SECONDS - elapsed);
+    return {
+      canSend: remaining <= 0,
+      retryAfterSeconds: Math.max(0, remaining),
+    };
+  }),
+
   getMyRoles: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 

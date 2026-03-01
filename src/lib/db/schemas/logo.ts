@@ -12,6 +12,13 @@ export const logoStatusEnum = pgEnum("logoStatusEnum", [
   "PASSIVE",
 ]);
 
+export const logoTypeEnum = pgEnum("logoTypeEnum", [
+  "WEBSITE_LOGO",
+  "WEBSITE_FAVICON",
+  "EMAIL_LOGO",
+  "EMAIL_FAVICON",
+]);
+
 /*
  * This table is website active and passive logo
  */
@@ -19,6 +26,9 @@ export const logo = createTable("logo", {
   id,
   name: text("name").notNull(),
   fileId: uuid("file_id").references(() => file.id),
+  type: logoTypeEnum("type")
+    .notNull()
+    .default("WEBSITE_LOGO"),
   status: logoStatusEnum("status")
     .notNull()
     .default("ACTIVE"),

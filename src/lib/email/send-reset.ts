@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { logEtherealPreview } from "./log-ethereal-preview";
 import { getMailTransporter } from "./get-transporter";
 
 export interface SendResetPasswordEmailParams {
@@ -116,12 +116,11 @@ export async function sendResetPasswordEmail({
   });
 
   if (!hasSmtpConfig && testAccount) {
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-
-    console.log("=== Ethereal test mail gönderildi ===");
-    if (previewUrl) {
-      console.log("Önizleme URL'si:", previewUrl);
-    }
-    console.log("====================================");
+    logEtherealPreview({
+      info,
+      to,
+      sender: fromAddress,
+      context: "Şifre sıfırlama",
+    });
   }
 }

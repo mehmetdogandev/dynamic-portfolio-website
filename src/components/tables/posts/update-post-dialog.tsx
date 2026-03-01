@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -24,11 +25,13 @@ type UpdatePostDialogProps = {
 export function UpdatePostDialog({ postId, open, onOpenChange }: UpdatePostDialogProps) {
   const [name, setName] = useState("");
   const { data: post, isLoading } = api.post.getById.useQuery({ id: postId }, { enabled: open && !!postId });
+  const router = useRouter();
   const utils = api.useUtils();
   const updateMutation = api.post.update.useMutation({
     onSuccess: () => {
       void utils.post.list.invalidate();
       void utils.post.getById.invalidate({ id: postId });
+      router.refresh();
       onOpenChange(false);
     },
   });

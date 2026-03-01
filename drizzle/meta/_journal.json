@@ -15,6 +15,20 @@
       "when": 1772341156520,
       "tag": "0001_spotty_synch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772343330517,
+      "tag": "0002_new_ender_wiggin",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772343927597,
+      "tag": "0003_curved_cable",
+      "breakpoints": true
     }
   ]
 }

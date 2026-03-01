@@ -43,6 +43,36 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      const { sendVerificationEmail } = await import(
+        "@/lib/email/send-verification-email"
+      );
+      await sendVerificationEmail({ to: user.email, url });
+    },
+  },
+  user: {
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async ({
+        user,
+        newEmail,
+        url,
+      }: {
+        user: { id: string; email: string };
+        newEmail: string;
+        url: string;
+      }) => {
+        const { sendChangeEmailVerification } = await import(
+          "@/lib/email/send-change-email"
+        );
+        if (process.env.NODE_ENV === "development") {
+          console.log("[Better Auth] Change email verification for", newEmail, ":", url);
+        }
+        await sendChangeEmailVerification({ to: newEmail, url, userId: user.id });
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({

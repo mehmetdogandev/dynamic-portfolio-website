@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -28,11 +29,13 @@ export function CreateLogosDialog({ open, onOpenChange }: CreateLogosDialogProps
   const [croppedBase64, setCroppedBase64] = useState<string | null>(null);
   const [croppedMime, setCroppedMime] = useState<string>("image/png");
   const imageEditRef = useRef<ImageEditHandle>(null);
+  const router = useRouter();
   const utils = api.useUtils();
   const createMutation = api.logo.create.useMutation({
     onSuccess: () => {
       void utils.logo.list.invalidate();
       void utils.logo.getActivePublic.invalidate();
+      router.refresh();
       onOpenChange(false);
       resetForm();
     },

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -40,11 +41,13 @@ export function UpdateRoleDialog({ roleId, open, onOpenChange }: UpdateRoleDialo
   const [page, setPage] = useState<string>(PAGES[0]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const { data: role, isLoading } = api.role.getById.useQuery({ id: roleId }, { enabled: open && !!roleId });
+  const router = useRouter();
   const utils = api.useUtils();
   const updateMutation = api.role.update.useMutation({
     onSuccess: () => {
       void utils.role.list.invalidate();
       void utils.role.getById.invalidate({ id: roleId });
+      router.refresh();
       onOpenChange(false);
     },
   });

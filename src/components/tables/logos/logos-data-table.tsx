@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import type { ColumnDef, SortingState, PaginationState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Eye, Pencil, Trash2, Plus, Star } from "lucide-react";
@@ -64,16 +65,19 @@ export function LogosDataTable() {
     columnFilters: Object.keys(columnFilters).length > 0 ? columnFilters : undefined,
   });
 
+  const router = useRouter();
   const utils = api.useUtils();
   const deleteMutation = api.logo.delete.useMutation({
     onSuccess: () => {
       void utils.logo.list.invalidate();
+      router.refresh();
       setDeleteId(null);
     },
   });
   const setActiveMutation = api.logo.setActive.useMutation({
     onSuccess: () => {
       void utils.logo.list.invalidate();
+      router.refresh();
     },
   });
 

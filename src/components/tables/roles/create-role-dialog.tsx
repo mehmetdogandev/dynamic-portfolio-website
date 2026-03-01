@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -38,10 +39,12 @@ export function CreateRoleDialog({ open, onOpenChange }: CreateRoleDialogProps) 
   const [description, setDescription] = useState("");
   const [page, setPage] = useState<string>(PAGES[0]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
+  const router = useRouter();
   const utils = api.useUtils();
   const createMutation = api.role.create.useMutation({
     onSuccess: () => {
       void utils.role.list.invalidate();
+      router.refresh();
       onOpenChange(false);
       setName("");
       setDescription("");
