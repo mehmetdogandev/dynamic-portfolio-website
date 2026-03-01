@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { api } from "@/lib/trpc/react";
 import { NavLinks } from "@/components/website/ui/nav-links";
 import { SocialLinks } from "@/components/website/ui/social-links";
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,7 @@ import {
 } from "@/components/ui/sheet";
 export function WebsiteHeader() {
   const [open, setOpen] = useState(false);
+  const { data: logo } = api.logo.getActivePublic.useQuery();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -25,9 +28,21 @@ export function WebsiteHeader() {
           className="flex shrink-0 items-center gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           aria-label="Mehmet Doğan ana sayfa"
         >
-          <span className="font-mono text-xl font-bold tracking-tight text-primary">
-            {siteConfig.headerBranding.logotype}
-          </span>
+          {logo?.imageUrl ? (
+            <div className="relative h-8 w-24">
+              <Image
+                src={logo.imageUrl}
+                alt={logo.name}
+                fill
+                className="object-contain object-left"
+                unoptimized
+              />
+            </div>
+          ) : (
+            <span className="font-mono text-xl font-bold tracking-tight text-primary">
+              LOGO
+            </span>
+          )}
           <span className="hidden text-muted-foreground sm:inline" aria-hidden>
             ·
           </span>

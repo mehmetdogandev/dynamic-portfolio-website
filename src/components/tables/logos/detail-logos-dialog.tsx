@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -31,10 +32,20 @@ export function DetailLogosDialog({ logoId, open, onOpenChange }: DetailLogosDia
               <dt className="font-medium text-muted-foreground">Ad</dt>
               <dd>{logo.name}</dd>
             </div>
-            <div>
-              <dt className="font-medium text-muted-foreground">Yol</dt>
-              <dd className="font-mono text-xs break-all">{logo.path}</dd>
-            </div>
+            {logo.fileId && (
+              <div>
+                <dt className="font-medium text-muted-foreground">Görsel</dt>
+                <dd className="relative h-16 w-24">
+                  <Image
+                    src={`/api/files/${logo.fileId}/view`}
+                    alt={logo.name}
+                    fill
+                    className="object-contain object-left"
+                    unoptimized
+                  />
+                </dd>
+              </div>
+            )}
             <div>
               <dt className="font-medium text-muted-foreground">Durum</dt>
               <dd>{logo.status}</dd>

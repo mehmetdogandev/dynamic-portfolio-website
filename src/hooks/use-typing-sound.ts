@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export function useTypingSound(): () => void {
   const audioContextRef = useRef<AudioContext | null>(null);

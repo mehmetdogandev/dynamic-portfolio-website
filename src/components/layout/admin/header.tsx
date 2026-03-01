@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PAGE_TO_TITLE, PAGE_TO_HREF } from "@/lib/rbac/navigation";
+import { getAvatarUrl } from "@/lib/utils/avatar";
 
 export function AdminHeader() {
   const { data: session } = authClient.useSession();
@@ -104,7 +105,7 @@ export function AdminHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-9 w-9 rounded-full">
               <Avatar className="h-9 w-9">
-                <AvatarImage src={session?.user?.image ?? undefined} alt={session?.user?.name ?? ""} />
+                <AvatarImage src={getAvatarUrl(session?.user?.image)} alt={session?.user?.name ?? ""} />
                 <AvatarFallback>
                   {session?.user?.name?.slice(0, 2).toUpperCase() ?? "?"}
                 </AvatarFallback>
@@ -122,7 +123,10 @@ export function AdminHeader() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/admin-panel">Profil / Ana sayfa</Link>
+              <Link href="/admin-panel/profile">Profil</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/admin-panel/settings">Ayarlar</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut}>Çıkış yap</DropdownMenuItem>

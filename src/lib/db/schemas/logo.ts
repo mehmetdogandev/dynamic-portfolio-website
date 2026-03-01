@@ -1,11 +1,12 @@
-import { pgEnum, text } from "drizzle-orm/pg-core";
+import { pgEnum, text, uuid } from "drizzle-orm/pg-core";
 import {
   createTable,
   id,
   thisProjectTimestamps,
   thisProjectAuditMeta,
 } from "@/lib/db/utils";
-
+import { file } from "./file";
+  
 export const logoStatusEnum = pgEnum("logoStatusEnum", [
   "ACTIVE",
   "PASSIVE",
@@ -17,12 +18,10 @@ export const logoStatusEnum = pgEnum("logoStatusEnum", [
 export const logo = createTable("logo", {
   id,
   name: text("name").notNull(),
-  path: text("path").notNull(),
-
+  fileId: uuid("file_id").references(() => file.id),
   status: logoStatusEnum("status")
     .notNull()
     .default("ACTIVE"),
-
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });

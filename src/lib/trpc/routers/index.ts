@@ -7,6 +7,7 @@ import { roleGroupRouter } from "./role-group";
 import { userRoleRouter } from "./user-role";
 import { userRoleGroupRouter } from "./user-role-group";
 import { logoRouter } from "./logo";
+import { profileRouter } from "./profile";
 
 export const appRouter = createTRPCRouter({
   post: postRouter,
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   userRole: userRoleRouter,
   userRoleGroup: userRoleGroupRouter,
   logo: logoRouter,
+  profile: profileRouter,
 });
 
 export type AppRouter = typeof appRouter;

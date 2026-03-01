@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useMemo } from "react";
 import type { ColumnDef, SortingState, PaginationState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ import { DataTableWrapper, createActionColumn } from "@/components/ui/data-table
 type Logo = {
   id: string;
   name: string;
-  path: string;
+  fileId: string | null;
   status: string;
   createdAt: Date;
   updatedAt: Date;
@@ -89,16 +90,27 @@ export function LogosDataTable() {
         },
       },
       {
-        accessorKey: "path",
-        header: "Yol",
-        enableSorting: true,
-        enableColumnFilter: true,
+        accessorKey: "fileId",
+        header: "Görsel",
+        enableSorting: false,
+        enableColumnFilter: false,
         meta: {
-          columnLabel: "Yol",
+          columnLabel: "Görsel",
         },
         cell: ({ getValue }) => {
-          const value = getValue() as string;
-          return <div className="max-w-[200px] truncate font-mono text-xs">{value}</div>;
+          const fileId = getValue() as string | null;
+          if (!fileId) return <span className="text-muted-foreground text-xs">-</span>;
+          return (
+            <div className="relative h-8 w-20">
+              <Image
+                src={`/api/files/${fileId}/view`}
+                alt="Logo"
+                fill
+                className="object-contain object-left"
+                unoptimized
+              />
+            </div>
+          );
         },
       },
       {

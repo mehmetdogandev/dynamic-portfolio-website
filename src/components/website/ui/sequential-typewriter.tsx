@@ -78,6 +78,7 @@ export function SequentialTypewriter({
     blinkInterval,
     texts.length,
     isComplete,
+    enableKeySound,
   ]);
 
   if (texts.length === 0) return null;

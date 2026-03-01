@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImageEdit, type ImageEditHandle } from "@/components/ui/image-edit";
 import { api } from "@/lib/trpc/react";
 import { getErrorMessage } from "@/lib/trpc/error-messages";
 
@@ -22,48 +23,111 @@ type CreateLogosDialogProps = {
 
 export function CreateLogosDialog({ open, onOpenChange }: CreateLogosDialogProps) {
   const [name, setName] = useState("");
-  const [path, setPath] = useState("");
   const [status, setStatus] = useState<"ACTIVE" | "PASSIVE">("PASSIVE");
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+  const [croppedBase64, setCroppedBase64] = useState<string | null>(null);
+  const [croppedMime, setCroppedMime] = useState<string>("image/png");
+  const imageEditRef = useRef<ImageEditHandle>(null);
   const utils = api.useUtils();
   const createMutation = api.logo.create.useMutation({
     onSuccess: () => {
       void utils.logo.list.invalidate();
+      void utils.logo.getActivePublic.invalidate();
       onOpenChange(false);
-      setName("");
-      setPath("");
-      setStatus("PASSIVE");
+      resetForm();
     },
   });
 
+  function resetForm() {
+    setName("");
+    setStatus("PASSIVE");
+    setPreviewSrc(null);
+    setCroppedBase64(null);
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file?.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setPreviewSrc(result);
+      setCroppedBase64(null);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = useCallback((base64: string, mimeType: string) => {
+    setCroppedBase64(base64);
+    setCroppedMime(mimeType);
+  }, []);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    createMutation.mutate({ name, path, status });
+    if (croppedBase64) {
+      createMutation.mutate({
+        name,
+        imageBase64: croppedBase64,
+        imageMimeType: croppedMime,
+        status,
+      });
+    } else {
+      void imageEditRef.current?.getCroppedImage().then((result) => {
+        if (result) {
+          createMutation.mutate({
+            name,
+            imageBase64: result.base64,
+            imageMimeType: result.mimeType,
+            status,
+          });
+        }
+      });
+    }
   }
+
+  const canSubmit = name.trim() && previewSrc;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Yeni Logo</DialogTitle>
-          <DialogDescription>Yeni logo bilgilerini girin.</DialogDescription>
+          <DialogDescription>
+            Logo görselini seçin, boyutlarını düzenleyin ve kaydedin.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="create-logo-file">Logo Görseli</Label>
+            <Input
+              id="create-logo-file"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              disabled={createMutation.isPending}
+            />
+          </div>
+          {previewSrc && (
+            <div className="space-y-2">
+              <Label>Kırpma (opsiyonel)</Label>
+              <ImageEdit
+                ref={imageEditRef}
+                src={previewSrc}
+                aspectRatio={1}
+                maxWidth={512}
+                maxHeight={512}
+                onCropComplete={handleCropComplete}
+                showApplyButton={true}
+                disabled={createMutation.isPending}
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="create-logo-name">Ad</Label>
             <Input
               id="create-logo-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
-              disabled={createMutation.isPending}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="create-logo-path">Yol</Label>
-            <Input
-              id="create-logo-path"
-              value={path}
-              onChange={(e) => setPath(e.target.value)}
               required
               disabled={createMutation.isPending}
             />
@@ -93,7 +157,7 @@ export function CreateLogosDialog({ open, onOpenChange }: CreateLogosDialogProps
             >
               İptal
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
+            <Button type="submit" disabled={createMutation.isPending || !canSubmit}>
               {createMutation.isPending ? "Kaydediliyor..." : "Kaydet"}
             </Button>
           </DialogFooter>

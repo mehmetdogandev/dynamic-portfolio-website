@@ -28,6 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getAvatarUrl } from "@/lib/utils/avatar";
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -178,7 +179,7 @@ export function AdminSidebar() {
                 <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage
-                      src={session?.user?.image ?? undefined}
+                      src={getAvatarUrl(session?.user?.image)}
                       alt={session?.user?.name ?? ""}
                     />
                     <AvatarFallback className="rounded-lg">
@@ -204,7 +205,10 @@ export function AdminSidebar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/admin-panel">Profil / Ana sayfa</Link>
+                  <Link href="/admin-panel/profile">Profil</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin-panel/settings">Ayarlar</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>Çıkış yap</DropdownMenuItem>

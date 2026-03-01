@@ -1,0 +1,2 @@
+ALTER TABLE "logo" RENAME COLUMN "path" TO "file_id";--> statement-breakpoint
+ALTER TABLE "logo" ADD CONSTRAINT "logo_file_id_files_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."files"("id") ON DELETE no action ON UPDATE no action;

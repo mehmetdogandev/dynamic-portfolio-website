@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Users, Shield, Settings } from "lucide-react";
+import { Users, Shield, Settings, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const QUICK_LINKS = [
+  { title: "Profil", href: "/admin-panel/profile", icon: User },
   { title: "Kullanıcılar", href: "/admin-panel/users", icon: Users },
   { title: "Roller", href: "/admin-panel/roles", icon: Shield },
   { title: "Ayarlar", href: "/admin-panel/settings", icon: Settings },

@@ -8,6 +8,13 @@
       "when": 1771839134267,
       "tag": "0000_small_zarek",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772341156520,
+      "tag": "0001_spotty_synch",
+      "breakpoints": true
     }
   ]
 }
