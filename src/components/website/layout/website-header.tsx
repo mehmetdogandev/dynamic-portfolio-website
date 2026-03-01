@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/sheet";
 export function WebsiteHeader() {
   const [open, setOpen] = useState(false);
-  const { data: logo } = api.logo.getActivePublic.useQuery();
+  const { data: actives } = api.logo.getActivesPublic.useQuery();
+  const logo = actives?.WEBSITE_LOGO ?? null;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-backdrop-filter:bg-background/60">

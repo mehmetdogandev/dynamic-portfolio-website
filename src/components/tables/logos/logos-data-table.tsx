@@ -5,7 +5,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { ColumnDef, SortingState, PaginationState } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Eye, Pencil, Trash2, Plus, Star } from "lucide-react";
+import { Eye, Pencil, Trash2, Plus, Star, StarOff } from "lucide-react";
 import { DetailLogosDialog } from "./detail-logos-dialog";
 import { UpdateLogosDialog } from "./update-logos-dialog";
 import { CreateLogosDialog } from "./create-logos-dialog";
@@ -77,6 +77,16 @@ export function LogosDataTable() {
   const setActiveMutation = api.logo.setActive.useMutation({
     onSuccess: () => {
       void utils.logo.list.invalidate();
+      void utils.logo.getActivePublic.invalidate();
+      void utils.logo.getActivesPublic.invalidate();
+      router.refresh();
+    },
+  });
+  const setPassiveMutation = api.logo.setPassive.useMutation({
+    onSuccess: () => {
+      void utils.logo.list.invalidate();
+      void utils.logo.getActivePublic.invalidate();
+      void utils.logo.getActivesPublic.invalidate();
       router.refresh();
     },
   });
@@ -143,7 +153,7 @@ export function LogosDataTable() {
                 <Eye className="h-4 w-4" />
               </Button>
             )}
-            {canUpdate && row.original.status !== "ACTIVE" && (
+            {canUpdate && row.original.status === "PASSIVE" && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -152,6 +162,17 @@ export function LogosDataTable() {
                 disabled={setActiveMutation.isPending}
               >
                 <Star className="h-4 w-4" />
+              </Button>
+            )}
+            {canUpdate && row.original.status === "ACTIVE" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setPassiveMutation.mutate({ id: row.original.id })}
+                aria-label="Pasif yap"
+                disabled={setPassiveMutation.isPending}
+              >
+                <StarOff className="h-4 w-4" />
               </Button>
             )}
             {canUpdate && (
@@ -180,7 +201,7 @@ export function LogosDataTable() {
     }
 
     return cols;
-  }, [canRead, canUpdate, canDelete, setActiveMutation]);
+  }, [canRead, canUpdate, canDelete, setActiveMutation, setPassiveMutation]);
 
   // Toolbar with create button
   const toolbar = canCreate ? (

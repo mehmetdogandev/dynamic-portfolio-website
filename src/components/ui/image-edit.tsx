@@ -34,6 +34,8 @@ export interface ImageEditProps {
   className?: string;
   /** Show apply button (default true). When false, use ref.getCroppedImage() */
   showApplyButton?: boolean;
+  /** Max display height in px for the crop preview (default 400). Helps in constrained dialogs. */
+  maxDisplayHeight?: number;
 }
 
 export interface ImageEditHandle {
@@ -95,6 +97,7 @@ export const ImageEdit = forwardRef<ImageEditHandle, ImageEditProps>(
       disabled = false,
       className,
       showApplyButton = true,
+      maxDisplayHeight = 400,
     },
     ref
   ) {
@@ -180,8 +183,8 @@ export const ImageEdit = forwardRef<ImageEditHandle, ImageEditProps>(
               onImageLoad(e as React.SyntheticEvent<HTMLImageElement>);
             }}
             width={800}
-            height={400}
-            style={{ maxHeight: 400, width: "auto", height: "auto" }}
+            height={maxDisplayHeight}
+            style={{ maxHeight: maxDisplayHeight, width: "auto", height: "auto" }}
             unoptimized
           />
         </ReactCrop>

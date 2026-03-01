@@ -1,5 +1,6 @@
 import { logEtherealPreview } from "./log-ethereal-preview";
 import { getMailTransporter } from "./get-transporter";
+import { getActiveEmailLogoUrl } from "./get-email-logo-url";
 
 export interface SendVerificationEmailParams {
   to: string;
@@ -13,7 +14,13 @@ export async function sendVerificationEmail({
   const { transporter, fromAddress, hasSmtpConfig, testAccount } =
     await getMailTransporter();
 
+  const logoUrl = await getActiveEmailLogoUrl();
+
   const subject = "E-posta Doğrulama – mehmetdogandev.com";
+
+  const brandBarContent = logoUrl
+    ? `<img src="${logoUrl}" alt="mehmetdogandev.com" style="height:40px; max-width:200px; object-fit:contain; display:block;" />`
+    : `<span style="color:#ffffff !important;">mehmetdogandev.com</span>`;
 
   const html = `
   <table width="100%" cellpadding="0" cellspacing="0" style="margin:0; padding:0; background:#f1f5f9; font-family:Arial, Helvetica, sans-serif;">
@@ -22,7 +29,7 @@ export async function sendVerificationEmail({
         <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
           <tr>
             <td style="background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; font-size:18px; font-weight:600;">
-              <span style="color:#ffffff !important;">mehmetdogandev.com</span>
+              ${brandBarContent}
             </td>
           </tr>
           <tr>

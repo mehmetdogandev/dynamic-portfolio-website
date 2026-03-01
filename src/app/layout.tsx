@@ -9,6 +9,9 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: `${siteConfig.name} | Software Engineer`,
   description: siteConfig.description,
+  icons: {
+    icon: "/api/logo/favicon",
+  },
 };
 
 const geist = Geist({

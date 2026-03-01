@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, count, asc, desc, and, ilike } from "drizzle-orm";
+import { eq, ne, count, asc, desc, and, ilike } from "drizzle-orm";
 import {
   createTRPCRouter,
   createPermissionProcedure,
@@ -10,25 +10,35 @@ import { listInputSchema, type ListOutput } from "@/lib/trpc/list-schema";
 import { uploadFile, deleteFile, getFileRecord } from "@/lib/minios3/utils";
 
 const logoStatusSchema = z.enum(["ACTIVE", "PASSIVE"]);
+const logoTypeSchema = z.enum(["WEBSITE_LOGO", "WEBSITE_FAVICON", "EMAIL_LOGO", "EMAIL_FAVICON"]);
+const ALLOWED_SORT_COLUMNS = ["name", "status", "type", "createdAt"] as const;
+const ALLOWED_FILTER_COLUMNS = ["name", "status", "type"] as const;
 
-const ALLOWED_SORT_COLUMNS = ["name", "status", "createdAt"] as const;
-const ALLOWED_FILTER_COLUMNS = ["name", "status"] as const;
+const activeLogoItem = (r: { id: string; name: string; fileId: string | null; type: string }) =>
+  r.fileId ? { id: r.id, name: r.name, fileId: r.fileId, imageUrl: `/api/files/${r.fileId}/view` } : null;
 
 export const logoRouter = createTRPCRouter({
   getActivePublic: publicProcedure.query(async ({ ctx }) => {
     const rows = await ctx.db
-      .select({ id: logo.id, name: logo.name, fileId: logo.fileId })
+      .select({ id: logo.id, name: logo.name, fileId: logo.fileId, type: logo.type })
       .from(logo)
-      .where(eq(logo.status, "ACTIVE"))
+      .where(and(eq(logo.status, "ACTIVE"), eq(logo.type, "WEBSITE_LOGO")))
       .limit(1);
     const row = rows[0];
-    if (!row?.fileId) return null;
-    return {
-      id: row.id,
-      name: row.name,
-      fileId: row.fileId,
-      imageUrl: `/api/files/${row.fileId}/view`,
-    };
+    return row ? activeLogoItem(row) : null;
+  }),
+
+  getActivesPublic: publicProcedure.query(async ({ ctx }) => {
+    const rows = await ctx.db
+      .select({ id: logo.id, name: logo.name, fileId: logo.fileId, type: logo.type })
+      .from(logo)
+      .where(eq(logo.status, "ACTIVE"));
+    const acc: Record<string, { id: string; name: string; fileId: string; imageUrl: string }> = {};
+    for (const r of rows) {
+      const item = activeLogoItem(r);
+      if (item) acc[r.type] = item;
+    }
+    return acc;
   }),
 
   list: createPermissionProcedure("LOGO", "READ")
@@ -45,6 +55,8 @@ export const logoRouter = createTRPCRouter({
               conditions.push(ilike(logo.name, `%${value}%`));
             } else if (key === "status") {
               conditions.push(eq(logo.status, value as "ACTIVE" | "PASSIVE"));
+            } else if (key === "type") {
+              conditions.push(eq(logo.type, value as "WEBSITE_LOGO" | "WEBSITE_FAVICON" | "EMAIL_LOGO" | "EMAIL_FAVICON"));
             }
           }
         }
@@ -64,6 +76,8 @@ export const logoRouter = createTRPCRouter({
           orderByClause = sortOrder === "desc" ? desc(logo.name) : asc(logo.name);
         } else if (sortBy === "status") {
           orderByClause = sortOrder === "desc" ? desc(logo.status) : asc(logo.status);
+        } else if (sortBy === "type") {
+          orderByClause = sortOrder === "desc" ? desc(logo.type) : asc(logo.type);
         } else if (sortBy === "createdAt") {
           orderByClause = sortOrder === "desc" ? desc(logo.createdAt) : asc(logo.createdAt);
         }
@@ -105,6 +119,7 @@ export const logoRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1),
+        type: logoTypeSchema,
         imageBase64: z.string().min(1),
         imageMimeType: z.string().min(1),
         status: logoStatusSchema.optional(),
@@ -123,12 +138,20 @@ export const logoRouter = createTRPCRouter({
         uploadedBy: ctx.session!.user.id,
         isPublic: true,
       });
+      const status = input.status ?? "PASSIVE";
+      if (status === "ACTIVE") {
+        await ctx.db
+          .update(logo)
+          .set({ status: "PASSIVE", updatedAt: new Date() })
+          .where(eq(logo.type, input.type));
+      }
       const [row] = await ctx.db
         .insert(logo)
         .values({
           name: input.name,
+          type: input.type,
           fileId: uploadResult.fileId,
-          status: input.status ?? "ACTIVE",
+          status,
         })
         .returning({ id: logo.id });
       return { id: row!.id };
@@ -139,14 +162,25 @@ export const logoRouter = createTRPCRouter({
       z.object({
         id: z.string().uuid(),
         name: z.string().min(1).optional(),
+        type: logoTypeSchema.optional(),
         imageBase64: z.string().optional(),
         imageMimeType: z.string().optional(),
         status: logoStatusSchema.optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, imageBase64, imageMimeType, ...rest } = input;
+      const { id, imageBase64, imageMimeType, status, type, ...rest } = input;
       let fileId: string | undefined;
+      if (status === "ACTIVE") {
+        const [current] = await ctx.db.select({ type: logo.type }).from(logo).where(eq(logo.id, id)).limit(1);
+        const targetType = type ?? current?.type;
+        if (targetType) {
+          await ctx.db
+            .update(logo)
+            .set({ status: "PASSIVE", updatedAt: new Date() })
+            .where(and(eq(logo.type, targetType), ne(logo.id, id)));
+        }
+      }
       if (imageBase64 && imageMimeType) {
         const [existing] = await ctx.db
           .select({ fileId: logo.fileId })
@@ -179,6 +213,8 @@ export const logoRouter = createTRPCRouter({
         .update(logo)
         .set({
           ...rest,
+          ...(status !== undefined ? { status } : {}),
+          ...(type !== undefined ? { type } : {}),
           ...(fileId ? { fileId } : {}),
           updatedAt: new Date(),
         })
@@ -196,13 +232,29 @@ export const logoRouter = createTRPCRouter({
   setActive: createPermissionProcedure("LOGO", "UPDATE")
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
-      // eslint-disable-next-line drizzle/enforce-update-with-where
+      const [target] = await ctx.db
+        .select({ type: logo.type })
+        .from(logo)
+        .where(eq(logo.id, input.id))
+        .limit(1);
+      if (!target) return { id: input.id };
       await ctx.db
         .update(logo)
-        .set({ status: "PASSIVE", updatedAt: new Date() });
+        .set({ status: "PASSIVE", updatedAt: new Date() })
+        .where(and(eq(logo.type, target.type), ne(logo.id, input.id)));
       await ctx.db
         .update(logo)
         .set({ status: "ACTIVE", updatedAt: new Date() })
+        .where(eq(logo.id, input.id));
+      return { id: input.id };
+    }),
+
+  setPassive: createPermissionProcedure("LOGO", "UPDATE")
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(logo)
+        .set({ status: "PASSIVE", updatedAt: new Date() })
         .where(eq(logo.id, input.id));
       return { id: input.id };
     }),

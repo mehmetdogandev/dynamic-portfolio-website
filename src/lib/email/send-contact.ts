@@ -1,5 +1,6 @@
 import { logEtherealPreview } from "./log-ethereal-preview";
 import { getMailTransporter } from "./get-transporter";
+import { getActiveEmailLogoUrl } from "./get-email-logo-url";
 
 export interface ContactFormData {
   name: string;
@@ -35,6 +36,16 @@ export async function sendContactFormEmails(
     const { transporter, fromAddress, hasSmtpConfig, testAccount } =
       await getMailTransporter();
 
+    const logoUrl = await getActiveEmailLogoUrl();
+
+    const brandBarContent = logoUrl
+      ? `<img src="${logoUrl}" alt="mehmetdogandev.com" style="height:40px; max-width:200px; object-fit:contain; display:block;" />`
+      : `<span style="color:#ffffff !important;">mehmetdogandev.com</span>`;
+
+    const adminBrandBarContent = logoUrl
+      ? `<img src="${logoUrl}" alt="İletişim Formu – mehmetdogandev.com" style="height:40px; max-width:200px; object-fit:contain; display:block;" />`
+      : `<span style="color:#ffffff !important;">İletişim Formu – mehmetdogandev.com</span>`;
+
     const autoReplyHtml = `
     <table width="100%" cellpadding="0" cellspacing="0" style="margin:0; padding:0; background:#f1f5f9; font-family:Arial, Helvetica, sans-serif;">
       <tr>
@@ -42,7 +53,7 @@ export async function sendContactFormEmails(
           <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
             <tr>
               <td style="background-color:#2d4a7c; background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; font-size:18px; font-weight:600;">
-                <span style="color:#ffffff !important;">mehmetdogandev.com</span>
+                ${brandBarContent}
               </td>
             </tr>
             <tr>
@@ -76,7 +87,7 @@ export async function sendContactFormEmails(
           <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
             <tr>
               <td style="background-color:#2d4a7c; background:linear-gradient(90deg,#2d4a7c,#0d9488); padding:18px 32px; font-size:18px; font-weight:600;">
-                <span style="color:#ffffff !important;">İletişim Formu – mehmetdogandev.com</span>
+                ${adminBrandBarContent}
               </td>
             </tr>
             <tr>
