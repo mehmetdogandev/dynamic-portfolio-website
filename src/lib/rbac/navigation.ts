@@ -7,6 +7,8 @@ import {
   Settings,
   FileText,
   Image,
+  FolderTree,
+  Briefcase,
   type LucideIcon,
 } from "lucide-react";
 
@@ -20,6 +22,8 @@ export const PAGE_TO_TITLE: Record<Page, string> = {
   USER_ROLE_GROUPS: "Kullanıcı Rol Grupları",
   POST: "Postlar",
   LOGO: "Logolar",
+  PROJECT_CATEGORY: "Proje Kategorileri",
+  PROJECT: "Projeler",
 };
 
 export const PAGE_TO_HREF: Record<Page, string> = {
@@ -32,6 +36,8 @@ export const PAGE_TO_HREF: Record<Page, string> = {
   USER_ROLE_GROUPS: "/admin-panel/user-role-groups",
   POST: "/admin-panel/posts",
   LOGO: "/admin-panel/logos",
+  PROJECT_CATEGORY: "/admin-panel/project-categories",
+  PROJECT: "/admin-panel/projects",
 };
 
 export const PAGE_TO_ICON: Record<Page, LucideIcon> = {
@@ -44,6 +50,8 @@ export const PAGE_TO_ICON: Record<Page, LucideIcon> = {
   USER_ROLE_GROUPS: Award,
   POST: FileText,
   LOGO: Image,
+  PROJECT_CATEGORY: FolderTree,
+  PROJECT: Briefcase,
 };
 
 export const NAV_ITEMS: { page: Page; title: string; href: string; icon: LucideIcon }[] = [
@@ -55,10 +63,12 @@ export const NAV_ITEMS: { page: Page; title: string; href: string; icon: LucideI
   { page: "USER_ROLE_GROUPS", title: PAGE_TO_TITLE.USER_ROLE_GROUPS, href: PAGE_TO_HREF.USER_ROLE_GROUPS, icon: PAGE_TO_ICON.USER_ROLE_GROUPS },
   { page: "POST", title: PAGE_TO_TITLE.POST, href: PAGE_TO_HREF.POST, icon: PAGE_TO_ICON.POST },
   { page: "LOGO", title: PAGE_TO_TITLE.LOGO, href: PAGE_TO_HREF.LOGO, icon: PAGE_TO_ICON.LOGO },
+  { page: "PROJECT_CATEGORY", title: PAGE_TO_TITLE.PROJECT_CATEGORY, href: PAGE_TO_HREF.PROJECT_CATEGORY, icon: PAGE_TO_ICON.PROJECT_CATEGORY },
+  { page: "PROJECT", title: PAGE_TO_TITLE.PROJECT, href: PAGE_TO_HREF.PROJECT, icon: PAGE_TO_ICON.PROJECT },
   { page: "SETTINGS", title: PAGE_TO_TITLE.SETTINGS, href: PAGE_TO_HREF.SETTINGS, icon: PAGE_TO_ICON.SETTINGS },
 ];
 
 export const NAV_GROUPS: { label: string; pages: Page[] }[] = [
-  { label: "Site Yönetimi", pages: ["POST", "LOGO"] },
+  { label: "Site Yönetimi", pages: ["POST", "LOGO", "PROJECT_CATEGORY", "PROJECT"] },
   { label: "Panel Yönetimi", pages: ["USERS", "ROLES", "ROLE_GROUPS", "USER_ROLES", "USER_ROLE_GROUPS"] },
 ];

@@ -16,7 +16,9 @@ export type Page =
   | "USER_ROLES"
   | "USER_ROLE_GROUPS"
   | "POST"
-  | "LOGO";
+  | "LOGO"
+  | "PROJECT_CATEGORY"
+  | "PROJECT";
 export type Permission =
   | "CREATE"
   | "DELETE"
