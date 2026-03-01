@@ -51,3 +51,5 @@ docker-compose.dev.yml
 
 .env.prod
 docs/**
+.pnpm-store/**
+.pnpm-store/v10/files/**

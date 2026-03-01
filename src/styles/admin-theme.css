@@ -1,4 +1,6 @@
 /* Admin Panel Theme - Scoped to .admin-theme class (Yellow theme) */
+@import "medium-editor/dist/css/medium-editor.css";
+@import "medium-editor/dist/css/themes/default.css";
 
 .admin-theme {
   --background: oklch(0.99 0.01 95);
