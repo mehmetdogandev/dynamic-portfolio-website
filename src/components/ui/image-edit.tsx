@@ -22,6 +22,8 @@ export interface ImageEditProps {
   src: string;
   /** Aspect ratio (e.g. 1 for square, 16/9 for landscape). Omit for free-form. */
   aspectRatio?: number;
+  /** When true, aspect ratio is ignored and edge handles (n,e,s,w) are shown for flexible cropping */
+  allowFreeCrop?: boolean;
   /** Max width for output image in pixels */
   maxWidth?: number;
   /** Max height for output image in pixels */
@@ -91,6 +93,7 @@ export const ImageEdit = forwardRef<ImageEditHandle, ImageEditProps>(
     {
       src,
       aspectRatio,
+      allowFreeCrop = false,
       maxWidth,
       maxHeight,
       onCropComplete,
@@ -105,14 +108,16 @@ export const ImageEdit = forwardRef<ImageEditHandle, ImageEditProps>(
     const [crop, setCrop] = useState<Crop>();
     const completedCropRef = useRef<PercentCrop | null>(null);
 
+    const effectiveAspect = allowFreeCrop ? undefined : aspectRatio;
+
     const onImageLoad = useCallback(
       (e: React.SyntheticEvent<HTMLImageElement>) => {
         const { naturalWidth, naturalHeight } = e.currentTarget;
-        const defaultCrop = aspectRatio
+        const defaultCrop = effectiveAspect
           ? centerCrop(
               makeAspectCrop(
                 { unit: "%", width: 90 },
-                aspectRatio,
+                effectiveAspect,
                 naturalWidth,
                 naturalHeight
               ),
@@ -129,7 +134,7 @@ export const ImageEdit = forwardRef<ImageEditHandle, ImageEditProps>(
         setCrop(defaultCrop);
         completedCropRef.current = defaultCrop as PercentCrop;
       },
-      [aspectRatio]
+      [effectiveAspect]
     );
 
     const onCropChange = useCallback((c: Crop, percentCrop: PercentCrop) => {
@@ -171,7 +176,7 @@ export const ImageEdit = forwardRef<ImageEditHandle, ImageEditProps>(
           onComplete={(_, percentCrop) => {
             completedCropRef.current = percentCrop;
           }}
-          aspect={aspectRatio}
+          aspect={effectiveAspect}
           disabled={disabled}
         >
           <Image

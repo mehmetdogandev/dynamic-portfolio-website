@@ -28,6 +28,7 @@ export default function NewProjectPage() {
   const [coverPreviewSrc, setCoverPreviewSrc] = useState<string | null>(null);
   const [coverBase64, setCoverBase64] = useState<string | null>(null);
   const [coverMime, setCoverMime] = useState("image/png");
+  const [freeCrop, setFreeCrop] = useState(false);
   const [galleryFileIds, setGalleryFileIds] = useState<string[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<{ id: string; url: string }[]>([]);
   const imageEditRef = useRef<ImageEditHandle>(null);
@@ -133,8 +134,8 @@ export default function NewProjectPage() {
     name.trim() &&
     slug.trim() &&
     categoryId &&
-    content.trim() &&
-    Boolean(coverPreviewSrc) || Boolean(coverBase64);
+    (content ?? "").trim() &&
+    (Boolean(coverPreviewSrc) || Boolean(coverBase64));
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -201,11 +202,21 @@ export default function NewProjectPage() {
           <Label>Kapak Görseli</Label>
           <Input type="file" accept="image/*" onChange={handleCoverFileChange} disabled={createMutation.isPending} />
           {coverPreviewSrc && (
-            <div className="mt-2">
+            <div className="mt-2 space-y-2">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="freeCrop"
+                  checked={freeCrop}
+                  onCheckedChange={(c) => setFreeCrop(!!c)}
+                  disabled={createMutation.isPending}
+                />
+                <Label htmlFor="freeCrop">Serbest kırpma (kenarlardan da kırpılabilir)</Label>
+              </div>
               <ImageEdit
                 ref={imageEditRef}
                 src={coverPreviewSrc}
                 aspectRatio={16 / 9}
+                allowFreeCrop={freeCrop}
                 maxWidth={1200}
                 maxHeight={630}
                 maxDisplayHeight={300}

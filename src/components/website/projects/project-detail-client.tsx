@@ -85,8 +85,8 @@ export function ProjectDetailClient({ slug }: ProjectDetailClientProps) {
 
       <AnimateOnScroll variant="fadeRight" delay={0.1} className="mt-8">
         <div
-          className="prose prose-sm dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(project.content) }}
+          className="prose prose-sm dark:prose-invert max-w-3xl [&_img]:float-left [&_img]:mr-4 [&_img]:mb-2 [&_img]:max-w-full"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(project.content ?? "") }}
         />
       </AnimateOnScroll>
 

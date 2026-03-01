@@ -171,3 +171,16 @@
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 }
+
+/* MediumEditor toolbar visibility and usability */
+.admin-theme .medium-editor-toolbar {
+  z-index: 9999 !important;
+  pointer-events: auto;
+}
+.admin-theme .medium-editor-toolbar-actions button {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.admin-theme .medium-editor-toolbar-actions .medium-editor-button-active {
+  background: var(--accent);
+}

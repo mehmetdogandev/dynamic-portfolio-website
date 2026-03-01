@@ -30,6 +30,7 @@ export default function EditProjectPage() {
   const [coverBase64, setCoverBase64] = useState<string | null>(null);
   const [coverMime, setCoverMime] = useState("image/png");
   const [coverChanged, setCoverChanged] = useState(false);
+  const [freeCrop, setFreeCrop] = useState(false);
   const [galleryFileIds, setGalleryFileIds] = useState<string[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<{ id: string; url: string }[]>([]);
   const imageEditRef = useRef<ImageEditHandle>(null);
@@ -142,7 +143,7 @@ export default function EditProjectPage() {
     });
   };
 
-  const canSubmit = name.trim() && slug.trim() && categoryId && content.trim();
+  const canSubmit = name.trim() && slug.trim() && categoryId && (content ?? "").trim();
 
   if (isLoading || !project) {
     return <div className="flex flex-1 items-center justify-center">Yükleniyor...</div>;
@@ -213,11 +214,21 @@ export default function EditProjectPage() {
           <Label>Kapak Görseli</Label>
           <Input type="file" accept="image/*" onChange={handleCoverFileChange} disabled={updateMutation.isPending} />
           {coverPreviewSrc && (
-            <div className="mt-2">
+            <div className="mt-2 space-y-2">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="freeCrop"
+                  checked={freeCrop}
+                  onCheckedChange={(c) => setFreeCrop(!!c)}
+                  disabled={updateMutation.isPending}
+                />
+                <Label htmlFor="freeCrop">Serbest kırpma (kenarlardan da kırpılabilir)</Label>
+              </div>
               <ImageEdit
                 ref={imageEditRef}
                 src={coverPreviewSrc}
                 aspectRatio={16 / 9}
+                allowFreeCrop={freeCrop}
                 maxWidth={1200}
                 maxHeight={630}
                 maxDisplayHeight={300}
