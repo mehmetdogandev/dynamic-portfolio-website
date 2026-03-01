@@ -29,6 +29,8 @@ const PAGES = [
   "USER_ROLE_GROUPS",
   "LOGO",
   "POST",
+  "PROJECT_CATEGORY",
+  "PROJECT",
 ] as const;
 
 const FULL_PERMISSIONS = ["CREATE", "READ", "UPDATE", "DELETE", "ACCESS"] as const;

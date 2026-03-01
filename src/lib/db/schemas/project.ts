@@ -78,3 +78,18 @@ export const projectGallery = createTable("project_gallery", {
   ...thisProjectTimestamps,
   ...thisProjectAuditMeta,
 });
+
+
+export const projectDiscussions = createTable("project_discussions", {
+  id,
+  projectId: uuid("project_id")
+    .notNull()
+    .references(() => project.id, { onDelete: "cascade" }),
+  userEmail: text("user_email").notNull(),
+  username: text("username").notNull(),
+  message: text("message").notNull(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  isActive: boolean("is_active").notNull().default(true), // Projenin aktif olup olmadığını belirtir. Örneğin: ve admin panelinde kontrolleri yapılır
+  ...thisProjectTimestamps,
+  ...thisProjectAuditMeta,
+});
