@@ -10,7 +10,7 @@ export function ProjectsGrid() {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-        {[...Array(6)].map((_, i) => (
+        {Array.from({ length: 6 }, (_, i) => i).map((i) => (
           <div key={i} className="h-64 animate-pulse rounded-lg bg-muted" />
         ))}
       </div>

@@ -25,9 +25,8 @@ type ProjectCardProps = {
 export function ProjectCard({ project, className }: ProjectCardProps) {
   const fallbackImage = "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80";
   const imageUrl =
-    ("imageUrl" in project && project.imageUrl) ||
-    (project.images?.[0])
-      ? ("imageUrl" in project ? project.imageUrl : project.images?.[0]) || fallbackImage
+    ("imageUrl" in project && project.imageUrl) || (project.images?.[0])
+      ? ("imageUrl" in project ? project.imageUrl : project.images?.[0]) ?? fallbackImage
       : fallbackImage;
   const imageAlt = ("imageAlt" in project ? project.imageAlt : null) ?? project.title ?? "Proje görseli";
   const stack = "stack" in project ? project.stack ?? [] : [];

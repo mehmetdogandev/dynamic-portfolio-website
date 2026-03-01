@@ -31,7 +31,7 @@ const uploadImageProcedure = protectedProcedure
       const prefix = input.prefix ?? "projects";
       const result = await uploadFile(buffer, `img${ext}`, input.imageMimeType, {
         prefix,
-        uploadedBy: ctx.session!.user.id,
+        uploadedBy: ctx.session.user.id,
         isPublic: true,
       });
       return { fileId: result.fileId };

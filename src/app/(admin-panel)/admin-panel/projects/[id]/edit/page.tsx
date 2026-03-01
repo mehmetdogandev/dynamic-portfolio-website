@@ -11,7 +11,7 @@ import { ImageEdit, type ImageEditHandle } from "@/components/ui/image-edit";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { api } from "@/lib/trpc/react";
 import { getErrorMessage } from "@/lib/trpc/error-messages";
-import { slugify } from "@/lib/utils/slugify";
+import Image from "next/image";
 import { ArrowLeft, X } from "lucide-react";
 
 export default function EditProjectPage() {
@@ -234,6 +234,20 @@ export default function EditProjectPage() {
             onChange={setContent}
             placeholder="Proje içeriği..."
             disabled={updateMutation.isPending}
+            onImageUpload={async (file) => {
+              const base64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+              });
+              const { fileId } = await uploadImageMutation.mutateAsync({
+                imageBase64: base64,
+                imageMimeType: file.type,
+                prefix: "projects/content",
+              });
+              return `/api/files/${fileId}/view`;
+            }}
           />
         </div>
         <div className="space-y-2">
@@ -248,8 +262,15 @@ export default function EditProjectPage() {
           {galleryPreviews.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {galleryPreviews.map((p) => (
-                <div key={p.id} className="relative">
-                  <img src={p.url} alt="" className="h-20 w-20 rounded border object-cover" />
+                <div key={p.id} className="relative h-20 w-20">
+                  <Image
+                    src={p.url}
+                    alt=""
+                    width={80}
+                    height={80}
+                    className="rounded border object-cover"
+                    unoptimized
+                  />
                   <button
                     type="button"
                     onClick={() => removeGalleryImage(p.id)}

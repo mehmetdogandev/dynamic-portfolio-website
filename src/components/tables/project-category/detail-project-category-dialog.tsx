@@ -8,7 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/trpc/react";
-import { Button } from "@/components/ui/button";
 
 type DetailProjectCategoryDialogProps = {
   categoryId: string;

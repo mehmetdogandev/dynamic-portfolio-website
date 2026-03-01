@@ -3,7 +3,10 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useCallback, useEffect } from "react";
+import Image from "@tiptap/extension-image";
+import { TableKit } from "@tiptap/extension-table";
+import { useCallback, useEffect, useRef } from "react";
+import { ImageIcon, TableIcon } from "lucide-react";
 
 export interface RichTextEditorProps {
   value: string;
@@ -11,6 +14,8 @@ export interface RichTextEditorProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  /** Upload image file and return the URL to use (e.g. /api/files/{id}/view) */
+  onImageUpload?: (file: File) => Promise<string>;
 }
 
 export function RichTextEditor({
@@ -19,11 +24,18 @@ export function RichTextEditor({
   placeholder = "İçerik yazın...",
   disabled = false,
   className,
+  onImageUpload,
 }: RichTextEditorProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({ placeholder }),
+      Image.configure({ inline: false, allowBase64: false }),
+      TableKit.configure({
+        table: { resizable: true },
+      }),
     ],
     content: value || "",
     editable: !disabled,
@@ -63,6 +75,28 @@ export function RichTextEditor({
     }
   }, [editor, disabled]);
 
+  const handleImageClick = () => {
+    if (disabled || !onImageUpload) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file?.type.startsWith("image/") || !onImageUpload || !editor) return;
+    try {
+      const url = await onImageUpload(file);
+      editor.chain().focus().setImage({ src: url }).run();
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleTableClick = () => {
+    if (disabled || !editor) return;
+    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  };
+
   if (!editor) {
     return (
       <div className={className}>
@@ -73,13 +107,21 @@ export function RichTextEditor({
 
   return (
     <div className={className}>
-      <div className="flex gap-1 rounded-t-md border border-b-0 border-input bg-muted/50 p-1">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageFileChange}
+      />
+      <div className="flex flex-wrap gap-1 rounded-t-md border border-b-0 border-input bg-muted/50 p-1">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`rounded px-2 py-1 text-sm font-semibold ${
             editor.isActive("bold") ? "bg-muted" : ""
           }`}
+          title="Kalın"
         >
           B
         </button>
@@ -89,6 +131,7 @@ export function RichTextEditor({
           className={`rounded px-2 py-1 text-sm italic ${
             editor.isActive("italic") ? "bg-muted" : ""
           }`}
+          title="İtalik"
         >
           I
         </button>
@@ -98,6 +141,7 @@ export function RichTextEditor({
           className={`rounded px-2 py-1 text-sm ${
             editor.isActive("heading", { level: 2 }) ? "bg-muted" : ""
           }`}
+          title="Başlık 2"
         >
           H2
         </button>
@@ -107,6 +151,7 @@ export function RichTextEditor({
           className={`rounded px-2 py-1 text-sm ${
             editor.isActive("bulletList") ? "bg-muted" : ""
           }`}
+          title="Madde işareti"
         >
           •
         </button>
@@ -116,8 +161,29 @@ export function RichTextEditor({
           className={`rounded px-2 py-1 text-sm ${
             editor.isActive("orderedList") ? "bg-muted" : ""
           }`}
+          title="Numaralı liste"
         >
           1.
+        </button>
+        {onImageUpload && (
+          <button
+            type="button"
+            onClick={handleImageClick}
+            className="rounded px-2 py-1 text-sm hover:bg-muted"
+            title="Görsel ekle"
+          >
+            <ImageIcon className="h-4 w-4" />
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={handleTableClick}
+          className={`rounded px-2 py-1 text-sm hover:bg-muted ${
+            editor.isActive("table") ? "bg-muted" : ""
+          }`}
+          title="Tablo ekle"
+        >
+          <TableIcon className="h-4 w-4" />
         </button>
       </div>
       <EditorContent editor={editor} />

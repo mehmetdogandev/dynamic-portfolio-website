@@ -1,7 +1,9 @@
 import nodemailer from "nodemailer";
 
+type SentMessageInfo = Parameters<typeof nodemailer.getTestMessageUrl>[0];
+
 export interface EtherealLogParams {
-  info: nodemailer.SentMessageInfo;
+  info: SentMessageInfo;
   to: string;
   sender: string;
   context: string;

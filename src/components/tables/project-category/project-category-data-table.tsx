@@ -135,7 +135,7 @@ export function ProjectCategoryDataTable() {
     }
 
     return cols;
-  }, [canRead, canUpdate, canDelete, deleteMutation]);
+  }, [canRead, canUpdate, canDelete]);
 
   const toolbar = canCreate ? (
     <Button onClick={() => setCreateOpen(true)}>

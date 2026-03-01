@@ -11,6 +11,7 @@ import { ImageEdit, type ImageEditHandle } from "@/components/ui/image-edit";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { api } from "@/lib/trpc/react";
 import { getErrorMessage } from "@/lib/trpc/error-messages";
+import Image from "next/image";
 import { slugify } from "@/lib/utils/slugify";
 import { ArrowLeft, X } from "lucide-react";
 
@@ -133,7 +134,7 @@ export default function NewProjectPage() {
     slug.trim() &&
     categoryId &&
     content.trim() &&
-    (coverPreviewSrc || coverBase64);
+    Boolean(coverPreviewSrc) || Boolean(coverBase64);
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -221,6 +222,20 @@ export default function NewProjectPage() {
             onChange={setContent}
             placeholder="Proje içeriği..."
             disabled={createMutation.isPending}
+            onImageUpload={async (file) => {
+              const base64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+              });
+              const { fileId } = await uploadImageMutation.mutateAsync({
+                imageBase64: base64,
+                imageMimeType: file.type,
+                prefix: "projects/content",
+              });
+              return `/api/files/${fileId}/view`;
+            }}
           />
         </div>
         <div className="space-y-2">
@@ -235,11 +250,14 @@ export default function NewProjectPage() {
           {galleryPreviews.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {galleryPreviews.map((p) => (
-                <div key={p.id} className="relative">
-                  <img
+                <div key={p.id} className="relative h-20 w-20">
+                  <Image
                     src={p.url}
                     alt=""
-                    className="h-20 w-20 rounded border object-cover"
+                    width={80}
+                    height={80}
+                    className="rounded border object-cover"
+                    unoptimized
                   />
                   <button
                     type="button"

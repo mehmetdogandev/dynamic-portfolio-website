@@ -52,16 +52,17 @@ export default function SettingsPage() {
   );
 
   useEffect(() => {
-    if (emailCooldown?.retryAfterSeconds && emailCooldown.retryAfterSeconds > emailCountdown) {
+    if (emailCooldown?.retryAfterSeconds != null && emailCooldown.retryAfterSeconds > emailCountdown) {
       setEmailCountdown(emailCooldown.retryAfterSeconds);
     }
-  }, [emailCooldown?.retryAfterSeconds]);
+  }, [emailCooldown?.retryAfterSeconds, emailCountdown]);
 
+  const isCountingDown = emailCountdown > 0;
   useEffect(() => {
-    if (emailCountdown <= 0) return;
+    if (!isCountingDown) return;
     const id = setInterval(() => setEmailCountdown((c) => Math.max(0, c - 1)), 1000);
     return () => clearInterval(id);
-  }, [emailCountdown > 0]);
+  }, [isCountingDown]);
   const updatePhotoMutation = api.profile.updateMyPhoto.useMutation({
     onSuccess: async () => {
       await refetch();
@@ -93,18 +94,6 @@ export default function SettingsPage() {
   function openCamera() {
     setChoiceDialogOpen(false);
     setCameraDialogOpen(true);
-  }
-
-  async function startCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
-      });
-      streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
-    } catch (err) {
-      console.error("Camera error:", err);
-    }
   }
 
   useEffect(() => {
