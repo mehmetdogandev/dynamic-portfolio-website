@@ -1,0 +1,21 @@
+@layer utilities {
+  .bg-christmasRed {
+    background-color: #c41e3a;
+  }
+
+  .bg-christmasGreen {
+    background-color: #165b33;
+  }
+
+  .text-snow {
+    color: #f5f7fa;
+  }
+
+  .text-gold {
+    color: #f8b229;
+  }
+
+  .border-gold {
+    border-color: #f8b229;
+  }
+}

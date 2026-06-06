@@ -1,0 +1,427 @@
+/* Scoped tweaks for admin blog content (medium-editor only; no insert-plugin). */
+.blog-me-shell .medium-editor-toolbar {
+  z-index: 50;
+  border-radius: 6px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
+}
+
+/* Blog editor: compact heading sizes (beats Tailwind typography inside shell) */
+.blog-me-shell .prose.medium-editor-element h1,
+.blog-me-shell .medium-editor-element.prose h1 {
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.blog-me-shell .prose.medium-editor-element h2,
+.blog-me-shell .medium-editor-element.prose h2 {
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.blog-me-shell .medium-editor-element ol.blog-me-list-decimal,
+.blog-me-shell .prose.medium-editor-element ol.blog-me-list-decimal {
+  list-style-type: decimal;
+}
+
+.blog-me-shell .medium-editor-element ol.blog-me-list-roman,
+.blog-me-shell .prose.medium-editor-element ol.blog-me-list-roman {
+  list-style-type: lower-roman;
+}
+
+.blog-me-shell .medium-editor-element ol.blog-me-list-alpha,
+.blog-me-shell .prose.medium-editor-element ol.blog-me-list-alpha {
+  list-style-type: lower-alpha;
+}
+
+.blog-me-shell .medium-editor-element ul.blog-me-list-large-bullet,
+.blog-me-shell .prose.medium-editor-element ul.blog-me-list-large-bullet {
+  list-style-type: disc;
+}
+
+.blog-me-shell .medium-editor-element ul.blog-me-list-large-bullet li::marker,
+.blog-me-shell
+  .prose.medium-editor-element
+  ul.blog-me-list-large-bullet
+  li::marker {
+  font-size: 1.35em;
+}
+
+/* Numaralandırma: kökte display:block yok — aksi halde Medium’un form gizlemesini bozar; görünürlük yalnızca .medium-editor-toolbar-form-active ile. */
+.medium-editor-toolbar-form.blog-me-numbering-library {
+  box-sizing: border-box;
+  width: min(11.5rem, 92vw);
+  padding: 4px 0;
+  border-radius: 6px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.14);
+}
+
+.medium-editor-toolbar-form.blog-me-numbering-library.medium-editor-toolbar-form-active {
+  display: block;
+}
+
+.medium-editor-toolbar-form.blog-me-numbering-library--compact {
+  width: min(11.5rem, 92vw);
+  padding: 2px 0;
+}
+
+.medium-editor-toolbar-form.blog-me-numbering-library
+  .blog-me-numbering-library-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.medium-editor-toolbar-form.blog-me-numbering-library
+  .blog-me-numbering-library-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+.medium-editor-toolbar-form.blog-me-numbering-library .blog-me-numbering-tile {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  box-shadow: none;
+  transition: background-color 0.12s ease;
+}
+
+.medium-editor-toolbar-form.blog-me-numbering-library
+  .blog-me-numbering-tile:hover {
+  background: hsl(var(--muted));
+}
+
+.medium-editor-toolbar-form.blog-me-numbering-library
+  .blog-me-numbering-tile:active {
+  background: hsl(var(--muted) / 0.85);
+}
+
+.blog-me-shell .medium-editor-toolbar li button {
+  color: hsl(var(--foreground));
+}
+
+.blog-me-shell .medium-editor-element {
+  outline: none;
+  min-height: 280px;
+}
+
+.blog-me-shell .blog-me-editor-wrap {
+  position: relative;
+  overflow: visible;
+}
+
+.blog-me-shell .blog-me-editor-wrap::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.blog-me-shell .blog-me-plus-overlay {
+  position: absolute;
+  z-index: 20;
+  transform: translateY(-50%);
+}
+
+.blog-me-shell .blog-me-action-menu {
+  position: absolute;
+  z-index: 25;
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 9999px;
+  background: hsl(var(--card));
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
+}
+
+.blog-me-shell .blog-me-media-block {
+  position: relative;
+}
+
+.blog-me-shell .blog-me-media-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.blog-me-shell .blog-me-divider,
+.blog-me-shell [data-blog-divider='true'] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin: 24px 0;
+  user-select: none;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 8px;
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.blog-me-shell .blog-me-divider-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: hsl(var(--foreground));
+  opacity: 0.9;
+  display: inline-block;
+  box-shadow: 0 0 0 1px hsl(var(--border));
+}
+
+.blog-me-shell figure.blog-content-media {
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.25rem 0;
+  box-sizing: border-box;
+}
+
+.blog-me-shell figure.blog-content-media > img,
+.blog-me-shell figure.blog-content-media > video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.blog-me-shell figure.blog-content-media[data-blog-height] > img,
+.blog-me-shell figure.blog-content-media[data-blog-height] > video {
+  height: 100%;
+  object-fit: contain;
+}
+
+.blog-me-shell figure.blog-content-media.blog-me-media-selected {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+.blog-me-shell figure.blog-content-media[data-blog-align='left'] {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.blog-me-shell figure.blog-content-media[data-blog-align='center'] {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-me-shell figure.blog-content-media[data-blog-align='right'] {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.blog-me-shell .blog-me-media-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.45),
+    rgb(0 0 0 / 0.12) 38%,
+    transparent 68%
+  );
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+
+.blog-me-shell figure.blog-content-media:hover .blog-me-media-overlay,
+.blog-me-shell
+  figure.blog-content-media.blog-me-media-selected
+  .blog-me-media-overlay {
+  opacity: 1;
+}
+
+.blog-me-shell .blog-me-media-toolbar {
+  pointer-events: auto;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  border-radius: 9999px;
+  background: rgb(17 24 39 / 0.86);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  padding: 6px;
+}
+
+.blog-me-shell .blog-me-media-toolbar-btn {
+  border: 0;
+  border-radius: 9999px;
+  padding: 6px 10px;
+  color: #fff;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.blog-me-shell .blog-me-media-toolbar-btn:hover {
+  background: rgb(255 255 255 / 0.16);
+}
+
+.blog-me-shell .blog-me-align-group {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  z-index: 20;
+  display: none;
+  gap: 6px;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  border-radius: 9999px;
+  background: rgb(17 24 39 / 0.9);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  padding: 6px;
+}
+
+.blog-me-shell .blog-me-align-group[data-open='true'] {
+  display: inline-flex;
+}
+
+.blog-me-shell .blog-me-media-align-btn {
+  border: 0;
+  border-radius: 9999px;
+  padding: 6px 10px;
+  color: #fff;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.blog-me-shell .blog-me-media-align-btn[data-active='true'],
+.blog-me-shell .blog-me-media-align-btn:hover {
+  background: rgb(255 255 255 / 0.2);
+}
+
+.blog-me-shell .blog-me-media-resize-handles {
+  position: absolute;
+  inset: 0;
+  z-index: 19;
+  pointer-events: none;
+  display: none;
+}
+
+.blog-me-shell .blog-me-media-resize-handles[data-open='true'] {
+  display: block;
+}
+
+.blog-me-shell .blog-me-media-resize-handle {
+  position: absolute;
+  z-index: 20;
+  width: 14px;
+  height: 14px;
+  pointer-events: auto;
+  border: 1px solid rgb(15 23 42 / 0.7);
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 2px rgb(255 255 255 / 0.3),
+    0 2px 8px rgb(0 0 0 / 0.45);
+  padding: 0;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-n {
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-ne {
+  top: -7px;
+  right: -7px;
+  cursor: nesw-resize;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-e {
+  top: 50%;
+  right: -7px;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-se {
+  right: -7px;
+  bottom: -7px;
+  cursor: nwse-resize;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-s {
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-sw {
+  left: -7px;
+  bottom: -7px;
+  cursor: nesw-resize;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-w {
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.blog-me-shell .blog-me-media-resize-handle-nw {
+  top: -7px;
+  left: -7px;
+  cursor: nwse-resize;
+}
+
+.blog-me-shell .blog-me-media-remove-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid hsl(var(--border));
+  border-radius: 9999px;
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  cursor: pointer;
+}
+
+.blog-me-shell .blog-me-media-remove-icon:hover {
+  background: hsl(var(--destructive) / 0.12);
+  color: hsl(var(--destructive));
+}

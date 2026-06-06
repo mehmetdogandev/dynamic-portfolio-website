@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build outputs
+.next
+out
+build
+dist
+*.tsbuildinfo
+
+# Generated files
+next-env.d.ts
+drizzle/**/*.sql
+
+# Logs
+logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database
+*.sql
+aksiyonsoft.sql
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+
+# Config files that shouldn't be formatted
+*.yaml
+*.yml
+!drizzle.config.ts
+
+# Public assets
+public/static
+
+# Cache
+.cache
+.vercel
+.turbo
+

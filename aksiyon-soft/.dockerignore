@@ -1,0 +1,10 @@
+Dockerfile
+.dockerignore
+# Siralarin imaj katmanina girmesini engellemek icin asagidaki satirin basindaki # kaldirin.
+# O zaman `docker build` sirasinda NEXT_PUBLIC_* vb. icin --build-arg veya BuildKit secret kullanin.
+# .env
+node_modules
+npm-debug.log
+README.md
+.next
+.git

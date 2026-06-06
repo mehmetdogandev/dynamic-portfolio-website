@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+run pnpm:lint and fix any issues. repeat this until the command returns a clear result.

@@ -1,0 +1,108 @@
+/* Blog post body HTML (dangerouslySetInnerHTML) — not scoped to admin shell */
+.blog-public-html {
+  --blog-media-max: 100%;
+}
+
+.blog-public-html::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.blog-public-html [data-blog-divider='true'] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 24px 0;
+  user-select: none;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 8px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.blog-public-html figure.blog-content-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: min(100%, var(--blog-media-max, 100%));
+  margin: 1.5rem 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+/* `data-blog-width` → inline width applied in `prepareBlogBodyHtml`; cap any inline width */
+.blog-public-html figure.blog-content-media[style*='width'] {
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.blog-public-html figure.blog-content-media[data-blog-align='left'] {
+  float: none;
+  clear: both;
+  width: fit-content;
+  max-width: min(100%, var(--blog-media-max, 100%));
+  margin: 0 0 1rem 0;
+  margin-right: auto;
+}
+
+.blog-public-html figure.blog-content-media[data-blog-align='right'] {
+  float: none;
+  clear: both;
+  width: fit-content;
+  max-width: min(100%, var(--blog-media-max, 100%));
+  margin: 0 0 1rem auto;
+}
+
+.blog-public-html figure.blog-content-media[data-blog-align='center'] {
+  float: none;
+  clear: both;
+  width: fit-content;
+  max-width: min(100%, var(--blog-media-max, 100%));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-public-html figure.blog-content-media:not([data-blog-align]) {
+  float: none;
+  clear: both;
+  width: fit-content;
+  max-width: min(100%, var(--blog-media-max, 100%));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-public-html figure.blog-content-media > img,
+.blog-public-html figure.blog-content-media > video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.blog-public-html figure.blog-content-media[data-blog-height] > img,
+.blog-public-html figure.blog-content-media[data-blog-height] > video {
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .blog-public-html figure.blog-content-media[data-blog-align='left'],
+  .blog-public-html figure.blog-content-media[data-blog-align='right'] {
+    float: none;
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Editor-only chrome must not appear on the public site */
+.blog-public-html .blog-me-editor-only,
+.blog-public-html [data-blog-editor-chrome='true'],
+.blog-public-html figure.blog-content-media .blog-me-media-actions,
+.blog-public-html figure.blog-content-media .blog-me-align-group {
+  display: none !important;
+}

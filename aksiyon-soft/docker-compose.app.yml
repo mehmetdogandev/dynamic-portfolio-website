@@ -1,0 +1,28 @@
+# Ortak altyapi (aksiyonsoft-webserver) ayaktayken sunucuda sadece uygulama.
+# Ag: once sunucuda `docker network ls` ile app-network olustugundan emin ol.
+# Imaj: pnpm run ci ile build + load edilen etiket (.env veya DEPLOY_* ile uyumlu).
+services:
+    nextjs:
+        image: ${DEPLOY_IMAGE_NAME:-aksiyon-soft-app}:${DEPLOY_IMAGE_TAG:-latest}
+        container_name: aksiyonsoft-app
+        restart: unless-stopped
+        user: "0:0"
+        ports:
+            - "${APP_HOST_PORT:-3000}:3000"
+        env_file:
+            - .env
+        networks:
+            - app-network
+        volumes:
+            - ${BACKUP_PATH:-./backup}:/backup:rw
+            - ./.maintenance.json:/app/.maintenance.json:rw
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "3"
+                labels: "service=nextjs"
+
+networks:
+    app-network:
+        external: true

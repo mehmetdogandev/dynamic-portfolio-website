@@ -1,0 +1,17 @@
+---
+description:
+alwaysApply: true
+---
+
+# Migration / Drizzle Folder
+
+Do **not** write, change, create, or delete any files in the `drizzle/` folder.
+
+If you need to apply database schema changes:
+
+1. **Do not** edit or generate files under `drizzle/` yourself.
+2. Tell the user to run:
+   - **Push for dev**: to apply schema changes in development.
+   - **Generate for prod**: to generate production migrations as needed.
+
+Example: _"Schema changes are done in the schema files. To apply them, run push for dev and generate for prod—do not modify anything in the drizzle/ folder."_

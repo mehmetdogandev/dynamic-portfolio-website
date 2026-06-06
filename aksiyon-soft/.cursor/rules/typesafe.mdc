@@ -1,0 +1,18 @@
+---
+alwaysApply: true
+---
+
+Use TypeScript in a typesafe and best-practice manner:
+
+- Always use and prefer existing types (from libraries, APIs, or the TypeScript standard library) where possible.
+- Prefer type inference instead of explicit type annotations when TypeScript can clearly infer the type (e.g. for variables returned from functions or results of expressions).
+- When inference is not possible or clarity/readability is improved, declare explicit types or interfaces for parameters, return types, and object structures.
+- Avoid using the `any` type; use unknown, more specific types, or generics if applicable.
+- Prefer readonly, const assertions, or immutable types where mutation is not required.
+- Use union, intersection, and literal types to precisely model expected values.
+- For function signatures and exported APIs, always specify parameter and return types.
+- When dealing with external values (such as data from APIs), define interfaces or types to describe their structure.
+- Use type guards, assertions, and validation to handle unknown or potentially unsafe values.
+- Regularly review and refactor types for clarity, reusability, and maintainability.
+
+Summary: Aim for the most specific, expressive, and safe typing possible without unnecessary verbosity. Favor correctness and future maintainability.

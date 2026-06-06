@@ -1,0 +1,151 @@
+# Yerelde Next.js dahil tum stack (postgres, minio, redis, drizzle, nextjs).
+# Varsayilan docker-compose.yaml bunu kullanmaz; ihtiyac halinde:
+#   docker compose -f docker-compose.local-full.yml up -d --build
+services:
+    postgres:
+        image: postgres:17.6
+        command:
+            [
+                "postgres",
+                "-c",
+                "max_connections=300",
+                "-c",
+                "shared_buffers=256MB",
+            ]
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data_full:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            - app-network
+
+    minio:
+        image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+        container_name: s3minio
+        command: server /data --console-address ":9001"
+        restart: unless-stopped
+        environment:
+            MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+        ports:
+            - "${MINIO_API_PORT:-9000}:9000"
+            - "${MINIO_CONSOLE_PORT:-9001}:9001"
+        volumes:
+            - minio_storage_full:/data
+        healthcheck:
+            test:
+                ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+            interval: 30s
+            timeout: 20s
+            retries: 3
+        networks:
+            - app-network
+
+    drizzle-gateway:
+        image: ghcr.io/drizzle-team/gateway:latest
+        container_name: drizzle_gateway
+        restart: unless-stopped
+        ports:
+            - "4983:4983"
+        environment:
+            - PORT=4983
+            - STORE_PATH=/app
+            - MASTERPASS=${DRIZZLE_GATEWAY_PASSWORD:-admin123}
+            - DATABASE_URL_main=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+        depends_on:
+            postgres:
+                condition: service_healthy
+        networks:
+            - app-network
+        volumes:
+            - drizzle_gateway_data_full:/app
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:4983/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    redis:
+        image: redis:7-alpine
+        container_name: aksiyonsoft-redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        environment:
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        command: >
+            redis-server
+            --appendonly yes
+            --requirepass ${REDIS_PASSWORD}
+            --maxmemory 512mb
+            --maxmemory-policy allkeys-lru
+        volumes:
+            - redis_data_full:/data
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "redis-cli",
+                    "--no-auth-warning",
+                    "-a",
+                    "${REDIS_PASSWORD}",
+                    "ping",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            - app-network
+
+    nextjs:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: nextjs_app
+        restart: unless-stopped
+        user: "0:0"
+        ports:
+            - "3000:3000"
+        env_file:
+            - .env
+        environment:
+            DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+            STUDIO_DB_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+        depends_on:
+            postgres:
+                condition: service_healthy
+            minio:
+                condition: service_started
+            redis:
+                condition: service_healthy
+        networks:
+            - app-network
+        volumes:
+            - ${BACKUP_PATH:-./backup}:/backup:rw
+            - ./.maintenance.json:/app/.maintenance.json:rw
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "3"
+                labels: "service=nextjs"
+
+volumes:
+    postgres_data_full:
+    minio_storage_full:
+    drizzle_gateway_data_full:
+    redis_data_full:
+
+networks:
+    app-network:
+        driver: bridge

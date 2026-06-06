@@ -1,0 +1,41 @@
+---
+alwaysApply: true
+---
+
+// Instructions for React and TypeScript Best Practices:
+
+// 1. **DRY Principle (Don't Repeat Yourself)**
+// - Extract reusable logic into custom hooks, utility functions, or components.
+// - Factor out repeated JSX into smaller, composable components.
+// - Use higher-order components or render props when patterns repeat across multiple components.
+
+// 2. **SOLID Principles**
+// - **Single Responsibility Principle**: Each component, hook, or function should do one thing well.
+// Avoid components that handle unrelated logic (e.g., fetching data AND displaying multiple unrelated UI elements).
+// - **Open/Closed Principle**: Components should be open for extension (e.g., via children or props) but closed for modification (don't require rewriting internals to achieve new behavior).
+// - **Liskov Substitution Principle**: Design components and types so that subtypes or replacements do not break the rest of the application (e.g., use interface inheritance, careful prop design).
+// - **Interface Segregation Principle**: Prefer smaller, purpose-built interfaces and props; don't force consumers to use unused props or features.
+// - **Dependency Inversion Principle**: Depend on abstractions, not concretions. Inject dependencies (e.g., data loaders) via props or context, not via direct imports where possible.
+
+// 3. **TypeScript Best Practices**
+// - Use strict typing; enable `strict` mode in `tsconfig.json`.
+// - Avoid `any`; prefer `unknown`, precise generics, or specific interfaces/types.
+// - Leverage type inference; avoid unnecessary explicit types but provide clarity where needed.
+// - Prefer using and extending existing types (e.g., from React or libraries) instead of creating new ones from scratch.
+// - Always type function parameters, especially for exported APIs and public components.
+
+// 4. **React Best Practices**
+// - Use function components and hooks; avoid classes unless necessary.
+// - Keep components small, focused, and stateless where possible.
+// - Use hooks (`useMemo`, `useCallback`, `useRef`, etc.) to optimize performance and prevent unnecessary re-renders.
+// - Memoize components with `React.memo` or `useMemo` when their props are stable and rendering is costly.
+// - Use context for shared, global state, not as a replacement for prop drilling in all cases.
+// - Use prop-types for JS code, and TypeScript types/interfaces for TS code.
+// - Use descriptive prop names and default values where appropriate.
+// - Prefer composition over inheritance (e.g., use `children` props).
+// - Clean up side effects in `useEffect` hooks (return cleanup functions).
+
+// 5. **Other General Best Practices**
+// - Use meaningful names for variables, functions, and components.
+// - Keep the codebase consistent; adopt and enforce a style guide (linting, formatting, etc.).
+// - Document complex functions, components, and exported APIs with TSDoc or JSDoc.

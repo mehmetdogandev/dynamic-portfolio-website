@@ -1,0 +1,5 @@
+# Yerel gelistirme: postgres + minio + redis + drizzle-gateway (Next.js host'ta: pnpm dev).
+# Tam stack + Next konteyner: docker compose -f docker-compose.local-full.yml up -d
+# Sunucu (ortak ag): docker compose -f docker-compose.app.yml up -d
+include:
+    - path: docker-compose.dev.yml
