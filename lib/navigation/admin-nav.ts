@@ -20,10 +20,6 @@ import {
   Layers,
   Cpu,
   Users,
-  Car,
-  Wrench,
-  HardHat,
-  ClipboardList,
   Smartphone,
   KeyRound,
   Bug,
@@ -120,39 +116,6 @@ export const radioMobileItems: AdminNavItem[] = [
     href: `${ADMIN_PANEL_PATH}/radio-mobile/api-keys`,
     icon: KeyRound,
     requiredPermission: SCOPES.RADIO_MOBILE_API_KEY,
-  },
-]
-
-export const japonOtoItems: AdminNavItem[] = [
-  {
-    title: 'İşlemler',
-    href: `${ADMIN_PANEL_PATH}/japon-oto/operations`,
-    icon: ClipboardList,
-    requiredPermission: SCOPES.JAPON_OTO_OPERATIONS,
-  },
-  {
-    title: 'Müşteriler',
-    href: `${ADMIN_PANEL_PATH}/japon-oto/customers`,
-    icon: Users,
-    requiredPermission: SCOPES.JAPON_OTO_CUSTOMER,
-  },
-  {
-    title: 'Araçlar',
-    href: `${ADMIN_PANEL_PATH}/japon-oto/cars`,
-    icon: Car,
-    requiredPermission: SCOPES.JAPON_OTO_CAR,
-  },
-  {
-    title: 'Servis',
-    href: `${ADMIN_PANEL_PATH}/japon-oto/service`,
-    icon: Wrench,
-    requiredPermission: SCOPES.JAPON_OTO_SERVICE,
-  },
-  {
-    title: 'Formen',
-    href: `${ADMIN_PANEL_PATH}/japon-oto/formen`,
-    icon: HardHat,
-    requiredPermission: SCOPES.JAPON_OTO_FORMEN,
   },
 ]
 
@@ -331,11 +294,6 @@ export const adminNavGroupMeta = {
     label: 'Site yönetimi',
     icon: Globe,
   },
-  japonOto: {
-    id: 'japonOto' as const,
-    label: 'Japon Oto yönetimi',
-    icon: Car,
-  },
   radioMobile: {
     id: 'radioMobile' as const,
     label: 'Radio Mobil Uygulamaları',
@@ -348,7 +306,6 @@ export function getAllAdminNavItems(): AdminNavItem[] {
     ...navigationItems,
     ...generalItems,
     ...getAllSiteManagementNavItems(),
-    ...japonOtoItems,
     ...radioMobileItems,
   ]
 }

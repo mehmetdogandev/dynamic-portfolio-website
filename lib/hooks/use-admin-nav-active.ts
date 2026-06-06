@@ -9,7 +9,6 @@ import {
   getAllSiteManagementNavItems,
   siteManagementNavBlocks,
   siteManagementSubgroups,
-  japonOtoItems,
   radioMobileItems,
   type AdminNavItem,
 } from '@/lib/navigation/admin-nav'
@@ -18,14 +17,12 @@ export type AdminNavGroupId =
   | 'general'
   | 'siteManagement'
   | 'radioMobile'
-  | 'japonOto'
 
 function collectNavItems(): AdminNavItem[] {
   return [
     ...navigationItems,
     ...generalItems,
     ...getAllSiteManagementNavItems(),
-    ...japonOtoItems,
     ...radioMobileItems,
   ]
 }
@@ -62,12 +59,11 @@ export function useAdminNavActive() {
   const activeGroups = useMemo(() => {
     const general = generalItems.some((item) => isItemActive(item.href))
     const radioMobile = radioMobileItems.some((item) => isItemActive(item.href))
-    const japonOto = japonOtoItems.some((item) => isItemActive(item.href))
     const siteManagement = siteManagementNavBlocks.some((block) => {
       if (block.type === 'item') return isItemActive(block.item.href)
       return block.subgroup.items.some((item) => isItemActive(item.href))
     })
-    return { general, siteManagement, radioMobile, japonOto }
+    return { general, siteManagement, radioMobile }
   }, [isItemActive])
 
   const activeSiteSubgroupIds = useMemo(

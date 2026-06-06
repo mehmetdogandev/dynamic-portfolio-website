@@ -25,11 +25,6 @@ import { headerSettingsRouter } from './header-settings'
 import { footerNavRouter } from './footer-nav'
 import { footerSocialRouter } from './footer-social'
 import { aboutRouter } from './about'
-import { japonCustomerRouter } from './japon-customer'
-import { japonCarRouter } from './japon-car'
-import { japonServiceJobRouter } from './japon-service-job'
-import { japonServiceRouter } from './japon-service'
-import { japonFormenRouter } from './japon-formen'
 import { radioMobileRouter } from './radio-mobile/index'
 
 export const appRouter = router({
@@ -62,11 +57,6 @@ export const appRouter = router({
   footerNav: footerNavRouter,
   footerSocial: footerSocialRouter,
   about: aboutRouter,
-  japonCustomer: japonCustomerRouter,
-  japonCar: japonCarRouter,
-  japonServiceJob: japonServiceJobRouter,
-  japonService: japonServiceRouter,
-  japonFormen: japonFormenRouter,
   radioMobile: radioMobileRouter,
 })
 
