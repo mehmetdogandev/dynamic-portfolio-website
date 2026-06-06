@@ -16,6 +16,7 @@ import {
 import {
   EMPTY_STAT_SET_FORM,
   StatSetFormFields,
+  formValuesToMutationInput,
   type StatSetFormValues,
 } from './stat-set-form-fields'
 
@@ -53,7 +54,7 @@ export function CreateStatSetDialog({
       toast.error('Set adı gerekli')
       return
     }
-    await mutateAsync(values)
+    await mutateAsync(formValuesToMutationInput(values))
   }
 
   return (
@@ -74,11 +75,7 @@ export function CreateStatSetDialog({
           >
             İptal
           </Button>
-          <Button
-            type="button"
-            disabled={isPending}
-            onClick={() => void submit()}
-          >
+          <Button type="button" disabled={isPending} onClick={() => void submit()}>
             {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
             Oluştur
           </Button>

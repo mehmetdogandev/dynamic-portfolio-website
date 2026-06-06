@@ -46,7 +46,11 @@ export default async function WebsiteHomePage() {
   const fallbackHighlightIcons = ['code2', 'database', 'cpu', 'bot'] as const
   const stats =
     homeStats ??
-    PORTFOLIO_CONFIG.stats.map((s) => ({ value: s.value, label: s.label }))
+    PORTFOLIO_CONFIG.stats.map((s) => ({
+      value: s.value,
+      label: s.label,
+      href: s.href,
+    }))
   const highlights =
     homeHighlights.length > 0
       ? homeHighlights

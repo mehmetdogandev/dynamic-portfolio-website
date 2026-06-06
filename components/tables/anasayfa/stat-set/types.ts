@@ -1,17 +1,26 @@
-import type { HomeStatSetStatus } from '@/lib/trpc/router/home-stat-set'
+import type {
+  HomeStatSetStatus,
+  HomeStatValueSource,
+} from '@/lib/trpc/router/home-stat-set'
 
 export type AdminHomeStatSetRow = {
   id: string
   name: string
   status: HomeStatSetStatus
-  stat1Value: string
-  stat1Label: string
-  stat2Value: string
-  stat2Label: string
-  stat3Value: string
-  stat3Label: string
-  stat4Value: string
-  stat4Label: string
+  yearsExperienceValue: string
+  yearsExperienceLabel: string
+  yearsExperienceHref: string | null
+  experienceCountValue: string
+  experienceCountLabel: string
+  experienceCountHref: string | null
+  experienceCountSource: HomeStatValueSource
+  companyCountValue: string
+  companyCountLabel: string
+  companyCountHref: string | null
+  companyCountSource: HomeStatValueSource
+  studentsTaughtValue: string
+  studentsTaughtLabel: string
+  studentsTaughtHref: string | null
   publishedAt: Date | null
   createdAt: Date
   updatedAt: Date

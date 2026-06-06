@@ -3,6 +3,11 @@ import { db } from '@/lib/db'
 import { aboutExperience } from '@/lib/db/schema'
 import { uploadFile } from '@/lib/s3/utils'
 
+const FAVICON = (host: string) => {
+  const u = `https://${host}`
+  return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(u)}&size=128`
+}
+
 type ExperienceSeed = {
   title: string
   company: string
@@ -11,11 +16,23 @@ type ExperienceSeed = {
   endDate: string | null
   description: string
   imageUrl?: string
+  faviconHost?: string
   imageAlt?: string
 }
 
 /** referance/.../src/data/mock-experiences.ts */
 const EXPERIENCE_ROWS: ExperienceSeed[] = [
+  {
+    title: 'Kurucu Ortak ve CEO',
+    company: 'Aksiyon Soft',
+    location: 'Türkiye',
+    startDate: '2026-05',
+    endDate: 'Devam',
+    description:
+      'Aksiyon Soft bünyesinde kurumsal web uygulamaları, admin panelleri ve ölçeklenebilir yazılım altyapıları geliştirme.',
+    faviconHost: 'www.aksiyonsoft.com',
+    imageAlt: 'Aksiyon Soft kurum logosu',
+  },
   {
     title: 'Software Support Specialist',
     company: 'Anadolu Mikronize A.Ş.',
@@ -185,8 +202,10 @@ export async function seed() {
 
   for (const [index, item] of EXPERIENCE_ROWS.entries()) {
     let fileId: string | null = null
-    if (item.imageUrl) {
-      const res = await fetch(item.imageUrl, {
+    const imageUrl =
+      item.imageUrl ?? (item.faviconHost ? FAVICON(item.faviconHost) : null)
+    if (imageUrl) {
+      const res = await fetch(imageUrl, {
         signal: AbortSignal.timeout(45_000),
       })
       if (!res.ok) {

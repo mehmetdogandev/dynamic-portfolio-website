@@ -66,7 +66,7 @@ export default async function HakkimdaPage() {
 
       {experiences.length > 0 ? (
         <RevealOnScroll variant="slideUp" delay={0.1}>
-          <section className="mt-12">
+          <section id="deneyimler" className="mt-12 scroll-mt-24">
             <h2 className="font-heading text-foreground mb-8 text-2xl font-bold">
               Deneyimlerim
             </h2>

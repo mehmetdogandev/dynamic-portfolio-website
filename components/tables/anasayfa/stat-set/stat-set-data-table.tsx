@@ -19,11 +19,20 @@ import { DeleteStatSetDialog } from './delete-stat-set-dialog'
 import type { AdminHomeStatSetRow } from './types'
 
 function formatStatsSummary(row: AdminHomeStatSetRow) {
+  const expValue =
+    row.experienceCountSource === 'AUTO_EXPERIENCE_COUNT'
+      ? 'otomatik'
+      : row.experienceCountValue
+  const companyValue =
+    row.companyCountSource === 'AUTO_REFERENCE_COUNT'
+      ? 'otomatik'
+      : row.companyCountValue
+
   return [
-    `${row.stat1Value} ${row.stat1Label}`,
-    `${row.stat2Value} ${row.stat2Label}`,
-    `${row.stat3Value} ${row.stat3Label}`,
-    `${row.stat4Value} ${row.stat4Label}`,
+    `${row.yearsExperienceValue} ${row.yearsExperienceLabel}`,
+    `${expValue} ${row.experienceCountLabel}`,
+    `${companyValue} ${row.companyCountLabel}`,
+    `${row.studentsTaughtValue} ${row.studentsTaughtLabel}`,
   ].join(' · ')
 }
 

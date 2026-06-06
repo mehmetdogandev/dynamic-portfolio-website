@@ -4,6 +4,7 @@ import type { SQL } from 'drizzle-orm'
 import { z } from 'zod/v4'
 import {
   homeStatSet,
+  homeStatValueSourceEnum,
   PERMISSIONS,
   SCOPES,
   sliderGroupStatusEnum,
@@ -18,34 +19,121 @@ import { createAdminListSchema, rbacProcedure, router } from '../index'
 
 const uuidZ = z.uuid()
 
+const experienceCountSourceZ = z.enum([
+  'MANUAL',
+  'AUTO_EXPERIENCE_COUNT',
+] as const)
+
+const companyCountSourceZ = z.enum(['MANUAL', 'AUTO_REFERENCE_COUNT'] as const)
+
 const statSetSelect = {
   id: homeStatSet.id,
   name: homeStatSet.name,
   status: homeStatSet.status,
-  stat1Value: homeStatSet.stat1Value,
-  stat1Label: homeStatSet.stat1Label,
-  stat2Value: homeStatSet.stat2Value,
-  stat2Label: homeStatSet.stat2Label,
-  stat3Value: homeStatSet.stat3Value,
-  stat3Label: homeStatSet.stat3Label,
-  stat4Value: homeStatSet.stat4Value,
-  stat4Label: homeStatSet.stat4Label,
+  yearsExperienceValue: homeStatSet.yearsExperienceValue,
+  yearsExperienceLabel: homeStatSet.yearsExperienceLabel,
+  yearsExperienceHref: homeStatSet.yearsExperienceHref,
+  experienceCountValue: homeStatSet.experienceCountValue,
+  experienceCountLabel: homeStatSet.experienceCountLabel,
+  experienceCountHref: homeStatSet.experienceCountHref,
+  experienceCountSource: homeStatSet.experienceCountSource,
+  companyCountValue: homeStatSet.companyCountValue,
+  companyCountLabel: homeStatSet.companyCountLabel,
+  companyCountHref: homeStatSet.companyCountHref,
+  companyCountSource: homeStatSet.companyCountSource,
+  studentsTaughtValue: homeStatSet.studentsTaughtValue,
+  studentsTaughtLabel: homeStatSet.studentsTaughtLabel,
+  studentsTaughtHref: homeStatSet.studentsTaughtHref,
   publishedAt: homeStatSet.publishedAt,
   createdAt: homeStatSet.createdAt,
   updatedAt: homeStatSet.updatedAt,
 } as const
 
-const statSetFormInput = z.object({
-  name: z.string().trim().min(1, 'Set adı gerekli'),
-  stat1Value: z.string().trim().min(1, '1. kutu değeri gerekli'),
-  stat1Label: z.string().trim().min(1, '1. kutu etiketi gerekli'),
-  stat2Value: z.string().trim().min(1, '2. kutu değeri gerekli'),
-  stat2Label: z.string().trim().min(1, '2. kutu etiketi gerekli'),
-  stat3Value: z.string().trim().min(1, '3. kutu değeri gerekli'),
-  stat3Label: z.string().trim().min(1, '3. kutu etiketi gerekli'),
-  stat4Value: z.string().trim().min(1, '4. kutu değeri gerekli'),
-  stat4Label: z.string().trim().min(1, '4. kutu etiketi gerekli'),
-})
+const optionalHrefZ = z
+  .string()
+  .trim()
+  .optional()
+  .nullable()
+  .transform((v) => (v?.length ? v : null))
+
+const statSetFormInput = z
+  .object({
+    name: z.string().trim().min(1, 'Set adı gerekli'),
+    yearsExperienceValue: z.string().trim().min(1, 'Yıl deneyimi değeri gerekli'),
+    yearsExperienceLabel: z
+      .string()
+      .trim()
+      .min(1, 'Yıl deneyimi etiketi gerekli'),
+    yearsExperienceHref: optionalHrefZ,
+    experienceCountValue: z.string().trim(),
+    experienceCountLabel: z
+      .string()
+      .trim()
+      .min(1, 'Deneyim sayısı etiketi gerekli'),
+    experienceCountHref: optionalHrefZ,
+    experienceCountSource: experienceCountSourceZ,
+    companyCountValue: z.string().trim(),
+    companyCountLabel: z
+      .string()
+      .trim()
+      .min(1, 'Şirket sayısı etiketi gerekli'),
+    companyCountHref: optionalHrefZ,
+    companyCountSource: companyCountSourceZ,
+    studentsTaughtValue: z
+      .string()
+      .trim()
+      .min(1, 'Öğrenci sayısı değeri gerekli'),
+    studentsTaughtLabel: z
+      .string()
+      .trim()
+      .min(1, 'Öğrenci sayısı etiketi gerekli'),
+    studentsTaughtHref: optionalHrefZ,
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.experienceCountSource === 'MANUAL' &&
+      !data.experienceCountValue.trim()
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Manuel modda deneyim sayısı değeri gerekli',
+        path: ['experienceCountValue'],
+      })
+    }
+    if (data.companyCountSource === 'MANUAL' && !data.companyCountValue.trim()) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Manuel modda şirket sayısı değeri gerekli',
+        path: ['companyCountValue'],
+      })
+    }
+  })
+
+function mapFormToDb(input: z.infer<typeof statSetFormInput>) {
+  return {
+    name: input.name.trim(),
+    yearsExperienceValue: input.yearsExperienceValue.trim(),
+    yearsExperienceLabel: input.yearsExperienceLabel.trim(),
+    yearsExperienceHref: input.yearsExperienceHref,
+    experienceCountValue:
+      input.experienceCountSource === 'MANUAL'
+        ? input.experienceCountValue.trim()
+        : '0',
+    experienceCountLabel: input.experienceCountLabel.trim(),
+    experienceCountHref: input.experienceCountHref,
+    experienceCountSource: input.experienceCountSource,
+    companyCountValue:
+      input.companyCountSource === 'MANUAL'
+        ? input.companyCountValue.trim()
+        : '0',
+    companyCountLabel: input.companyCountLabel.trim(),
+    companyCountHref: input.companyCountHref,
+    companyCountSource: input.companyCountSource,
+    studentsTaughtValue: input.studentsTaughtValue.trim(),
+    studentsTaughtLabel: input.studentsTaughtLabel.trim(),
+    studentsTaughtHref: input.studentsTaughtHref,
+  }
+}
 
 export const homeStatSetRouter = router({
   list: rbacProcedure(SCOPES.HOME_STAT_SET, PERMISSIONS.READ)
@@ -61,10 +149,10 @@ export const homeStatSetRouter = router({
           createMultiColumnSearch(
             [
               homeStatSet.name,
-              homeStatSet.stat1Label,
-              homeStatSet.stat2Label,
-              homeStatSet.stat3Label,
-              homeStatSet.stat4Label,
+              homeStatSet.yearsExperienceLabel,
+              homeStatSet.experienceCountLabel,
+              homeStatSet.companyCountLabel,
+              homeStatSet.studentsTaughtLabel,
             ],
             search
           )
@@ -133,16 +221,8 @@ export const homeStatSetRouter = router({
       const [inserted] = await ctx.db
         .insert(homeStatSet)
         .values({
-          name: input.name.trim(),
+          ...mapFormToDb(input),
           status: 'DRAFT',
-          stat1Value: input.stat1Value.trim(),
-          stat1Label: input.stat1Label.trim(),
-          stat2Value: input.stat2Value.trim(),
-          stat2Label: input.stat2Label.trim(),
-          stat3Value: input.stat3Value.trim(),
-          stat3Label: input.stat3Label.trim(),
-          stat4Value: input.stat4Value.trim(),
-          stat4Label: input.stat4Label.trim(),
         })
         .returning({ id: homeStatSet.id })
 
@@ -175,17 +255,7 @@ export const homeStatSetRouter = router({
 
       await ctx.db
         .update(homeStatSet)
-        .set({
-          name: input.name.trim(),
-          stat1Value: input.stat1Value.trim(),
-          stat1Label: input.stat1Label.trim(),
-          stat2Value: input.stat2Value.trim(),
-          stat2Label: input.stat2Label.trim(),
-          stat3Value: input.stat3Value.trim(),
-          stat3Label: input.stat3Label.trim(),
-          stat4Value: input.stat4Value.trim(),
-          stat4Label: input.stat4Label.trim(),
-        })
+        .set(mapFormToDb(input))
         .where(eq(homeStatSet.id, input.id))
 
       return { id: input.id }
@@ -320,3 +390,6 @@ export const homeStatSetRouter = router({
 
 export type HomeStatSetStatus =
   (typeof sliderGroupStatusEnum.enumValues)[number]
+
+export type HomeStatValueSource =
+  (typeof homeStatValueSourceEnum.enumValues)[number]

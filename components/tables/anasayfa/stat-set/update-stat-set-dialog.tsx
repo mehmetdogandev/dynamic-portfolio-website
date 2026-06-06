@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/dialog'
 import {
   StatSetFormFields,
+  formValuesToMutationInput,
+  rowToFormValues,
   type StatSetFormValues,
 } from './stat-set-form-fields'
 import type { AdminHomeStatSetRow } from './types'
@@ -30,31 +32,11 @@ export function UpdateStatSetDialog({
 }) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
-  const [values, setValues] = useState<StatSetFormValues>({
-    name: row.name,
-    stat1Value: row.stat1Value,
-    stat1Label: row.stat1Label,
-    stat2Value: row.stat2Value,
-    stat2Label: row.stat2Label,
-    stat3Value: row.stat3Value,
-    stat3Label: row.stat3Label,
-    stat4Value: row.stat4Value,
-    stat4Label: row.stat4Label,
-  })
+  const [values, setValues] = useState<StatSetFormValues>(rowToFormValues(row))
 
   useEffect(() => {
     if (!open) return
-    setValues({
-      name: row.name,
-      stat1Value: row.stat1Value,
-      stat1Label: row.stat1Label,
-      stat2Value: row.stat2Value,
-      stat2Label: row.stat2Label,
-      stat3Value: row.stat3Value,
-      stat3Label: row.stat3Label,
-      stat4Value: row.stat4Value,
-      stat4Label: row.stat4Label,
-    })
+    setValues(rowToFormValues(row))
   }, [open, row])
 
   const { mutateAsync, isPending } = useMutation(
@@ -71,7 +53,7 @@ export function UpdateStatSetDialog({
   )
 
   const submit = async () => {
-    await mutateAsync({ id: row.id, ...values })
+    await mutateAsync({ id: row.id, ...formValuesToMutationInput(values) })
   }
 
   return (
@@ -92,11 +74,7 @@ export function UpdateStatSetDialog({
           >
             İptal
           </Button>
-          <Button
-            type="button"
-            disabled={isPending}
-            onClick={() => void submit()}
-          >
+          <Button type="button" disabled={isPending} onClick={() => void submit()}>
             {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
             Kaydet
           </Button>

@@ -1,6 +1,26 @@
 import { count } from 'drizzle-orm'
 import { db } from '@/lib/db'
 import { homeStatSet } from '@/lib/db/schema'
+import { HOME_STAT_DEFAULT_HREFS } from '@/lib/website/home-stat-config'
+
+const PUBLISHED_SET = {
+  name: 'Varsayılan ana sayfa istatistikleri',
+  status: 'PUBLISHED' as const,
+  yearsExperienceValue: '3+',
+  yearsExperienceLabel: 'Yıl Deneyim',
+  yearsExperienceHref: HOME_STAT_DEFAULT_HREFS.yearsExperience,
+  experienceCountValue: '0',
+  experienceCountLabel: 'Farklı Deneyim',
+  experienceCountHref: HOME_STAT_DEFAULT_HREFS.experienceCount,
+  experienceCountSource: 'AUTO_EXPERIENCE_COUNT' as const,
+  companyCountValue: '0',
+  companyCountLabel: 'Şirkette Çalışma',
+  companyCountHref: HOME_STAT_DEFAULT_HREFS.companyCount,
+  companyCountSource: 'AUTO_REFERENCE_COUNT' as const,
+  studentsTaughtValue: '40+',
+  studentsTaughtLabel: 'Eğitim Verilen Öğrenci',
+  studentsTaughtHref: null,
+}
 
 export async function seed() {
   const [row] = await db.select({ n: count() }).from(homeStatSet)
@@ -12,30 +32,27 @@ export async function seed() {
   const now = new Date()
 
   await db.insert(homeStatSet).values({
-    name: 'Varsayılan ana sayfa istatistikleri',
-    status: 'PUBLISHED',
-    stat1Value: '3+',
-    stat1Label: 'Yıl Deneyim',
-    stat2Value: '12+',
-    stat2Label: 'Tamamlanan Proje',
-    stat3Value: '7',
-    stat3Label: 'Şirkette Çalışma',
-    stat4Value: '40+',
-    stat4Label: 'Eğitim Verilen Öğrenci',
+    ...PUBLISHED_SET,
     publishedAt: now,
   })
 
   await db.insert(homeStatSet).values({
     name: 'Taslak örnek set',
     status: 'DRAFT',
-    stat1Value: '5+',
-    stat1Label: 'Yıl Deneyim',
-    stat2Value: '20+',
-    stat2Label: 'Tamamlanan Proje',
-    stat3Value: '10',
-    stat3Label: 'Şirkette Çalışma',
-    stat4Value: '50+',
-    stat4Label: 'Eğitim Verilen Öğrenci',
+    yearsExperienceValue: '5+',
+    yearsExperienceLabel: 'Yıl Deneyim',
+    yearsExperienceHref: HOME_STAT_DEFAULT_HREFS.yearsExperience,
+    experienceCountValue: '15',
+    experienceCountLabel: 'Farklı Deneyim',
+    experienceCountHref: HOME_STAT_DEFAULT_HREFS.experienceCount,
+    experienceCountSource: 'MANUAL',
+    companyCountValue: '10',
+    companyCountLabel: 'Şirkette Çalışma',
+    companyCountHref: HOME_STAT_DEFAULT_HREFS.companyCount,
+    companyCountSource: 'MANUAL',
+    studentsTaughtValue: '50+',
+    studentsTaughtLabel: 'Eğitim Verilen Öğrenci',
+    studentsTaughtHref: null,
   })
 
   console.log('  Seeded home_stat_set (1 published + 1 draft)')
