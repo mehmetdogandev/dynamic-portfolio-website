@@ -36,10 +36,22 @@ export const PORTFOLIO_CONFIG = {
   },
 
   stats: [
-    { value: '5+', label: 'Yıl Deneyim' },
-    { value: '15+', label: 'Tamamlanan Proje' },
-    { value: '3', label: 'Şirkette Çalışma' },
-    { value: '100+', label: 'Eğitim Verilen Öğrenci' },
+    {
+      value: '3+',
+      label: 'Yıl Deneyim',
+      href: `${sitePath('hakkimda')}#deneyimler`,
+    },
+    {
+      value: '12+',
+      label: 'Farklı Deneyim',
+      href: `${sitePath('hakkimda')}#deneyimler`,
+    },
+    {
+      value: '7',
+      label: 'Şirkette Çalışma',
+      href: sitePath('referanslar'),
+    },
+    { value: '40+', label: 'Eğitim Verilen Öğrenci', href: null },
   ] as const,
 
   highlights: [

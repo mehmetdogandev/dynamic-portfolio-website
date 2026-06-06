@@ -2,11 +2,7 @@ import 'server-only'
 
 import { and, count, eq } from 'drizzle-orm'
 import { getDbConnection } from '@/lib/db'
-import {
-  aboutExperience,
-  homeStatSet,
-  reference,
-} from '@/lib/db/schema'
+import { aboutExperience, homeStatSet, reference } from '@/lib/db/schema'
 import { excludeDeleted } from '@/lib/db/utils'
 
 export type WebsiteHomeStat = {

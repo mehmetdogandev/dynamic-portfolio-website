@@ -34,7 +34,11 @@ async function fetchLogo() {
   const buffer = Buffer.from(await res.arrayBuffer())
   const contentType = res.headers.get('content-type') || 'image/png'
   const ext = fileExtForImageContentType(contentType)
-  return { buffer, contentType, fileName: `logo-aksiyon-soft-experience.${ext}` }
+  return {
+    buffer,
+    contentType,
+    fileName: `logo-aksiyon-soft-experience.${ext}`,
+  }
 }
 
 export async function seed() {

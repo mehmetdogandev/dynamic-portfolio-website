@@ -145,7 +145,9 @@ export function StatSetFormFields({
               value={values.experienceCountSource}
               onValueChange={(v) =>
                 onChange({
-                  experienceCountSource: v as 'MANUAL' | 'AUTO_EXPERIENCE_COUNT',
+                  experienceCountSource: v as
+                    | 'MANUAL'
+                    | 'AUTO_EXPERIENCE_COUNT',
                 })
               }
             >

@@ -18,9 +18,7 @@ function formatValue(
   href: string | null
 ) {
   const source =
-    kind === 'experience'
-      ? row.experienceCountSource
-      : row.companyCountSource
+    kind === 'experience' ? row.experienceCountSource : row.companyCountSource
   const sourceLabel =
     source !== 'MANUAL' ? HOME_STAT_SOURCE_LABELS[source] : null
 
@@ -82,10 +80,7 @@ export function DetailStatSetDialog({
         </DialogHeader>
         <div className="grid gap-3">
           {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="rounded-lg border px-3 py-2 text-sm"
-            >
+            <div key={index} className="rounded-lg border px-3 py-2 text-sm">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">{stat.label}</span>
                 <span className="font-semibold">{stat.value}</span>

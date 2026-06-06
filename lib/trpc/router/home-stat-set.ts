@@ -56,43 +56,42 @@ const optionalHrefZ = z
   .nullable()
   .transform((v) => (v?.length ? v : null))
 
-const statSetFormInput = z
-  .object({
-    name: z.string().trim().min(1, 'Set adı gerekli'),
-    yearsExperienceValue: z.string().trim().min(1, 'Yıl deneyimi değeri gerekli'),
-    yearsExperienceLabel: z
-      .string()
-      .trim()
-      .min(1, 'Yıl deneyimi etiketi gerekli'),
-    yearsExperienceHref: optionalHrefZ,
-    experienceCountValue: z.string().trim(),
-    experienceCountLabel: z
-      .string()
-      .trim()
-      .min(1, 'Deneyim sayısı etiketi gerekli'),
-    experienceCountHref: optionalHrefZ,
-    experienceCountSource: experienceCountSourceZ,
-    companyCountValue: z.string().trim(),
-    companyCountLabel: z
-      .string()
-      .trim()
-      .min(1, 'Şirket sayısı etiketi gerekli'),
-    companyCountHref: optionalHrefZ,
-    companyCountSource: companyCountSourceZ,
-    studentsTaughtValue: z
-      .string()
-      .trim()
-      .min(1, 'Öğrenci sayısı değeri gerekli'),
-    studentsTaughtLabel: z
-      .string()
-      .trim()
-      .min(1, 'Öğrenci sayısı etiketi gerekli'),
-    studentsTaughtHref: optionalHrefZ,
-  })
-  .superRefine((data, ctx) => {
+const statSetFormFields = z.object({
+  name: z.string().trim().min(1, 'Set adı gerekli'),
+  yearsExperienceValue: z.string().trim().min(1, 'Yıl deneyimi değeri gerekli'),
+  yearsExperienceLabel: z
+    .string()
+    .trim()
+    .min(1, 'Yıl deneyimi etiketi gerekli'),
+  yearsExperienceHref: optionalHrefZ,
+  experienceCountValue: z.string().trim(),
+  experienceCountLabel: z
+    .string()
+    .trim()
+    .min(1, 'Deneyim sayısı etiketi gerekli'),
+  experienceCountHref: optionalHrefZ,
+  experienceCountSource: experienceCountSourceZ,
+  companyCountValue: z.string().trim(),
+  companyCountLabel: z.string().trim().min(1, 'Şirket sayısı etiketi gerekli'),
+  companyCountHref: optionalHrefZ,
+  companyCountSource: companyCountSourceZ,
+  studentsTaughtValue: z
+    .string()
+    .trim()
+    .min(1, 'Öğrenci sayısı değeri gerekli'),
+  studentsTaughtLabel: z
+    .string()
+    .trim()
+    .min(1, 'Öğrenci sayısı etiketi gerekli'),
+  studentsTaughtHref: optionalHrefZ,
+})
+
+function refineStatSetForm<T extends z.ZodType>(schema: T) {
+  return schema.superRefine((data, ctx) => {
+    const form = data as z.infer<typeof statSetFormFields>
     if (
-      data.experienceCountSource === 'MANUAL' &&
-      !data.experienceCountValue.trim()
+      form.experienceCountSource === 'MANUAL' &&
+      !form.experienceCountValue.trim()
     ) {
       ctx.addIssue({
         code: 'custom',
@@ -100,7 +99,10 @@ const statSetFormInput = z
         path: ['experienceCountValue'],
       })
     }
-    if (data.companyCountSource === 'MANUAL' && !data.companyCountValue.trim()) {
+    if (
+      form.companyCountSource === 'MANUAL' &&
+      !form.companyCountValue.trim()
+    ) {
       ctx.addIssue({
         code: 'custom',
         message: 'Manuel modda şirket sayısı değeri gerekli',
@@ -108,8 +110,14 @@ const statSetFormInput = z
       })
     }
   })
+}
 
-function mapFormToDb(input: z.infer<typeof statSetFormInput>) {
+const statSetFormInput = refineStatSetForm(statSetFormFields)
+const statSetUpdateInput = refineStatSetForm(
+  statSetFormFields.safeExtend({ id: uuidZ })
+)
+
+function mapFormToDb(input: z.infer<typeof statSetFormFields>) {
   return {
     name: input.name.trim(),
     yearsExperienceValue: input.yearsExperienceValue.trim(),
@@ -237,7 +245,7 @@ export const homeStatSetRouter = router({
     }),
 
   update: rbacProcedure(SCOPES.HOME_STAT_SET, PERMISSIONS.UPDATE)
-    .input(statSetFormInput.extend({ id: uuidZ }))
+    .input(statSetUpdateInput)
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db
         .select({ id: homeStatSet.id })
