@@ -49,7 +49,14 @@ docker-compose.dev.yml
 
 /.pnpm-store/** */
 
+<<<<<<< HEAD
 .env.prod
 docs/**
 .pnpm-store/**
 .pnpm-store/v10/files/**
+=======
+Aksiyon Soft Admin paneli ile birlikte/**
+Aksiyon Soft Full example/**
+
+referance/**
+>>>>>>> b3145da (fix(gitignore): add missing reference entries to .gitignore)
