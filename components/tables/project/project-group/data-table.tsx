@@ -24,12 +24,12 @@ import {
 } from '@/lib/hooks/use-reorder-scope'
 import { usePermission } from '@/lib/hooks/use-rbac'
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
-import { CreateSolutionGroupDialog } from './create-dialog'
-import { DeleteSolutionGroupDialog } from './delete-dialog'
-import { DetailSolutionGroupDialog } from './detail-dialog'
-import { UpdateSolutionGroupDialog } from './update-dialog'
+import { CreateProjectGroupDialog } from './create-dialog'
+import { DeleteProjectGroupDialog } from './delete-dialog'
+import { DetailProjectGroupDialog } from './detail-dialog'
+import { UpdateProjectGroupDialog } from './update-dialog'
 
-export type AdminSolutionGroupRow = {
+export type AdminProjectGroupRow = {
   id: string
   name: string
   description: string
@@ -41,31 +41,31 @@ export type AdminSolutionGroupRow = {
 const REORDER_FILTER_TOAST =
   'Sıralamayı değiştirmek için arama ve sütun filtrelerini temizleyin.'
 
-export function SolutionGroupDataTable() {
+export function ProjectGroupDataTable() {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
 
   const { data: canCreate } = usePermission(
-    SCOPES.SOLUTION_GROUP,
+    SCOPES.PROJECT_GROUP,
     PERMISSIONS.CREATE
   )
   const { data: canRead } = usePermission(
-    SCOPES.SOLUTION_GROUP,
+    SCOPES.PROJECT_GROUP,
     PERMISSIONS.READ
   )
   const { data: canUpdate } = usePermission(
-    SCOPES.SOLUTION_GROUP,
+    SCOPES.PROJECT_GROUP,
     PERMISSIONS.UPDATE
   )
   const { data: canDelete } = usePermission(
-    SCOPES.SOLUTION_GROUP,
+    SCOPES.PROJECT_GROUP,
     PERMISSIONS.DELETE
   )
 
   const [createOpen, setCreateOpen] = useState(false)
-  const [detailRow, setDetailRow] = useState<AdminSolutionGroupRow | null>(null)
-  const [editRow, setEditRow] = useState<AdminSolutionGroupRow | null>(null)
-  const [deleteRow, setDeleteRow] = useState<AdminSolutionGroupRow | null>(null)
+  const [detailRow, setDetailRow] = useState<AdminProjectGroupRow | null>(null)
+  const [editRow, setEditRow] = useState<AdminProjectGroupRow | null>(null)
+  const [deleteRow, setDeleteRow] = useState<AdminProjectGroupRow | null>(null)
 
   const {
     pagination,
@@ -87,19 +87,17 @@ export function SolutionGroupDataTable() {
 
   const { orderedIds: scopeOrderedIds } = useReorderScope({
     enabled: Boolean(canUpdate) && !reorderDisabled,
-    queryKey: trpc.solutionGroup.listReorderScope.queryKey(),
+    queryKey: trpc.projectGroup.listReorderScope.queryKey(),
     queryFn: () =>
-      queryClient.fetchQuery(
-        trpc.solutionGroup.listReorderScope.queryOptions()
-      ),
+      queryClient.fetchQuery(trpc.projectGroup.listReorderScope.queryOptions()),
   })
 
   const { data, isLoading, isError, error } = useQuery({
-    ...trpc.solutionGroup.list.queryOptions(listInput),
+    ...trpc.projectGroup.list.queryOptions(listInput),
   })
 
   const rows = useMemo(
-    () => (data?.data ?? []) as AdminSolutionGroupRow[],
+    () => (data?.data ?? []) as AdminProjectGroupRow[],
     [data?.data]
   )
   const paginationMeta = data?.pagination
@@ -112,13 +110,13 @@ export function SolutionGroupDataTable() {
     : undefined
 
   const { mutateAsync: reorderAsync } = useMutation(
-    trpc.solutionGroup.reorder.mutationOptions({
+    trpc.projectGroup.reorder.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionGroup.list.queryKey(),
+          queryKey: trpc.projectGroup.list.queryKey(),
         })
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionGroup.listReorderScope.queryKey(),
+          queryKey: trpc.projectGroup.listReorderScope.queryKey(),
         })
       },
     })
@@ -151,7 +149,7 @@ export function SolutionGroupDataTable() {
     [reorderDisabled, canUpdate, scopeOrderedIds, reorderAsync]
   )
 
-  const columns: ColumnDef<AdminSolutionGroupRow>[] = useMemo(
+  const columns: ColumnDef<AdminProjectGroupRow>[] = useMemo(
     () => [
       {
         id: 'sort',
@@ -182,7 +180,7 @@ export function SolutionGroupDataTable() {
           cellClassName: 'text-muted-foreground max-w-md truncate',
         },
       },
-      createIconActionColumn<AdminSolutionGroupRow>((row) => {
+      createIconActionColumn<AdminProjectGroupRow>((row) => {
         const actions = []
         if (canRead) {
           actions.push({
@@ -225,11 +223,11 @@ export function SolutionGroupDataTable() {
   )
 
   const renderTableBody = useCallback(
-    (table: ReactTable<AdminSolutionGroupRow>) =>
+    (table: ReactTable<AdminProjectGroupRow>) =>
       table
         .getRowModel()
         .rows.map((row) => (
-          <SortableSolutionGroupTableRow
+          <SortableProjectGroupTableRow
             key={row.id}
             row={row}
             displayIndex={displayOffset + row.index + 1}
@@ -278,19 +276,19 @@ export function SolutionGroupDataTable() {
         />
       )}
 
-      <CreateSolutionGroupDialog
+      <CreateProjectGroupDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
       />
       {detailRow ? (
-        <DetailSolutionGroupDialog
+        <DetailProjectGroupDialog
           row={detailRow}
           open={true}
           onOpenChange={(open) => !open && setDetailRow(null)}
         />
       ) : null}
       {editRow ? (
-        <UpdateSolutionGroupDialog
+        <UpdateProjectGroupDialog
           key={editRow.id}
           row={editRow}
           open={true}
@@ -298,7 +296,7 @@ export function SolutionGroupDataTable() {
         />
       ) : null}
       {deleteRow ? (
-        <DeleteSolutionGroupDialog
+        <DeleteProjectGroupDialog
           row={deleteRow}
           open={true}
           onOpenChange={(open) => !open && setDeleteRow(null)}
@@ -308,12 +306,12 @@ export function SolutionGroupDataTable() {
   )
 }
 
-function SortableSolutionGroupTableRow({
+function SortableProjectGroupTableRow({
   row,
   displayIndex,
   canReorder,
 }: {
-  row: Row<AdminSolutionGroupRow>
+  row: Row<AdminProjectGroupRow>
   displayIndex: number
   canReorder: boolean
 }) {

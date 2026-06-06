@@ -4,9 +4,9 @@ import { media, mediaGroup } from '@/lib/db/schema'
 import { uploadFile } from '@/lib/s3/utils'
 import { STATIC_MEDIA_GROUPS, STATIC_MEDIA_ITEMS } from './media-static-data'
 
-function toMediaType(kind: 'etkinlik' | 'solution' | 'topluluk') {
-  if (kind === 'etkinlik') return 'ACTIVITY' as const
-  if (kind === 'solution') return 'SOLUTION' as const
+function toMediaType(kind: 'etkinlik' | 'project' | 'topluluk' | 'teknoloji') {
+  if (kind === 'etkinlik' || kind === 'teknoloji') return 'ACTIVITY' as const
+  if (kind === 'project') return 'PROJECT' as const
   return 'COMMUNITY' as const
 }
 

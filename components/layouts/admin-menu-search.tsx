@@ -16,7 +16,6 @@ import {
   navigationItems,
   generalItems,
   getAllSiteManagementNavItems,
-  japonOtoItems,
   radioMobileItems,
   type AdminNavItem,
 } from '@/lib/navigation/admin-nav'
@@ -119,9 +118,6 @@ function AdminMenuSearchDialog() {
       if (isItemAccessible(item)) items.push(item)
     })
     getAllSiteManagementNavItems().forEach((item) => {
-      if (isItemAccessible(item)) items.push(item)
-    })
-    japonOtoItems.forEach((item) => {
       if (isItemAccessible(item)) items.push(item)
     })
     radioMobileItems.forEach((item) => {

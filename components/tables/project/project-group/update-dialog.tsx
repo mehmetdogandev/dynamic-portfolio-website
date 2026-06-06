@@ -16,14 +16,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import type { AdminSolutionGroupRow } from './data-table'
+import type { AdminProjectGroupRow } from './data-table'
 
-export function UpdateSolutionGroupDialog({
+export function UpdateProjectGroupDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminSolutionGroupRow
+  row: AdminProjectGroupRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
@@ -39,11 +39,11 @@ export function UpdateSolutionGroupDialog({
   }, [open, row])
 
   const { mutateAsync, isPending } = useMutation(
-    trpc.solutionGroup.update.mutationOptions({
+    trpc.projectGroup.update.mutationOptions({
       onSuccess: async () => {
-        toast.success('Çözüm grubu güncellendi')
+        toast.success('Proje grubu güncellendi')
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionGroup.list.queryKey(),
+          queryKey: trpc.projectGroup.list.queryKey(),
         })
         onOpenChange(false)
       },
@@ -67,21 +67,21 @@ export function UpdateSolutionGroupDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Çözüm grubunu düzenle</DialogTitle>
+          <DialogTitle>Proje grubunu düzenle</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="edit-solution-group-name">Ad</Label>
+            <Label htmlFor="edit-project-group-name">Ad</Label>
             <Input
-              id="edit-solution-group-name"
+              id="edit-project-group-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="edit-solution-group-desc">Açıklama</Label>
+            <Label htmlFor="edit-project-group-desc">Açıklama</Label>
             <Textarea
-              id="edit-solution-group-desc"
+              id="edit-project-group-desc"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               rows={3}

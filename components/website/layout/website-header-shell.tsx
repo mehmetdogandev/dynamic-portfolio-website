@@ -50,7 +50,7 @@ export function WebsiteHeaderShell({
       <div
         ref={shellRef}
         className={cn(
-          'border-border/60 bg-card/40 supports-[backdrop-filter]:bg-card/30 w-full border-b backdrop-blur-md',
+          'border-border/60 bg-background/95 supports-[backdrop-filter]:bg-background/60 w-full border-b shadow-sm backdrop-blur-md',
           sticky && 'fixed top-0 left-0 right-0 z-30'
         )}
       >

@@ -2,7 +2,7 @@
 
 import { Loader2 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
-import { SolutionEditorForm } from '@/components/tables/solution/solution-editor-form'
+import { ProjectEditorForm } from '@/components/tables/project/project-editor-form'
 import {
   Card,
   CardContent,
@@ -13,9 +13,9 @@ import {
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
 import { usePermission } from '@/lib/hooks/use-rbac'
 
-export default function NewSolutionPage() {
+export default function NewProjectPage() {
   const { data: canAccess, isLoading } = usePermission(
-    SCOPES.SOLUTION,
+    SCOPES.PROJECT,
     PERMISSIONS.CREATE
   )
 
@@ -38,7 +38,7 @@ export default function NewSolutionPage() {
               Erişim reddedildi
             </CardTitle>
             <CardDescription>
-              Bu sayfa için SOLUTION kapsamında CREATE izni gerekir.
+              Bu sayfa için PROJECT kapsamında CREATE izni gerekir.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -60,7 +60,7 @@ export default function NewSolutionPage() {
             Başlık, grup, teknolojiler, kapak ve içerik ile çözüm oluşturun.
           </p>
         </div>
-        <SolutionEditorForm mode="create" />
+        <ProjectEditorForm mode="create" />
       </div>
     </DashboardLayout>
   )

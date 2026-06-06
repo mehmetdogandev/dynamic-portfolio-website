@@ -13,10 +13,7 @@ import {
   type AdminNavItem,
 } from '@/lib/navigation/admin-nav'
 
-export type AdminNavGroupId =
-  | 'general'
-  | 'siteManagement'
-  | 'radioMobile'
+export type AdminNavGroupId = 'general' | 'siteManagement' | 'radioMobile'
 
 function collectNavItems(): AdminNavItem[] {
   return [

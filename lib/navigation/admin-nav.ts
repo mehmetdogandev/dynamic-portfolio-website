@@ -24,6 +24,7 @@ import {
   KeyRound,
   Bug,
   Package,
+  Sparkles,
 } from 'lucide-react'
 import { SCOPES } from '@/lib/db/schema'
 import { ADMIN_PANEL_PATH } from '@/lib/admin-path'
@@ -154,13 +155,6 @@ const siteManagementFooter: AdminNavItem = {
   requiredPermission: SCOPES.FOOTER_NAV,
 }
 
-const siteManagementAbout: AdminNavItem = {
-  title: 'Hakkımızda',
-  href: `${ADMIN_PANEL_PATH}/about`,
-  icon: FileText,
-  requiredPermission: SCOPES.ABOUT,
-}
-
 export type AdminNavSubgroup = {
   id: string
   label: string
@@ -209,33 +203,70 @@ export const siteManagementSubgroups: AdminNavSubgroup[] = [
     ],
   },
   {
-    id: 'solution',
-    label: 'Çözüm yönetimi',
+    id: 'project',
+    label: 'Proje yönetimi',
     icon: LayoutGrid,
     items: [
       {
-        title: 'Çözümler',
-        href: `${ADMIN_PANEL_PATH}/solution`,
+        title: 'Projeler',
+        href: `${ADMIN_PANEL_PATH}/project`,
         icon: LayoutGrid,
-        requiredPermission: SCOPES.SOLUTION,
+        requiredPermission: SCOPES.PROJECT,
       },
       {
-        title: 'Çözüm grupları',
-        href: `${ADMIN_PANEL_PATH}/solution/group`,
+        title: 'Proje grupları',
+        href: `${ADMIN_PANEL_PATH}/project/group`,
         icon: Layers,
-        requiredPermission: SCOPES.SOLUTION_GROUP,
+        requiredPermission: SCOPES.PROJECT_GROUP,
       },
       {
-        title: 'Çözüm teknolojileri',
-        href: `${ADMIN_PANEL_PATH}/solution/technology`,
+        title: 'Proje teknolojileri',
+        href: `${ADMIN_PANEL_PATH}/project/technology`,
         icon: Cpu,
-        requiredPermission: SCOPES.SOLUTION_TECHNOLOGY,
+        requiredPermission: SCOPES.PROJECT_TECHNOLOGY,
+      },
+    ],
+  },
+  {
+    id: 'hakkimda',
+    label: 'Hakkımda sayfası yönetimi',
+    icon: FileText,
+    items: [
+      {
+        title: 'Sayfa metni',
+        href: `${ADMIN_PANEL_PATH}/hakkimda/profile`,
+        icon: FileText,
+        requiredPermission: SCOPES.ABOUT_PROFILE,
+      },
+      {
+        title: 'Deneyimler',
+        href: `${ADMIN_PANEL_PATH}/hakkimda/experience`,
+        icon: BriefcaseBusiness,
+        requiredPermission: SCOPES.ABOUT_EXPERIENCE,
+      },
+      {
+        title: 'Uzmanlık alanları',
+        href: `${ADMIN_PANEL_PATH}/hakkimda/expertise`,
+        icon: Tags,
+        requiredPermission: SCOPES.ABOUT_EXPERTISE,
+      },
+      {
+        title: 'Teknolojiler',
+        href: `${ADMIN_PANEL_PATH}/hakkimda/technology`,
+        icon: Cpu,
+        requiredPermission: SCOPES.ABOUT_TECHNOLOGY,
+      },
+      {
+        title: 'İlgi alanları',
+        href: `${ADMIN_PANEL_PATH}/hakkimda/interest`,
+        icon: Sparkles,
+        requiredPermission: SCOPES.ABOUT_INTEREST,
       },
     ],
   },
 ]
 
-/** Sidebar’da tek öğe ile alt grup sırası (Slider → Site SEO → Referanslar → …). */
+/** Sidebar'da tek öğe ile alt grup sırası (Slider → Site SEO → Referanslar → …). */
 export type SiteManagementNavBlock =
   | { type: 'item'; item: AdminNavItem }
   | { type: 'subgroup'; subgroup: AdminNavSubgroup }
@@ -245,7 +276,10 @@ export const siteManagementNavBlocks: SiteManagementNavBlock[] = [
   { type: 'item', item: siteManagementSiteSeo },
   { type: 'item', item: siteManagementHeader },
   { type: 'item', item: siteManagementFooter },
-  { type: 'item', item: siteManagementAbout },
+  {
+    type: 'subgroup',
+    subgroup: siteManagementSubgroups.find((g) => g.id === 'hakkimda')!,
+  },
   { type: 'item', item: siteManagementReference },
   {
     type: 'subgroup',
@@ -257,7 +291,7 @@ export const siteManagementNavBlocks: SiteManagementNavBlock[] = [
   },
   {
     type: 'subgroup',
-    subgroup: siteManagementSubgroups.find((g) => g.id === 'solution')!,
+    subgroup: siteManagementSubgroups.find((g) => g.id === 'project')!,
   },
 ]
 
@@ -267,18 +301,20 @@ export function getAllSiteManagementNavItems(): AdminNavItem[] {
     siteManagementSubgroups.find((g) => g.id === 'media')?.items ?? []
   const blogItems =
     siteManagementSubgroups.find((g) => g.id === 'blog')?.items ?? []
-  const solutionItems =
-    siteManagementSubgroups.find((g) => g.id === 'solution')?.items ?? []
+  const projectItems =
+    siteManagementSubgroups.find((g) => g.id === 'project')?.items ?? []
+  const hakkimdaItems =
+    siteManagementSubgroups.find((g) => g.id === 'hakkimda')?.items ?? []
   return [
     siteManagementSlider,
     siteManagementSiteSeo,
     siteManagementHeader,
     siteManagementFooter,
-    siteManagementAbout,
+    ...hakkimdaItems,
     siteManagementReference,
     ...mediaItems,
     ...blogItems,
-    ...solutionItems,
+    ...projectItems,
   ]
 }
 

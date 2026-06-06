@@ -1,13 +1,16 @@
-import { WebsiteHero } from '@/components/website/home/website-hero'
-import { WebsiteHomeServices } from '@/components/website/home/website-home-services'
-import { WebsiteHomeTeasers } from '@/components/website/home/website-home-teasers'
-import { WebsiteHomeContactCta } from '@/components/website/home/website-home-contact-cta'
-import { getPublicHomeHeroData } from '@/lib/data/website-hero-slides'
-import { getPublicReferences } from '@/lib/data/website-references'
-import { getPublicMediaPreview } from '@/lib/data/website-media'
+import { HomeHeroSlider } from '@/components/website/home/home-hero-slider'
+import { HomeStats } from '@/components/website/home/home-stats'
+import { FeaturedProjects } from '@/components/website/home/featured-projects'
+import { HomeHighlights } from '@/components/website/home/home-highlights'
+import { BlogPreview } from '@/components/website/home/blog-preview'
+import { HomeAboutTeaser } from '@/components/website/home/home-about-teaser'
+import { CtaSection } from '@/components/website/home/cta-section'
+import { RevealOnScroll } from '@/components/website/motion/reveal-on-scroll'
+import { getPublishedAboutPreview } from '@/lib/data/website-about'
 import { getPublicBlogPosts } from '@/lib/data/website-blog'
-import { getFeaturedSolutionTeaser } from '@/lib/data/website-solutions'
+import { getPublicProjects } from '@/lib/data/website-projects'
 import { getPublicSiteSeo } from '@/lib/data/website-site-seo'
+import { PORTFOLIO_CONFIG } from '@/lib/website/portfolio-config'
 import { marketingPageMetadata } from '@/lib/seo/marketing-metadata'
 import { buildOrganizationAndWebSiteJsonLd } from '@/lib/seo/json-ld'
 import { publicSiteHomeUrl } from '@/lib/seo/build-page-metadata'
@@ -15,31 +18,20 @@ import { WebsiteJsonLdScript } from '@/components/website/seo/website-json-ld'
 
 export async function generateMetadata() {
   return marketingPageMetadata({
-    title: 'Kurumsal yazılım',
-    descriptionFallback:
-      'Firmalara özel yazılım geliştirme, kurumsal uygulamalar ve sürdürülebilir dijital çözümler.',
+    title: PORTFOLIO_CONFIG.name,
+    descriptionFallback: PORTFOLIO_CONFIG.description,
     canonicalSegment: '',
   })
 }
 
 export default async function WebsiteHomePage() {
-  const [
-    references,
-    galleryPreview,
-    hero,
-    blogPosts,
-    solutionPreview,
-    siteSeo,
-  ] = await Promise.all([
-    getPublicReferences(),
-    getPublicMediaPreview(),
-    getPublicHomeHeroData(),
+  const [projects, blogPosts, aboutPreview, siteSeo] = await Promise.all([
+    getPublicProjects(),
     getPublicBlogPosts(),
-    getFeaturedSolutionTeaser(),
+    getPublishedAboutPreview(),
     getPublicSiteSeo(),
   ])
-  const referencePreview = references[0] ?? null
-  const blogPreview = blogPosts[0] ?? null
+
   const siteUrl = publicSiteHomeUrl()
   const orgJson =
     siteUrl && siteSeo?.organizationName?.trim()
@@ -54,21 +46,27 @@ export default async function WebsiteHomePage() {
   return (
     <>
       {orgJson ? <WebsiteJsonLdScript json={orgJson} /> : null}
-      {hero.slides.length > 0 ? (
-        <WebsiteHero
-          slides={hero.slides}
-          type={hero.type}
-          autoplayInterval={hero.autoplayInterval}
-        />
+      <HomeHeroSlider />
+      <RevealOnScroll variant="scaleIn" delay={0.03}>
+        <HomeStats />
+      </RevealOnScroll>
+      <RevealOnScroll variant="slideLeft" delay={0.05}>
+        <FeaturedProjects projects={projects} />
+      </RevealOnScroll>
+      <RevealOnScroll variant="slideLeft" delay={0.05}>
+        <HomeHighlights />
+      </RevealOnScroll>
+      <RevealOnScroll variant="fadeUp" delay={0.05}>
+        <BlogPreview posts={blogPosts} />
+      </RevealOnScroll>
+      {aboutPreview ? (
+        <RevealOnScroll variant="slideLeft" delay={0.06}>
+          <HomeAboutTeaser lead={aboutPreview.title} />
+        </RevealOnScroll>
       ) : null}
-      <WebsiteHomeServices />
-      <WebsiteHomeTeasers
-        referencePreview={referencePreview}
-        galleryPreview={galleryPreview}
-        blogPreview={blogPreview}
-        solutionPreview={solutionPreview}
-      />
-      <WebsiteHomeContactCta />
+      <RevealOnScroll variant="scaleIn" delay={0.1}>
+        <CtaSection />
+      </RevealOnScroll>
     </>
   )
 }

@@ -2,7 +2,7 @@
 
 import { Loader2 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
-import { SolutionGroupDataTable } from '@/components/tables/solution/solution-group/data-table'
+import { ProjectGroupDataTable } from '@/components/tables/project/project-group/data-table'
 import {
   Card,
   CardContent,
@@ -13,9 +13,9 @@ import {
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
 import { usePermission } from '@/lib/hooks/use-rbac'
 
-export default function SolutionGroupPage() {
+export default function ProjectGroupPage() {
   const { data: canAccess, isLoading } = usePermission(
-    SCOPES.SOLUTION_GROUP,
+    SCOPES.PROJECT_GROUP,
     PERMISSIONS.ACCESS
   )
 
@@ -38,7 +38,7 @@ export default function SolutionGroupPage() {
               Erişim reddedildi
             </CardTitle>
             <CardDescription>
-              Bu sayfa için SOLUTION_GROUP kapsamında ACCESS izni gerekir.
+              Bu sayfa için PROJECT_GROUP kapsamında ACCESS izni gerekir.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -64,7 +64,7 @@ export default function SolutionGroupPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SolutionGroupDataTable />
+            <ProjectGroupDataTable />
           </CardContent>
         </Card>
       </div>

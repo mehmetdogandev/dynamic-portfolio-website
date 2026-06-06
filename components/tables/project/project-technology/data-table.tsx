@@ -24,12 +24,12 @@ import {
 } from '@/lib/hooks/use-reorder-scope'
 import { usePermission } from '@/lib/hooks/use-rbac'
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
-import { CreateSolutionTechnologyDialog } from './create-dialog'
-import { DeleteSolutionTechnologyDialog } from './delete-dialog'
-import { DetailSolutionTechnologyDialog } from './detail-dialog'
-import { UpdateSolutionTechnologyDialog } from './update-dialog'
+import { CreateProjectTechnologyDialog } from './create-dialog'
+import { DeleteProjectTechnologyDialog } from './delete-dialog'
+import { DetailProjectTechnologyDialog } from './detail-dialog'
+import { UpdateProjectTechnologyDialog } from './update-dialog'
 
-export type AdminSolutionTechnologyRow = {
+export type AdminProjectTechnologyRow = {
   id: string
   name: string
   description: string
@@ -41,35 +41,33 @@ export type AdminSolutionTechnologyRow = {
 const REORDER_FILTER_TOAST =
   'Sıralamayı değiştirmek için arama ve sütun filtrelerini temizleyin.'
 
-export function SolutionTechnologyDataTable() {
+export function ProjectTechnologyDataTable() {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
 
   const { data: canCreate } = usePermission(
-    SCOPES.SOLUTION_TECHNOLOGY,
+    SCOPES.PROJECT_TECHNOLOGY,
     PERMISSIONS.CREATE
   )
   const { data: canRead } = usePermission(
-    SCOPES.SOLUTION_TECHNOLOGY,
+    SCOPES.PROJECT_TECHNOLOGY,
     PERMISSIONS.READ
   )
   const { data: canUpdate } = usePermission(
-    SCOPES.SOLUTION_TECHNOLOGY,
+    SCOPES.PROJECT_TECHNOLOGY,
     PERMISSIONS.UPDATE
   )
   const { data: canDelete } = usePermission(
-    SCOPES.SOLUTION_TECHNOLOGY,
+    SCOPES.PROJECT_TECHNOLOGY,
     PERMISSIONS.DELETE
   )
 
   const [createOpen, setCreateOpen] = useState(false)
-  const [detailRow, setDetailRow] = useState<AdminSolutionTechnologyRow | null>(
+  const [detailRow, setDetailRow] = useState<AdminProjectTechnologyRow | null>(
     null
   )
-  const [editRow, setEditRow] = useState<AdminSolutionTechnologyRow | null>(
-    null
-  )
-  const [deleteRow, setDeleteRow] = useState<AdminSolutionTechnologyRow | null>(
+  const [editRow, setEditRow] = useState<AdminProjectTechnologyRow | null>(null)
+  const [deleteRow, setDeleteRow] = useState<AdminProjectTechnologyRow | null>(
     null
   )
 
@@ -93,19 +91,19 @@ export function SolutionTechnologyDataTable() {
 
   const { orderedIds: scopeOrderedIds } = useReorderScope({
     enabled: Boolean(canUpdate) && !reorderDisabled,
-    queryKey: trpc.solutionTechnology.listReorderScope.queryKey(),
+    queryKey: trpc.projectTechnology.listReorderScope.queryKey(),
     queryFn: () =>
       queryClient.fetchQuery(
-        trpc.solutionTechnology.listReorderScope.queryOptions()
+        trpc.projectTechnology.listReorderScope.queryOptions()
       ),
   })
 
   const { data, isLoading, isError, error } = useQuery({
-    ...trpc.solutionTechnology.list.queryOptions(listInput),
+    ...trpc.projectTechnology.list.queryOptions(listInput),
   })
 
   const rows = useMemo(
-    () => (data?.data ?? []) as AdminSolutionTechnologyRow[],
+    () => (data?.data ?? []) as AdminProjectTechnologyRow[],
     [data?.data]
   )
   const paginationMeta = data?.pagination
@@ -118,13 +116,13 @@ export function SolutionTechnologyDataTable() {
     : undefined
 
   const { mutateAsync: reorderAsync } = useMutation(
-    trpc.solutionTechnology.reorder.mutationOptions({
+    trpc.projectTechnology.reorder.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionTechnology.list.queryKey(),
+          queryKey: trpc.projectTechnology.list.queryKey(),
         })
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionTechnology.listReorderScope.queryKey(),
+          queryKey: trpc.projectTechnology.listReorderScope.queryKey(),
         })
       },
     })
@@ -157,7 +155,7 @@ export function SolutionTechnologyDataTable() {
     [reorderDisabled, canUpdate, scopeOrderedIds, reorderAsync]
   )
 
-  const columns: ColumnDef<AdminSolutionTechnologyRow>[] = useMemo(
+  const columns: ColumnDef<AdminProjectTechnologyRow>[] = useMemo(
     () => [
       {
         id: 'sort',
@@ -188,7 +186,7 @@ export function SolutionTechnologyDataTable() {
           cellClassName: 'text-muted-foreground max-w-md truncate',
         },
       },
-      createIconActionColumn<AdminSolutionTechnologyRow>((row) => {
+      createIconActionColumn<AdminProjectTechnologyRow>((row) => {
         const actions = []
         if (canRead) {
           actions.push({
@@ -231,11 +229,11 @@ export function SolutionTechnologyDataTable() {
   )
 
   const renderTableBody = useCallback(
-    (table: ReactTable<AdminSolutionTechnologyRow>) =>
+    (table: ReactTable<AdminProjectTechnologyRow>) =>
       table
         .getRowModel()
         .rows.map((row) => (
-          <SortableSolutionTechnologyTableRow
+          <SortableProjectTechnologyTableRow
             key={row.id}
             row={row}
             displayIndex={displayOffset + row.index + 1}
@@ -284,19 +282,19 @@ export function SolutionTechnologyDataTable() {
         />
       )}
 
-      <CreateSolutionTechnologyDialog
+      <CreateProjectTechnologyDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
       />
       {detailRow ? (
-        <DetailSolutionTechnologyDialog
+        <DetailProjectTechnologyDialog
           row={detailRow}
           open={true}
           onOpenChange={(open) => !open && setDetailRow(null)}
         />
       ) : null}
       {editRow ? (
-        <UpdateSolutionTechnologyDialog
+        <UpdateProjectTechnologyDialog
           key={editRow.id}
           row={editRow}
           open={true}
@@ -304,7 +302,7 @@ export function SolutionTechnologyDataTable() {
         />
       ) : null}
       {deleteRow ? (
-        <DeleteSolutionTechnologyDialog
+        <DeleteProjectTechnologyDialog
           row={deleteRow}
           open={true}
           onOpenChange={(open) => !open && setDeleteRow(null)}
@@ -314,12 +312,12 @@ export function SolutionTechnologyDataTable() {
   )
 }
 
-function SortableSolutionTechnologyTableRow({
+function SortableProjectTechnologyTableRow({
   row,
   displayIndex,
   canReorder,
 }: {
-  row: Row<AdminSolutionTechnologyRow>
+  row: Row<AdminProjectTechnologyRow>
   displayIndex: number
   canReorder: boolean
 }) {

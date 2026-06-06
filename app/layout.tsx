@@ -1,5 +1,11 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono, Playfair_Display } from 'next/font/google'
+import {
+  Cormorant_Garamond,
+  Inter,
+  JetBrains_Mono,
+  Playfair_Display,
+  Prata,
+} from 'next/font/google'
 import './globals.css'
 import './theme-christmas.css'
 import Providers from '@/components/providers'
@@ -19,6 +25,18 @@ const fontSerif = Playfair_Display({
 const fontMono = JetBrains_Mono({
   variable: '--font-mono-impl',
   subsets: ['latin'],
+})
+
+const fontPrata = Prata({
+  variable: '--font-prata-impl',
+  subsets: ['latin'],
+  weight: '400',
+})
+
+const fontCormorant = Cormorant_Garamond({
+  variable: '--font-cormorant-impl',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
 })
 
 export const metadata: Metadata = {
@@ -169,13 +187,13 @@ export default function RootLayout({
     <html
       suppressHydrationWarning
       lang="tr"
-      className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable}`}
+      className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} ${fontPrata.variable} ${fontCormorant.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: consoleCaptureScript }} />
       </head>
       <body
-        className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} font-sans antialiased`}
+        className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} ${fontPrata.variable} ${fontCormorant.variable} font-sans antialiased`}
       >
         <Providers>
           <HydrateClient>{children}</HydrateClient>

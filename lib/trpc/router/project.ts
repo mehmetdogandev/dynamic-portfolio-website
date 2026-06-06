@@ -15,10 +15,10 @@ import {
   file,
   PERMISSIONS,
   SCOPES,
-  solution,
-  solutionGroup,
-  solutionTechnology,
-  solutionTechnologyLink,
+  project,
+  projectGroup,
+  projectTechnology,
+  projectTechnologyLink,
 } from '@/lib/db/schema'
 import {
   extractBlogImageFileIdsFromHtml,
@@ -41,7 +41,7 @@ import {
 
 const uuidZ = z.uuid()
 
-const solutionContentInput = z.object({
+const projectContentInput = z.object({
   type: z.literal('doc'),
   version: z.literal(1).default(1),
   html: z.string().trim().min(1, 'İçerik gerekli'),
@@ -49,11 +49,11 @@ const solutionContentInput = z.object({
   videoFileIds: z.array(uuidZ).default([]),
 })
 
-const solutionFormInput = z.object({
+const projectFormInput = z.object({
   title: z.string().trim().min(1, 'Başlık gerekli'),
   slug: z.string().trim().min(1, 'Slug gerekli'),
   excerpt: z.string().optional().nullable(),
-  content: solutionContentInput,
+  content: projectContentInput,
   groupId: z.union([uuidZ, z.null()]).optional(),
   technologyIds: z.array(uuidZ).default([]),
   fileId: z.union([uuidZ, z.null()]).optional(),
@@ -83,12 +83,12 @@ function extractContentFileIds(content: {
 async function assertTechnologiesExist(db: DB, technologyIds: string[]) {
   if (technologyIds.length === 0) return
   const rows = await db
-    .select({ id: solutionTechnology.id })
-    .from(solutionTechnology)
+    .select({ id: projectTechnology.id })
+    .from(projectTechnology)
     .where(
       and(
-        inArray(solutionTechnology.id, technologyIds),
-        excludeDeleted(solutionTechnology)
+        inArray(projectTechnology.id, technologyIds),
+        excludeDeleted(projectTechnology)
       )
     )
   if (rows.length !== technologyIds.length) {
@@ -101,16 +101,16 @@ async function assertTechnologiesExist(db: DB, technologyIds: string[]) {
 
 async function replaceTechnologyLinks(
   db: DB,
-  solutionId: string,
+  projectId: string,
   technologyIds: string[]
 ) {
   await db
-    .delete(solutionTechnologyLink)
-    .where(eq(solutionTechnologyLink.solutionId, solutionId))
+    .delete(projectTechnologyLink)
+    .where(eq(projectTechnologyLink.projectId, projectId))
   if (technologyIds.length === 0) return
-  await db.insert(solutionTechnologyLink).values(
+  await db.insert(projectTechnologyLink).values(
     technologyIds.map((technologyId) => ({
-      solutionId,
+      projectId,
       technologyId,
     }))
   )
@@ -118,22 +118,22 @@ async function replaceTechnologyLinks(
 
 async function loadTechnologyIdsForSolutions(
   db: DB,
-  solutionIds: string[]
+  projectIds: string[]
 ): Promise<Map<string, string[]>> {
   const map = new Map<string, string[]>()
-  if (solutionIds.length === 0) return map
+  if (projectIds.length === 0) return map
   const links = await db
     .select({
-      solutionId: solutionTechnologyLink.solutionId,
-      technologyId: solutionTechnologyLink.technologyId,
+      projectId: projectTechnologyLink.projectId,
+      technologyId: projectTechnologyLink.technologyId,
     })
-    .from(solutionTechnologyLink)
-    .where(inArray(solutionTechnologyLink.solutionId, solutionIds))
+    .from(projectTechnologyLink)
+    .where(inArray(projectTechnologyLink.projectId, projectIds))
 
   for (const row of links) {
-    const list = map.get(row.solutionId) ?? []
+    const list = map.get(row.projectId) ?? []
     list.push(row.technologyId)
-    map.set(row.solutionId, list)
+    map.set(row.projectId, list)
   }
   return map
 }
@@ -145,12 +145,12 @@ async function technologyNameMap(
   const map = new Map<string, string>()
   if (technologyIds.length === 0) return map
   const rows = await db
-    .select({ id: solutionTechnology.id, name: solutionTechnology.name })
-    .from(solutionTechnology)
+    .select({ id: projectTechnology.id, name: projectTechnology.name })
+    .from(projectTechnology)
     .where(
       and(
-        inArray(solutionTechnology.id, technologyIds),
-        excludeDeleted(solutionTechnology)
+        inArray(projectTechnology.id, technologyIds),
+        excludeDeleted(projectTechnology)
       )
     )
   for (const r of rows) {
@@ -165,36 +165,36 @@ function namesForIds(ids: string[], nameById: Map<string, string>): string[] {
     .filter((n): n is string => Boolean(n))
 }
 
-export const solutionRouter = router({
+export const projectRouter = router({
   listPublic: publicProcedure.query(async ({ ctx }) => {
     const rows = await ctx.db
       .select({
-        id: solution.id,
-        slug: solution.slug,
-        title: solution.title,
-        excerpt: solution.excerpt,
-        content: solution.content,
-        groupName: solutionGroup.name,
-        publishedAt: solution.publishedAt,
-        fileId: solution.fileId,
-        isFeatured: solution.isFeatured,
-        seoTitle: solution.seoTitle,
-        seoDescription: solution.seoDescription,
-        robotsIndex: solution.robotsIndex,
+        id: project.id,
+        slug: project.slug,
+        title: project.title,
+        excerpt: project.excerpt,
+        content: project.content,
+        groupName: projectGroup.name,
+        publishedAt: project.publishedAt,
+        fileId: project.fileId,
+        isFeatured: project.isFeatured,
+        seoTitle: project.seoTitle,
+        seoDescription: project.seoDescription,
+        robotsIndex: project.robotsIndex,
         coverFileAlt: file.altText,
       })
-      .from(solution)
-      .leftJoin(solutionGroup, eq(solution.groupId, solutionGroup.id))
-      .leftJoin(file, eq(solution.fileId, file.id))
+      .from(project)
+      .leftJoin(projectGroup, eq(project.groupId, projectGroup.id))
+      .leftJoin(file, eq(project.fileId, file.id))
       .where(
         and(
-          excludeDeleted(solution),
-          eq(solution.isPublished, true),
-          isNotNull(solution.groupId),
-          eq(solution.robotsIndex, true)
+          excludeDeleted(project),
+          eq(project.isPublished, true),
+          isNotNull(project.groupId),
+          eq(project.robotsIndex, true)
         )
       )
-      .orderBy(desc(solution.sortOrder), desc(solution.createdAt))
+      .orderBy(desc(project.sortOrder), desc(project.createdAt))
 
     const contentFileIds = rows.flatMap((row) => {
       const normalized = normalizeBlogContent(row.content)
@@ -221,30 +221,30 @@ export const solutionRouter = router({
         ? []
         : await ctx.db
             .select({
-              solutionId: solutionTechnologyLink.solutionId,
-              name: solutionTechnology.name,
+              projectId: projectTechnologyLink.projectId,
+              name: projectTechnology.name,
             })
-            .from(solutionTechnologyLink)
+            .from(projectTechnologyLink)
             .innerJoin(
-              solutionTechnology,
-              eq(solutionTechnologyLink.technologyId, solutionTechnology.id)
+              projectTechnology,
+              eq(projectTechnologyLink.technologyId, projectTechnology.id)
             )
             .where(
               and(
-                inArray(solutionTechnologyLink.solutionId, ids),
-                excludeDeleted(solutionTechnology)
+                inArray(projectTechnologyLink.projectId, ids),
+                excludeDeleted(projectTechnology)
               )
             )
             .orderBy(
-              asc(solutionTechnology.sortOrder),
-              asc(solutionTechnology.name)
+              asc(projectTechnology.sortOrder),
+              asc(projectTechnology.name)
             )
 
-    const tagsBySolution = new Map<string, string[]>()
+    const tagsByProject = new Map<string, string[]>()
     for (const tr of tagRows) {
-      const list = tagsBySolution.get(tr.solutionId) ?? []
+      const list = tagsByProject.get(tr.projectId) ?? []
       list.push(tr.name)
-      tagsBySolution.set(tr.solutionId, list)
+      tagsByProject.set(tr.projectId, list)
     }
 
     return rows.map((row) => ({
@@ -258,7 +258,7 @@ export const solutionRouter = router({
         stripEditorChrome: true,
       }),
       sector: row.groupName ?? '',
-      tags: tagsBySolution.get(row.id) ?? [],
+      tags: tagsByProject.get(row.id) ?? [],
       imageSrc: row.fileId ? `/api/files/${row.fileId}/view` : undefined,
       date: row.publishedAt ? row.publishedAt.toISOString().slice(0, 10) : '',
       isFeatured: row.isFeatured,
@@ -269,23 +269,18 @@ export const solutionRouter = router({
     }))
   }),
 
-  list: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.READ)
+  list: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.READ)
     .input(createAdminListSchema(['title', 'slug', 'createdAt', 'sortOrder']))
     .query(async ({ ctx, input }) => {
       const { page, limit, search, sortBy, sortOrder, columnFilters } = input
       const offset = (page - 1) * limit
 
-      const conditions: SQL[] = [excludeDeleted(solution)]
+      const conditions: SQL[] = [excludeDeleted(project)]
 
       if (search) {
         conditions.push(
           createMultiColumnSearch(
-            [
-              solution.title,
-              solution.slug,
-              solution.excerpt,
-              solutionGroup.name,
-            ],
+            [project.title, project.slug, project.excerpt, projectGroup.name],
             search
           )
         )
@@ -295,56 +290,56 @@ export const solutionRouter = router({
         conditions,
         columnFilters,
         {
-          solutionGroupId: solution.groupId,
-          title: solution.title,
-          slug: solution.slug,
+          projectGroupId: project.groupId,
+          title: project.title,
+          slug: project.slug,
         },
-        { exactKeys: ['solutionGroupId'] }
+        { exactKeys: ['projectGroupId'] }
       )
 
       const whereCondition = and(...conditions)
       const orderBy = sortOrder === 'asc' ? asc : desc
       const sortColumn = {
-        title: solution.title,
-        slug: solution.slug,
-        createdAt: solution.createdAt,
-        sortOrder: solution.sortOrder,
+        title: project.title,
+        slug: project.slug,
+        createdAt: project.createdAt,
+        sortOrder: project.sortOrder,
       }[sortBy]
 
       const [rows, totalResult] = await Promise.all([
         ctx.db
           .select({
-            id: solution.id,
-            title: solution.title,
-            slug: solution.slug,
-            excerpt: solution.excerpt,
-            content: solution.content,
-            groupId: solution.groupId,
-            groupName: solutionGroup.name,
-            fileId: solution.fileId,
+            id: project.id,
+            title: project.title,
+            slug: project.slug,
+            excerpt: project.excerpt,
+            content: project.content,
+            groupId: project.groupId,
+            groupName: projectGroup.name,
+            fileId: project.fileId,
             fileName: file.originalName,
-            isPublished: solution.isPublished,
-            isFeatured: solution.isFeatured,
-            viewCount: solution.viewCount,
-            publishedAt: solution.publishedAt,
-            sortOrder: solution.sortOrder,
-            createdAt: solution.createdAt,
-            updatedAt: solution.updatedAt,
-            seoTitle: solution.seoTitle,
-            seoDescription: solution.seoDescription,
-            robotsIndex: solution.robotsIndex,
+            isPublished: project.isPublished,
+            isFeatured: project.isFeatured,
+            viewCount: project.viewCount,
+            publishedAt: project.publishedAt,
+            sortOrder: project.sortOrder,
+            createdAt: project.createdAt,
+            updatedAt: project.updatedAt,
+            seoTitle: project.seoTitle,
+            seoDescription: project.seoDescription,
+            robotsIndex: project.robotsIndex,
           })
-          .from(solution)
-          .leftJoin(solutionGroup, eq(solution.groupId, solutionGroup.id))
-          .leftJoin(file, eq(solution.fileId, file.id))
+          .from(project)
+          .leftJoin(projectGroup, eq(project.groupId, projectGroup.id))
+          .leftJoin(file, eq(project.fileId, file.id))
           .where(whereCondition)
           .orderBy(orderBy(sortColumn))
           .limit(limit)
           .offset(offset),
         ctx.db
           .select({ count: count() })
-          .from(solution)
-          .leftJoin(solutionGroup, eq(solution.groupId, solutionGroup.id))
+          .from(project)
+          .leftJoin(projectGroup, eq(project.groupId, projectGroup.id))
           .where(whereCondition),
       ])
 
@@ -396,35 +391,35 @@ export const solutionRouter = router({
       )
     }),
 
-  getById: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.READ)
+  getById: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.READ)
     .input(z.object({ id: uuidZ }))
     .query(async ({ ctx, input }) => {
       const row = await ctx.db
         .select({
-          id: solution.id,
-          title: solution.title,
-          slug: solution.slug,
-          excerpt: solution.excerpt,
-          content: solution.content,
-          groupId: solution.groupId,
-          groupName: solutionGroup.name,
-          fileId: solution.fileId,
-          isPublished: solution.isPublished,
-          isFeatured: solution.isFeatured,
-          viewCount: solution.viewCount,
-          publishedAt: solution.publishedAt,
-          sortOrder: solution.sortOrder,
-          createdAt: solution.createdAt,
-          updatedAt: solution.updatedAt,
-          seoTitle: solution.seoTitle,
-          seoDescription: solution.seoDescription,
-          robotsIndex: solution.robotsIndex,
+          id: project.id,
+          title: project.title,
+          slug: project.slug,
+          excerpt: project.excerpt,
+          content: project.content,
+          groupId: project.groupId,
+          groupName: projectGroup.name,
+          fileId: project.fileId,
+          isPublished: project.isPublished,
+          isFeatured: project.isFeatured,
+          viewCount: project.viewCount,
+          publishedAt: project.publishedAt,
+          sortOrder: project.sortOrder,
+          createdAt: project.createdAt,
+          updatedAt: project.updatedAt,
+          seoTitle: project.seoTitle,
+          seoDescription: project.seoDescription,
+          robotsIndex: project.robotsIndex,
           coverImageAlt: file.altText,
         })
-        .from(solution)
-        .leftJoin(solutionGroup, eq(solution.groupId, solutionGroup.id))
-        .leftJoin(file, eq(solution.fileId, file.id))
-        .where(and(eq(solution.id, input.id), excludeDeleted(solution)))
+        .from(project)
+        .leftJoin(projectGroup, eq(project.groupId, projectGroup.id))
+        .leftJoin(file, eq(project.fileId, file.id))
+        .where(and(eq(project.id, input.id), excludeDeleted(project)))
         .limit(1)
         .then((result) => result[0])
 
@@ -471,30 +466,27 @@ export const solutionRouter = router({
       }
     }),
 
-  create: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.CREATE)
-    .input(solutionFormInput)
+  create: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.CREATE)
+    .input(projectFormInput)
     .mutation(async ({ ctx, input }) => {
       if (!input.groupId) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Çözüm grubu seçilmelidir',
+          message: 'Proje grubu seçilmelidir',
         })
       }
       const groupExists = await ctx.db
-        .select({ id: solutionGroup.id })
-        .from(solutionGroup)
+        .select({ id: projectGroup.id })
+        .from(projectGroup)
         .where(
-          and(
-            eq(solutionGroup.id, input.groupId),
-            excludeDeleted(solutionGroup)
-          )
+          and(eq(projectGroup.id, input.groupId), excludeDeleted(projectGroup))
         )
         .limit(1)
         .then((rows) => rows[0])
       if (!groupExists) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Çözüm grubu bulunamadı',
+          message: 'Proje grubu bulunamadı',
         })
       }
 
@@ -538,7 +530,7 @@ export const solutionRouter = router({
       await assertTechnologiesExist(ctx.db, input.technologyIds)
 
       const [inserted] = await ctx.db
-        .insert(solution)
+        .insert(project)
         .values({
           title: input.title.trim(),
           slug: input.slug.trim(),
@@ -556,17 +548,17 @@ export const solutionRouter = router({
           isFeatured: input.isFeatured ?? false,
           publishedAt: input.publishedAt ?? null,
           sortOrder: await ctx.db
-            .select({ sortOrder: solution.sortOrder })
-            .from(solution)
-            .where(excludeDeleted(solution))
-            .orderBy(desc(solution.sortOrder))
+            .select({ sortOrder: project.sortOrder })
+            .from(project)
+            .where(excludeDeleted(project))
+            .orderBy(desc(project.sortOrder))
             .limit(1)
             .then((rows) => (rows[0]?.sortOrder ?? -1) + 1),
           seoTitle: input.seoTitle?.trim() || null,
           seoDescription: input.seoDescription?.trim() || null,
           robotsIndex: input.robotsIndex ?? true,
         })
-        .returning({ id: solution.id })
+        .returning({ id: project.id })
 
       if (!inserted) {
         throw new TRPCError({
@@ -587,13 +579,13 @@ export const solutionRouter = router({
       return { id: inserted.id }
     }),
 
-  update: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.UPDATE)
-    .input(solutionFormInput.extend({ id: uuidZ }))
+  update: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.UPDATE)
+    .input(projectFormInput.extend({ id: uuidZ }))
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db
-        .select({ id: solution.id })
-        .from(solution)
-        .where(and(eq(solution.id, input.id), excludeDeleted(solution)))
+        .select({ id: project.id })
+        .from(project)
+        .where(and(eq(project.id, input.id), excludeDeleted(project)))
         .limit(1)
         .then((rows) => rows[0])
       if (!existing) {
@@ -606,24 +598,21 @@ export const solutionRouter = router({
       if (!input.groupId) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Çözüm grubu seçilmelidir',
+          message: 'Proje grubu seçilmelidir',
         })
       }
       const groupExists = await ctx.db
-        .select({ id: solutionGroup.id })
-        .from(solutionGroup)
+        .select({ id: projectGroup.id })
+        .from(projectGroup)
         .where(
-          and(
-            eq(solutionGroup.id, input.groupId),
-            excludeDeleted(solutionGroup)
-          )
+          and(eq(projectGroup.id, input.groupId), excludeDeleted(projectGroup))
         )
         .limit(1)
         .then((rows) => rows[0])
       if (!groupExists) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Çözüm grubu bulunamadı',
+          message: 'Proje grubu bulunamadı',
         })
       }
 
@@ -667,7 +656,7 @@ export const solutionRouter = router({
       await assertTechnologiesExist(ctx.db, input.technologyIds)
 
       await ctx.db
-        .update(solution)
+        .update(project)
         .set({
           title: input.title.trim(),
           slug: input.slug.trim(),
@@ -688,7 +677,7 @@ export const solutionRouter = router({
           seoDescription: input.seoDescription?.trim() || null,
           robotsIndex: input.robotsIndex ?? true,
         })
-        .where(eq(solution.id, input.id))
+        .where(eq(project.id, input.id))
 
       await replaceTechnologyLinks(ctx.db, input.id, input.technologyIds)
 
@@ -702,13 +691,13 @@ export const solutionRouter = router({
       return { id: input.id }
     }),
 
-  delete: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.DELETE)
+  delete: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.DELETE)
     .input(z.object({ id: uuidZ }))
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db
-        .select({ id: solution.id })
-        .from(solution)
-        .where(and(eq(solution.id, input.id), excludeDeleted(solution)))
+        .select({ id: project.id })
+        .from(project)
+        .where(and(eq(project.id, input.id), excludeDeleted(project)))
         .limit(1)
         .then((rows) => rows[0])
       if (!existing) {
@@ -718,13 +707,13 @@ export const solutionRouter = router({
         })
       }
       await ctx.db
-        .update(solution)
-        .set(ctx.audit.softDelete(solution))
-        .where(eq(solution.id, input.id))
+        .update(project)
+        .set(ctx.audit.softDelete(project))
+        .where(eq(project.id, input.id))
       return { ok: true as const }
     }),
 
-  reorder: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.UPDATE)
+  reorder: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.UPDATE)
     .input(
       z.object({
         groupId: z.union([uuidZ, z.null()]),
@@ -732,16 +721,16 @@ export const solutionRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const conditions = [excludeDeleted(solution)]
+      const conditions = [excludeDeleted(project)]
       if (input.groupId) {
-        conditions.push(eq(solution.groupId, input.groupId))
+        conditions.push(eq(project.groupId, input.groupId))
       } else {
-        conditions.push(isNull(solution.groupId))
+        conditions.push(isNull(project.groupId))
       }
 
       const existing = await ctx.db
-        .select({ id: solution.id })
-        .from(solution)
+        .select({ id: project.id })
+        .from(project)
         .where(and(...conditions))
 
       if (existing.length !== input.orderedIds.length) {
@@ -761,43 +750,43 @@ export const solutionRouter = router({
       await ctx.db.transaction(async (tx) => {
         for (const [index, id] of input.orderedIds.entries()) {
           await tx
-            .update(solution)
+            .update(project)
             .set({ sortOrder: index })
             .where(
-              and(eq(solution.id, id), inArray(solution.id, input.orderedIds))
+              and(eq(project.id, id), inArray(project.id, input.orderedIds))
             )
         }
       })
       return { ok: true as const }
     }),
 
-  listReorderScope: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.READ)
-    .input(z.object({ solutionGroupId: uuidZ }))
+  listReorderScope: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.READ)
+    .input(z.object({ projectGroupId: uuidZ }))
     .query(async ({ ctx, input }) =>
       ctx.db
-        .select({ id: solution.id })
-        .from(solution)
+        .select({ id: project.id })
+        .from(project)
         .where(
           and(
-            excludeDeleted(solution),
-            eq(solution.groupId, input.solutionGroupId)
+            excludeDeleted(project),
+            eq(project.groupId, input.projectGroupId)
           )
         )
-        .orderBy(asc(solution.sortOrder))
+        .orderBy(asc(project.sortOrder))
     ),
 
-  moveToGroup: rbacProcedure(SCOPES.SOLUTION, PERMISSIONS.UPDATE)
+  moveToGroup: rbacProcedure(SCOPES.PROJECT, PERMISSIONS.UPDATE)
     .input(
       z.object({
         id: uuidZ,
-        solutionGroupId: uuidZ,
+        projectGroupId: uuidZ,
       })
     )
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db
-        .select({ id: solution.id, groupId: solution.groupId })
-        .from(solution)
-        .where(and(eq(solution.id, input.id), excludeDeleted(solution)))
+        .select({ id: project.id, groupId: project.groupId })
+        .from(project)
+        .where(and(eq(project.id, input.id), excludeDeleted(project)))
         .limit(1)
         .then((r) => r[0])
 
@@ -808,17 +797,17 @@ export const solutionRouter = router({
         })
       }
 
-      if (existing.groupId === input.solutionGroupId) {
+      if (existing.groupId === input.projectGroupId) {
         return { id: input.id }
       }
 
       const groupExists = await ctx.db
-        .select({ id: solutionGroup.id })
-        .from(solutionGroup)
+        .select({ id: projectGroup.id })
+        .from(projectGroup)
         .where(
           and(
-            eq(solutionGroup.id, input.solutionGroupId),
-            excludeDeleted(solutionGroup)
+            eq(projectGroup.id, input.projectGroupId),
+            excludeDeleted(projectGroup)
           )
         )
         .limit(1)
@@ -827,30 +816,30 @@ export const solutionRouter = router({
       if (!groupExists) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Çözüm grubu bulunamadı',
+          message: 'Proje grubu bulunamadı',
         })
       }
 
       const nextSortOrder = await ctx.db
-        .select({ sortOrder: solution.sortOrder })
-        .from(solution)
+        .select({ sortOrder: project.sortOrder })
+        .from(project)
         .where(
           and(
-            excludeDeleted(solution),
-            eq(solution.groupId, input.solutionGroupId)
+            excludeDeleted(project),
+            eq(project.groupId, input.projectGroupId)
           )
         )
-        .orderBy(desc(solution.sortOrder))
+        .orderBy(desc(project.sortOrder))
         .limit(1)
         .then((r) => (r[0]?.sortOrder ?? -1) + 1)
 
       await ctx.db
-        .update(solution)
+        .update(project)
         .set({
-          groupId: input.solutionGroupId,
+          groupId: input.projectGroupId,
           sortOrder: nextSortOrder,
         })
-        .where(eq(solution.id, input.id))
+        .where(eq(project.id, input.id))
 
       return { id: input.id }
     }),

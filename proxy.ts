@@ -18,11 +18,16 @@ const pathsToScopes: Record<string, (typeof SCOPES)[keyof typeof SCOPES]> = {
   [`${ADMIN_BASE}/media`]: SCOPES.MEDIA,
   [`${ADMIN_BASE}/media-group`]: SCOPES.MEDIA_GROUP,
   [`${ADMIN_BASE}/slider`]: SCOPES.SLIDER,
-  [`${ADMIN_BASE}/solution/technology`]: SCOPES.SOLUTION_TECHNOLOGY,
-  [`${ADMIN_BASE}/solution/group`]: SCOPES.SOLUTION_GROUP,
-  [`${ADMIN_BASE}/solution`]: SCOPES.SOLUTION,
+  [`${ADMIN_BASE}/project/technology`]: SCOPES.PROJECT_TECHNOLOGY,
+  [`${ADMIN_BASE}/project/group`]: SCOPES.PROJECT_GROUP,
+  [`${ADMIN_BASE}/project`]: SCOPES.PROJECT,
   [`${ADMIN_BASE}/site-seo`]: SCOPES.SITE_SEO,
-  [`${ADMIN_BASE}/about`]: SCOPES.ABOUT,
+  [`${ADMIN_BASE}/hakkimda/profile`]: SCOPES.ABOUT_PROFILE,
+  [`${ADMIN_BASE}/hakkimda/experience`]: SCOPES.ABOUT_EXPERIENCE,
+  [`${ADMIN_BASE}/hakkimda/expertise`]: SCOPES.ABOUT_EXPERTISE,
+  [`${ADMIN_BASE}/hakkimda/technology`]: SCOPES.ABOUT_TECHNOLOGY,
+  [`${ADMIN_BASE}/hakkimda/interest`]: SCOPES.ABOUT_INTEREST,
+  [`${ADMIN_BASE}/about`]: SCOPES.ABOUT_PROFILE,
 }
 export async function proxy(request: NextRequest) {
   const start = Date.now()

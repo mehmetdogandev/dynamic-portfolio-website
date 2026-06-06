@@ -51,7 +51,7 @@ function createAuthInstanceUncached() {
         enabled: false,
         // maxAge: 5 * 60, // Cache duration in seconds (5 minutes)
       },
-      cookieName: 'aksiyonsoft-session',
+      cookieName: 'mehmetdogandev-session',
     },
     emailAndPassword: {
       enabled: true,

@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server'
 import { and, asc, count, desc, eq, inArray } from 'drizzle-orm'
 import type { SQL } from 'drizzle-orm'
 import { z } from 'zod/v4'
-import { PERMISSIONS, SCOPES, solutionTechnology } from '@/lib/db/schema'
+import { PERMISSIONS, SCOPES, projectTechnology } from '@/lib/db/schema'
 import {
   applyColumnFilters,
   createMultiColumnSearch,
@@ -13,61 +13,61 @@ import { createAdminListSchema, rbacProcedure, router } from '../index'
 
 const uuidZ = z.uuid()
 
-const solutionTechnologyInput = z.object({
+const projectTechnologyInput = z.object({
   name: z.string().trim().min(1, 'Ad gerekli'),
   description: z.string().trim().min(1, 'Açıklama gerekli'),
 })
 
-export const solutionTechnologyRouter = router({
-  list: rbacProcedure(SCOPES.SOLUTION_TECHNOLOGY, PERMISSIONS.READ)
+export const projectTechnologyRouter = router({
+  list: rbacProcedure(SCOPES.PROJECT_TECHNOLOGY, PERMISSIONS.READ)
     .input(createAdminListSchema(['name', 'createdAt', 'sortOrder']))
     .query(async ({ ctx, input }) => {
       const { page, limit, search, sortBy, sortOrder, columnFilters } = input
       const offset = (page - 1) * limit
 
-      const conditions: SQL[] = [excludeDeleted(solutionTechnology)]
+      const conditions: SQL[] = [excludeDeleted(projectTechnology)]
 
       if (search) {
         conditions.push(
           createMultiColumnSearch(
-            [solutionTechnology.name, solutionTechnology.description],
+            [projectTechnology.name, projectTechnology.description],
             search
           )
         )
       }
 
       applyColumnFilters(conditions, columnFilters, {
-        name: solutionTechnology.name,
-        createdAt: solutionTechnology.createdAt,
-        sortOrder: solutionTechnology.sortOrder,
+        name: projectTechnology.name,
+        createdAt: projectTechnology.createdAt,
+        sortOrder: projectTechnology.sortOrder,
       })
 
       const whereCondition = and(...conditions)
       const orderBy = sortOrder === 'asc' ? asc : desc
       const sortColumn = {
-        name: solutionTechnology.name,
-        createdAt: solutionTechnology.createdAt,
-        sortOrder: solutionTechnology.sortOrder,
+        name: projectTechnology.name,
+        createdAt: projectTechnology.createdAt,
+        sortOrder: projectTechnology.sortOrder,
       }[sortBy]
 
       const [rows, totalResult] = await Promise.all([
         ctx.db
           .select({
-            id: solutionTechnology.id,
-            name: solutionTechnology.name,
-            description: solutionTechnology.description,
-            sortOrder: solutionTechnology.sortOrder,
-            createdAt: solutionTechnology.createdAt,
-            updatedAt: solutionTechnology.updatedAt,
+            id: projectTechnology.id,
+            name: projectTechnology.name,
+            description: projectTechnology.description,
+            sortOrder: projectTechnology.sortOrder,
+            createdAt: projectTechnology.createdAt,
+            updatedAt: projectTechnology.updatedAt,
           })
-          .from(solutionTechnology)
+          .from(projectTechnology)
           .where(whereCondition)
           .orderBy(orderBy(sortColumn))
           .limit(limit)
           .offset(offset),
         ctx.db
           .select({ count: count() })
-          .from(solutionTechnology)
+          .from(projectTechnology)
           .where(whereCondition),
       ])
 
@@ -79,23 +79,23 @@ export const solutionTechnologyRouter = router({
       )
     }),
 
-  getById: rbacProcedure(SCOPES.SOLUTION_TECHNOLOGY, PERMISSIONS.READ)
+  getById: rbacProcedure(SCOPES.PROJECT_TECHNOLOGY, PERMISSIONS.READ)
     .input(z.object({ id: uuidZ }))
     .query(async ({ ctx, input }) => {
       const row = await ctx.db
         .select({
-          id: solutionTechnology.id,
-          name: solutionTechnology.name,
-          description: solutionTechnology.description,
-          sortOrder: solutionTechnology.sortOrder,
-          createdAt: solutionTechnology.createdAt,
-          updatedAt: solutionTechnology.updatedAt,
+          id: projectTechnology.id,
+          name: projectTechnology.name,
+          description: projectTechnology.description,
+          sortOrder: projectTechnology.sortOrder,
+          createdAt: projectTechnology.createdAt,
+          updatedAt: projectTechnology.updatedAt,
         })
-        .from(solutionTechnology)
+        .from(projectTechnology)
         .where(
           and(
-            eq(solutionTechnology.id, input.id),
-            excludeDeleted(solutionTechnology)
+            eq(projectTechnology.id, input.id),
+            excludeDeleted(projectTechnology)
           )
         )
         .limit(1)
@@ -111,23 +111,23 @@ export const solutionTechnologyRouter = router({
       return row
     }),
 
-  create: rbacProcedure(SCOPES.SOLUTION_TECHNOLOGY, PERMISSIONS.CREATE)
-    .input(solutionTechnologyInput)
+  create: rbacProcedure(SCOPES.PROJECT_TECHNOLOGY, PERMISSIONS.CREATE)
+    .input(projectTechnologyInput)
     .mutation(async ({ ctx, input }) => {
       const [inserted] = await ctx.db
-        .insert(solutionTechnology)
+        .insert(projectTechnology)
         .values({
           name: input.name.trim(),
           description: input.description.trim(),
           sortOrder: await ctx.db
-            .select({ sortOrder: solutionTechnology.sortOrder })
-            .from(solutionTechnology)
-            .where(excludeDeleted(solutionTechnology))
-            .orderBy(desc(solutionTechnology.sortOrder))
+            .select({ sortOrder: projectTechnology.sortOrder })
+            .from(projectTechnology)
+            .where(excludeDeleted(projectTechnology))
+            .orderBy(desc(projectTechnology.sortOrder))
             .limit(1)
             .then((rows) => (rows[0]?.sortOrder ?? -1) + 1),
         })
-        .returning({ id: solutionTechnology.id })
+        .returning({ id: projectTechnology.id })
 
       if (!inserted) {
         throw new TRPCError({
@@ -139,16 +139,16 @@ export const solutionTechnologyRouter = router({
       return { id: inserted.id }
     }),
 
-  update: rbacProcedure(SCOPES.SOLUTION_TECHNOLOGY, PERMISSIONS.UPDATE)
-    .input(solutionTechnologyInput.extend({ id: uuidZ }))
+  update: rbacProcedure(SCOPES.PROJECT_TECHNOLOGY, PERMISSIONS.UPDATE)
+    .input(projectTechnologyInput.extend({ id: uuidZ }))
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db
-        .select({ id: solutionTechnology.id })
-        .from(solutionTechnology)
+        .select({ id: projectTechnology.id })
+        .from(projectTechnology)
         .where(
           and(
-            eq(solutionTechnology.id, input.id),
-            excludeDeleted(solutionTechnology)
+            eq(projectTechnology.id, input.id),
+            excludeDeleted(projectTechnology)
           )
         )
         .limit(1)
@@ -162,26 +162,26 @@ export const solutionTechnologyRouter = router({
       }
 
       await ctx.db
-        .update(solutionTechnology)
+        .update(projectTechnology)
         .set({
           name: input.name.trim(),
           description: input.description.trim(),
         })
-        .where(eq(solutionTechnology.id, input.id))
+        .where(eq(projectTechnology.id, input.id))
 
       return { id: input.id }
     }),
 
-  delete: rbacProcedure(SCOPES.SOLUTION_TECHNOLOGY, PERMISSIONS.DELETE)
+  delete: rbacProcedure(SCOPES.PROJECT_TECHNOLOGY, PERMISSIONS.DELETE)
     .input(z.object({ id: uuidZ }))
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db
-        .select({ id: solutionTechnology.id })
-        .from(solutionTechnology)
+        .select({ id: projectTechnology.id })
+        .from(projectTechnology)
         .where(
           and(
-            eq(solutionTechnology.id, input.id),
-            excludeDeleted(solutionTechnology)
+            eq(projectTechnology.id, input.id),
+            excludeDeleted(projectTechnology)
           )
         )
         .limit(1)
@@ -193,27 +193,27 @@ export const solutionTechnologyRouter = router({
         })
       }
       await ctx.db
-        .update(solutionTechnology)
-        .set(ctx.audit.softDelete(solutionTechnology))
-        .where(eq(solutionTechnology.id, input.id))
+        .update(projectTechnology)
+        .set(ctx.audit.softDelete(projectTechnology))
+        .where(eq(projectTechnology.id, input.id))
       return { ok: true as const }
     }),
 
   listReorderScope: rbacProcedure(
-    SCOPES.SOLUTION_TECHNOLOGY,
+    SCOPES.PROJECT_TECHNOLOGY,
     PERMISSIONS.READ
   ).query(async ({ ctx }) =>
     ctx.db
-      .select({ id: solutionTechnology.id })
-      .from(solutionTechnology)
-      .where(excludeDeleted(solutionTechnology))
+      .select({ id: projectTechnology.id })
+      .from(projectTechnology)
+      .where(excludeDeleted(projectTechnology))
       .orderBy(
-        asc(solutionTechnology.sortOrder),
-        desc(solutionTechnology.createdAt)
+        asc(projectTechnology.sortOrder),
+        desc(projectTechnology.createdAt)
       )
   ),
 
-  reorder: rbacProcedure(SCOPES.SOLUTION_TECHNOLOGY, PERMISSIONS.UPDATE)
+  reorder: rbacProcedure(SCOPES.PROJECT_TECHNOLOGY, PERMISSIONS.UPDATE)
     .input(
       z.object({
         orderedIds: z.array(uuidZ).min(1),
@@ -221,9 +221,9 @@ export const solutionTechnologyRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db
-        .select({ id: solutionTechnology.id })
-        .from(solutionTechnology)
-        .where(excludeDeleted(solutionTechnology))
+        .select({ id: projectTechnology.id })
+        .from(projectTechnology)
+        .where(excludeDeleted(projectTechnology))
 
       if (existing.length !== input.orderedIds.length) {
         throw new TRPCError({
@@ -243,12 +243,12 @@ export const solutionTechnologyRouter = router({
       await ctx.db.transaction(async (tx) => {
         for (const [idx, id] of input.orderedIds.entries()) {
           await tx
-            .update(solutionTechnology)
+            .update(projectTechnology)
             .set({ sortOrder: idx })
             .where(
               and(
-                eq(solutionTechnology.id, id),
-                inArray(solutionTechnology.id, input.orderedIds)
+                eq(projectTechnology.id, id),
+                inArray(projectTechnology.id, input.orderedIds)
               )
             )
         }

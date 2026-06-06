@@ -8,14 +8,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import type { AdminSolutionRow } from './types'
+import type { AdminProjectRow } from './types'
 
-export function DetailSolutionDialog({
+export function DetailProjectDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminSolutionRow
+  row: AdminProjectRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {

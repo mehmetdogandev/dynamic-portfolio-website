@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
-export function CreateSolutionTechnologyDialog({
+export function CreateProjectTechnologyDialog({
   open,
   onOpenChange,
 }: {
@@ -30,11 +30,11 @@ export function CreateSolutionTechnologyDialog({
   const [description, setDescription] = useState('')
 
   const { mutateAsync, isPending } = useMutation(
-    trpc.solutionTechnology.create.mutationOptions({
+    trpc.projectTechnology.create.mutationOptions({
       onSuccess: async () => {
         toast.success('Teknoloji eklendi')
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionTechnology.list.queryKey(),
+          queryKey: trpc.projectTechnology.list.queryKey(),
         })
         onOpenChange(false)
         setName('')
@@ -63,17 +63,17 @@ export function CreateSolutionTechnologyDialog({
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="solution-tech-name">Ad</Label>
+            <Label htmlFor="project-tech-name">Ad</Label>
             <Input
-              id="solution-tech-name"
+              id="project-tech-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="solution-tech-desc">Açıklama</Label>
+            <Label htmlFor="project-tech-desc">Açıklama</Label>
             <Textarea
-              id="solution-tech-desc"
+              id="project-tech-desc"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               rows={3}

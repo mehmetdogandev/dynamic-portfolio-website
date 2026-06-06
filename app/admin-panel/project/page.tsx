@@ -2,7 +2,7 @@
 
 import { Loader2 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
-import { SolutionDataTable } from '@/components/tables/solution/solution-data-table'
+import { ProjectDataTable } from '@/components/tables/project/project-data-table'
 import {
   Card,
   CardContent,
@@ -13,9 +13,9 @@ import {
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
 import { usePermission } from '@/lib/hooks/use-rbac'
 
-export default function SolutionAdminPage() {
+export default function ProjectAdminPage() {
   const { data: canAccess, isLoading } = usePermission(
-    SCOPES.SOLUTION,
+    SCOPES.PROJECT,
     PERMISSIONS.ACCESS
   )
 
@@ -38,12 +38,12 @@ export default function SolutionAdminPage() {
               Erişim reddedildi
             </CardTitle>
             <CardDescription>
-              Bu sayfa için SOLUTION kapsamında ACCESS izni gerekir.
+              Bu sayfa için PROJECT kapsamında ACCESS izni gerekir.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-sm">
-              Yöneticinizden çözüm yönetimi için uygun rol ataması isteyin.
+              Yöneticinizden proje yönetimi için uygun rol ataması isteyin.
             </p>
           </CardContent>
         </Card>
@@ -57,15 +57,15 @@ export default function SolutionAdminPage() {
         <Card className="border-0 shadow-none">
           <CardHeader>
             <CardTitle className="text-xl sm:text-2xl font-bold text-primary">
-              Çözümler
+              Projeler
             </CardTitle>
             <CardDescription className="text-sm sm:text-base">
-              Grup seçerek çözüm kartlarını yönetin; yeni kayıt için
+              Grup seçerek proje kartlarını yönetin; yeni kayıt için
               Ekle&apos;ye tıklayın.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SolutionDataTable />
+            <ProjectDataTable />
           </CardContent>
         </Card>
       </div>

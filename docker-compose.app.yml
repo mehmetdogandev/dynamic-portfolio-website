@@ -3,8 +3,8 @@
 # Imaj: pnpm run ci ile build + load edilen etiket (.env veya DEPLOY_* ile uyumlu).
 services:
     nextjs:
-        image: ${DEPLOY_IMAGE_NAME:-aksiyon-soft-app}:${DEPLOY_IMAGE_TAG:-latest}
-        container_name: aksiyonsoft-app
+        image: ${DEPLOY_IMAGE_NAME:-dynamic-portfolio-website-mehmetdogandev-app}:${DEPLOY_IMAGE_TAG:-latest}
+        container_name: mehmetdogandev-app
         restart: unless-stopped
         user: "0:0"
         ports:

@@ -4,9 +4,9 @@
 # DEPLOY_* degiskenleri: `.env` icinde tanimlanabilir (script otomatik yukler)
 # veya export / komut satirinda verilir.
 #   DEPLOY_SSH          SSH hedefi (ornek: aksiyon2 — ~/.ssh/config Host)
-#   DEPLOY_REMOTE_DIR   Sunucudaki repo kok dizini (ornek: /root/aksiyon-soft)
+#   DEPLOY_REMOTE_DIR   Sunucudaki repo kok dizini (ornek: /root/dynamic-portfolio-website-mehmetdogandev)
 # Opsiyonel:
-#   DEPLOY_IMAGE_NAME   (varsayilan: aksiyon-soft-app)
+#   DEPLOY_IMAGE_NAME   (varsayilan: dynamic-portfolio-website-mehmetdogandev-app)
 #   DEPLOY_IMAGE_TAG    (varsayilan: UTC tarih-saat)
 #   COMPOSE_FILE        (varsayilan: docker-compose.app.yml)
 #   APP_HOST_PORT       (varsayilan: 3000 — nginx ile uyumlu)
@@ -25,7 +25,7 @@ if [[ -f .env ]]; then
 fi
 
 DEPLOY_SSH="${DEPLOY_SSH:-${DEPLOY_SSH_HOST:-}}"
-DEPLOY_IMAGE_NAME="${DEPLOY_IMAGE_NAME:-aksiyon-soft-app}"
+DEPLOY_IMAGE_NAME="${DEPLOY_IMAGE_NAME:-dynamic-portfolio-website-mehmetdogandev-app}"
 DEPLOY_IMAGE_TAG="${DEPLOY_IMAGE_TAG:-$(date -u +%Y%m%d%H%M%S)}"
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.app.yml}"
 TAR_NAME="${DEPLOY_IMAGE_NAME}_${DEPLOY_IMAGE_TAG}.tar"
@@ -35,7 +35,7 @@ if [[ -z "${DEPLOY_SSH:-}" ]]; then
   exit 1
 fi
 if [[ -z "${DEPLOY_REMOTE_DIR:-}" ]]; then
-  echo "Hata: DEPLOY_REMOTE_DIR tanimli degil. Ornek: DEPLOY_REMOTE_DIR=/root/aksiyon-soft pnpm run ci" >&2
+  echo "Hata: DEPLOY_REMOTE_DIR tanimli degil. Ornek: DEPLOY_REMOTE_DIR=/root/dynamic-portfolio-website-mehmetdogandev pnpm run ci" >&2
   exit 1
 fi
 

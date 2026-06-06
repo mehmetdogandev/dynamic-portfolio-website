@@ -4,18 +4,19 @@ import { roleGroup, user, userRoleGroup } from '../schema'
 import { auth } from '@/lib/auth'
 
 /**
- * Admin seeder for the new RBAC system.
- * Creates system administrators with SUPER_ADMIN roles across all scopes.
+ * Portfolio admin: primary user mehmet.dogan@gmail.com (SUPER_ADMIN).
+ * Aksiyon Soft test kullanıcıları isteğe bağlıdır (SEED_AKSIYON_SOFT_ADMINS=true).
  */
 
-const ADMINS = [
-  {
-    username: 'mehmet.dogan',
-    password: 'mehmet1234!',
-    firstName: 'Mehmet',
-    lastName: 'Dogan',
-    email: 'mehmet.dogan@aksiyonsoft.com',
-  },
+const PRIMARY_ADMIN = {
+  username: 'mehmet.dogan',
+  password: 'mehmet1234!',
+  firstName: 'Mehmet',
+  lastName: 'Doğan',
+  email: 'mehmet.dogan@gmail.com',
+} as const
+
+const OPTIONAL_AKSİYON_ADMINS = [
   {
     username: 'abdulsamet.ok',
     password: 'abdulsamet1234!',
@@ -37,11 +38,18 @@ const ADMINS = [
     lastName: 'Yasa',
     email: 'berat.yasa@aksiyonsoft.com',
   },
-]
+] as const
+
+function shouldSeedAksiyonSoftAdmins(): boolean {
+  return process.env.SEED_AKSIYON_SOFT_ADMINS === 'true'
+}
 
 export async function seed() {
-  // Create Admin Users and ensure every one of them has SUPER_ADMIN role for all scopes and assigned to admins
-  for (const admin of ADMINS) {
+  const admins = shouldSeedAksiyonSoftAdmins()
+    ? [PRIMARY_ADMIN, ...OPTIONAL_AKSİYON_ADMINS]
+    : [PRIMARY_ADMIN]
+
+  for (const admin of admins) {
     const existingUser = await db
       .select()
       .from(user)
@@ -52,33 +60,29 @@ export async function seed() {
     let userId = existingUser?.id
 
     if (!existingUser) {
-      try {
-        const addedAdmin = await auth.api.signUpEmail({
-          headers: new Headers(),
-          body: {
-            password: admin.password,
-            email: admin.email,
-            username: admin.username,
-            lastName: admin.lastName,
-            name: admin.firstName,
-            displayUsername: `${admin.firstName} ${admin.lastName}`,
-          },
-        })
+      const addedAdmin = await auth.api.signUpEmail({
+        headers: new Headers(),
+        body: {
+          password: admin.password,
+          email: admin.email,
+          username: admin.username,
+          lastName: admin.lastName,
+          name: admin.firstName,
+          displayUsername: `${admin.firstName} ${admin.lastName}`,
+        },
+      })
 
-        if (!addedAdmin.user.id) {
-          throw new Error(
-            `Failed to retrieve the newly created admin user: ${admin.username}`
-          )
-        }
-
-        userId = addedAdmin.user.id
-        await db
-          .update(user)
-          .set({ emailVerified: true })
-          .where(eq(user.id, userId))
-      } catch (error) {
-        throw error
+      if (!addedAdmin.user.id) {
+        throw new Error(
+          `Failed to retrieve the newly created admin user: ${admin.username}`
+        )
       }
+
+      userId = addedAdmin.user.id
+      await db
+        .update(user)
+        .set({ emailVerified: true })
+        .where(eq(user.id, userId))
     } else {
       console.log(`Admin user ${admin.username} already exists`)
       userId = existingUser.id

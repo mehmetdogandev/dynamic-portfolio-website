@@ -7,7 +7,7 @@ import { createAuthClient } from 'better-auth/react'
 import { auth } from '.'
 
 /**
- * Admin panel Better Auth client (`/api/auth`, cookie `aksiyonsoft-session`).
+ * Admin panel Better Auth client (`/api/auth`, cookie `mehmetdogandev-session`).
  * Müşteri arayüzü için `lib/auth/customer-client` kullanın.
  */
 

@@ -30,7 +30,7 @@ export function WebsiteContactSection() {
 
   const publicEmail =
     publicTrim(process.env.NEXT_PUBLIC_WEBSITE_CONTACT_EMAIL) ??
-    'support@aksiyonsoft.com'
+    'mehmetdogan.dev@gmail.com'
   const publicPhone = publicTrim(process.env.NEXT_PUBLIC_WEBSITE_CONTACT_PHONE)
   const publicAddress =
     publicTrim(process.env.NEXT_PUBLIC_WEBSITE_ADDRESS) ?? 'Türkiye'

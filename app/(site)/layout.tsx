@@ -11,20 +11,19 @@ import {
 } from '@/lib/data/website-nav'
 import { WebsiteShell } from '@/components/website/layout/website-shell'
 import { WebsiteHeaderShell } from '@/components/website/layout/website-header-shell'
-import { WebsiteBreadcrumb } from '@/components/website/layout/website-breadcrumb'
 import { WebsiteFooter } from '@/components/website/layout/website-footer'
+import { PORTFOLIO_CONFIG } from '@/lib/website/portfolio-config'
 import { WebsiteVisitTracker } from '@/components/website/shared/website-visit-tracker'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getPublicSiteSeo()
   const description =
-    site?.defaultMetaDescription?.trim() ||
-    'Kurumsal yazılım, entegrasyon ve dijital dönüşüm — Aksiyon Soft.'
+    site?.defaultMetaDescription?.trim() || PORTFOLIO_CONFIG.description
 
   const meta: Metadata = {
     title: {
-      default: 'Aksiyon Soft',
-      template: '%s | Aksiyon Soft',
+      default: `${PORTFOLIO_CONFIG.name} | ${PORTFOLIO_CONFIG.tagline}`,
+      template: `%s | ${PORTFOLIO_CONFIG.name}`,
     },
     description,
   }
@@ -68,7 +67,6 @@ export default async function WebsiteLayout({
           navItems={headerNav}
           socialLinks={footerSocials}
         >
-          <WebsiteBreadcrumb />
           <main className="flex min-h-0 flex-1 flex-col">{children}</main>
         </WebsiteHeaderShell>
         <WebsiteFooter navItems={footerNav} socialLinks={footerSocials} />

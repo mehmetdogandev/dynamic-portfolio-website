@@ -14,25 +14,25 @@ import { useTRPC } from '@/lib/trpc/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
-import type { AdminSolutionRow } from './types'
+import type { AdminProjectRow } from './types'
 
-export function DeleteSolutionDialog({
+export function DeleteProjectDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminSolutionRow
+  row: AdminProjectRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const { mutateAsync, isPending } = useMutation(
-    trpc.solution.delete.mutationOptions({
+    trpc.project.delete.mutationOptions({
       onSuccess: async () => {
         toast.success('Çözüm silindi')
         await queryClient.invalidateQueries({
-          queryKey: trpc.solution.list.queryKey(),
+          queryKey: trpc.project.list.queryKey(),
         })
         onOpenChange(false)
       },

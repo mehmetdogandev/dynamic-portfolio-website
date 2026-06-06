@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import {
   ImageCinematicReveal,
@@ -12,7 +11,7 @@ import type {
   WebsiteBlogPost,
   WebsiteGalleryItem,
   WebsiteReference,
-  WebsiteSolution,
+  WebsiteProject,
 } from '@/lib/website/types'
 import { WEBSITE_IMAGES } from '@/lib/website/content/images'
 import { sitePath } from '@/lib/website/site-nav'
@@ -128,15 +127,15 @@ export function WebsiteHomeTeasers({
   referencePreview,
   galleryPreview,
   blogPreview,
-  solutionPreview,
+  projectPreview,
 }: {
   referencePreview: WebsiteReference | null
   galleryPreview: WebsiteGalleryItem | null
   blogPreview: WebsiteBlogPost | null
-  solutionPreview: WebsiteSolution | null
+  projectPreview: WebsiteProject | null
 }) {
   const blog = blogPreview
-  const solution = solutionPreview
+  const project = projectPreview
   const ref0 = referencePreview
   const gal0 = galleryPreview
   const [refLogoFailed, setRefLogoFailed] = useState(false)
@@ -145,38 +144,38 @@ export function WebsiteHomeTeasers({
   return (
     <section className="bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        {solution ? (
+        {project ? (
           <TeaserBlock
-            title="Öne çıkan çözüm"
-            subtitle="Çözümlerimiz"
-            href={sitePath('solution')}
-            cta="Tüm çözümler"
+            title="Öne çıkan proje"
+            subtitle="Projelerimiz"
+            href={sitePath('projeler')}
+            cta="Tüm projeler"
             imageRight
             textVariant="fadeUp"
             textDelay={0.04}
             image={
               <TeaserCoverImage
-                src={solution.imageSrc}
+                src={project.imageSrc}
                 alt={
-                  solution.coverImageAlt?.trim() ||
-                  `${solution.title} çözüm görseli`
+                  project.coverImageAlt?.trim() ||
+                  `${project.title} proje görseli`
                 }
-                unoptimized={solution.imageSrc.startsWith('/api/files/')}
+                unoptimized={project.imageSrc.startsWith('/api/files/')}
                 entranceDelayMs={280}
                 direction="fromRight"
                 className="border-border/60 aspect-video rounded-xl border shadow-md"
               />
             }
           >
-            <p className="text-foreground font-medium">{solution.title}</p>
-            <p>{solution.description}</p>
+            <p className="text-foreground font-medium">{project.title}</p>
+            <p>{project.description}</p>
           </TeaserBlock>
         ) : null}
 
         <TeaserBlock
           title="Referanslarımız"
           subtitle="Güven"
-          href={sitePath('references')}
+          href={sitePath('referanslar')}
           cta="Tüm referanslar"
           textVariant="slideLeft"
           textDelay={0.06}

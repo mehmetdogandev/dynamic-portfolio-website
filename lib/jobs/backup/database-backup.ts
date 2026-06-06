@@ -41,13 +41,14 @@ export class DatabaseBackupJob extends BaseJob {
     const rawPath = process.env.BACKUP_PATH?.trim()
     const backupPath = rawPath
       ? resolve(rawPath)
-      : join(tmpdir(), 'aksiyon-soft', 'backups')
+      : join(tmpdir(), 'dynamic-portfolio-website-mehmetdogandev', 'backups')
     const postgresHost = process.env.POSTGRES_HOST || 'postgres'
     const postgresPort = process.env.POSTGRES_PORT || '5432'
     const postgresUser = process.env.POSTGRES_USER || 'postgres'
     const postgresPassword = process.env.POSTGRES_PASSWORD || ''
     const postgresDatabase =
-      (process.env.POSTGRES_DB ?? 'aksiyonsoft').trim() || 'aksiyonsoft'
+      (process.env.POSTGRES_DB ?? 'mehmetdogandev_portfolio').trim() ||
+      'mehmetdogandev_portfolio'
 
     if (!postgresPassword) {
       throw new Error('POSTGRES_PASSWORD environment variable is required')

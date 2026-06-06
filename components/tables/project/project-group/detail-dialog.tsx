@@ -7,14 +7,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import type { AdminSolutionGroupRow } from './data-table'
+import type { AdminProjectGroupRow } from './data-table'
 
-export function DetailSolutionGroupDialog({
+export function DetailProjectGroupDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminSolutionGroupRow
+  row: AdminProjectGroupRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {

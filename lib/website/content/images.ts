@@ -7,7 +7,7 @@ const u = (photoPath: string) =>
 
 export const WEBSITE_IMAGES = {
   homeHero: u('photo-1497366754035-f200968a6e72'),
-  solutionCovers: [
+  projectCovers: [
     u('photo-1486406146926-c627a92ad1ab'),
     u('photo-1504384308090-c894fdcc538d'),
     u('photo-1454165804606-c3d57bc86b40'),

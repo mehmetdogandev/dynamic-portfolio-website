@@ -15,7 +15,6 @@ import {
   navigationItems,
   generalItems,
   siteManagementNavBlocks,
-  japonOtoItems,
   radioMobileItems,
   adminNavGroupMeta,
   type AdminNavItem,
@@ -82,11 +81,9 @@ export function AdminSidebarNav() {
   const siteBlocksToShow = siteManagementNavBlocks.filter((block) =>
     siteBlockIsVisible(block, isItemAccessible)
   )
-  const japonOtoFiltered = japonOtoItems.filter(isItemAccessible)
   const radioMobileFiltered = radioMobileItems.filter(isItemAccessible)
   const showGeneral = generalFiltered.length > 0
   const showSite = siteBlocksToShow.length > 0
-  const showJaponOto = japonOtoFiltered.length > 0
   const showRadioMobile = radioMobileFiltered.length > 0
 
   return (
@@ -320,58 +317,6 @@ export function AdminSidebarNav() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {radioMobileFiltered.map((item) => {
-                    const Icon = item.icon
-                    const active = isItemActive(item.href)
-                    return (
-                      <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={active}
-                          className="min-h-11 md:min-h-10"
-                        >
-                          <Link href={item.href}>
-                            <Icon className="size-4 shrink-0" />
-                            <span>{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    )
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
-      ) : null}
-
-      {showJaponOto ? (
-        <Collapsible
-          open={isGroupOpen('japonOto')}
-          onOpenChange={(open) => setGroupOpen('japonOto', open)}
-          className="group/collapsible"
-        >
-          <SidebarGroup>
-            <CollapsibleTrigger
-              className={cn(
-                'flex w-full items-center justify-between gap-2 rounded-md px-2 text-left outline-none ring-sidebar-ring',
-                'h-8 text-xs font-medium text-sidebar-foreground/70',
-                'hover:bg-sidebar-accent/40 focus-visible:ring-2',
-                'group-data-[collapsible=icon]:hidden',
-                '[&[data-state=open]_svg]:rotate-180'
-              )}
-            >
-              <span className="flex min-w-0 flex-1 items-center">
-                {adminNavGroupMeta.japonOto.label}
-              </span>
-              <ChevronDown
-                aria-hidden
-                className="size-4 shrink-0 text-sidebar-foreground/70 transition-transform duration-200"
-              />
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {japonOtoFiltered.map((item) => {
                     const Icon = item.icon
                     const active = isItemActive(item.href)
                     return (

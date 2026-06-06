@@ -14,25 +14,25 @@ import { useTRPC } from '@/lib/trpc/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
-import type { AdminSolutionGroupRow } from './data-table'
+import type { AdminProjectGroupRow } from './data-table'
 
-export function DeleteSolutionGroupDialog({
+export function DeleteProjectGroupDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminSolutionGroupRow
+  row: AdminProjectGroupRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const { mutateAsync, isPending } = useMutation(
-    trpc.solutionGroup.delete.mutationOptions({
+    trpc.projectGroup.delete.mutationOptions({
       onSuccess: async () => {
-        toast.success('Çözüm grubu silindi')
+        toast.success('Proje grubu silindi')
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionGroup.list.queryKey(),
+          queryKey: trpc.projectGroup.list.queryKey(),
         })
         onOpenChange(false)
       },
@@ -44,7 +44,7 @@ export function DeleteSolutionGroupDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Çözüm grubunu sil</AlertDialogTitle>
+          <AlertDialogTitle>Proje grubunu sil</AlertDialogTitle>
           <AlertDialogDescription>
             <strong>{row.name}</strong> kaydını silmek istediğinizden emin
             misiniz?

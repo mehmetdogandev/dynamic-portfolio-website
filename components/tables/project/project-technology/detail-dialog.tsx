@@ -7,14 +7,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import type { AdminSolutionTechnologyRow } from './data-table'
+import type { AdminProjectTechnologyRow } from './data-table'
 
-export function DetailSolutionTechnologyDialog({
+export function DetailProjectTechnologyDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminSolutionTechnologyRow
+  row: AdminProjectTechnologyRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {

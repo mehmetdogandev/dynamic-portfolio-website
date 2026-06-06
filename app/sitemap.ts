@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getPublicBlogPosts } from '@/lib/data/website-blog'
-import { getPublicSolutions } from '@/lib/data/website-solutions'
+import { getPublicProjects } from '@/lib/data/website-projects'
 import { getSiteOrigin } from '@/lib/seo/build-page-metadata'
 import { WEBSITE_MAIN_NAV, sitePath } from '@/lib/website/site-nav'
 
@@ -29,16 +29,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     out.push({ url, lastModified: lastMod })
   }
 
-  const [posts, solutions] = await Promise.all([
+  const [posts, projects] = await Promise.all([
     getPublicBlogPosts(),
-    getPublicSolutions(),
+    getPublicProjects(),
   ])
 
   for (const p of posts) {
     addPath(`blog/${p.slug}`)
   }
-  for (const s of solutions) {
-    addPath(`solution/${s.slug}`)
+  for (const s of projects) {
+    addPath(`projeler/${s.slug}`)
   }
 
   return out

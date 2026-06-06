@@ -1,12 +1,10 @@
-import type { BlogContent } from '@/lib/blog/content'
-
-export type AdminAboutRow = {
+export type AdminAboutProfileRow = {
   id: string
-  title: string
-  slug: string
-  content: BlogContent
-  isPublished: boolean
-  publishedAt: Date | null
+  lead: string
+  intro: string
+  introPart2: string | null
+  introPart3: string | null
+  introPart4: string | null
   sortOrder: number
   createdAt: Date
   updatedAt: Date

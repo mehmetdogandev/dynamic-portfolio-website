@@ -2,10 +2,10 @@ import 'server-only'
 
 import type { BlogContent } from '@/lib/blog/content'
 import { trpc } from '@/lib/trpc/server'
-import type { WebsiteSolution } from '@/lib/website/types'
+import type { WebsiteProject } from '@/lib/website/types'
 
-export async function getPublicSolutions(): Promise<WebsiteSolution[]> {
-  const rows = await trpc.solution.listPublic()
+export async function getPublicProjects(): Promise<WebsiteProject[]> {
+  const rows = await trpc.project.listPublic()
   return rows.map((row) => ({
     id: row.id,
     slug: row.slug,
@@ -23,7 +23,7 @@ export async function getPublicSolutions(): Promise<WebsiteSolution[]> {
   }))
 }
 
-export async function getFeaturedSolutionTeaser(): Promise<WebsiteSolution | null> {
-  const all = await getPublicSolutions()
-  return all.find((solution) => solution.isFeatured) ?? all[0] ?? null
+export async function getFeaturedProjectTeaser(): Promise<WebsiteProject | null> {
+  const all = await getPublicProjects()
+  return all.find((project) => project.isFeatured) ?? all[0] ?? null
 }

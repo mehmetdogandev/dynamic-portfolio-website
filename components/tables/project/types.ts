@@ -1,6 +1,6 @@
 import type { BlogContent } from '@/lib/blog/content'
 
-export type AdminSolutionRow = {
+export type AdminProjectRow = {
   id: string
   title: string
   slug: string

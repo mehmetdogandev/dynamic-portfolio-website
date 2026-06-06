@@ -34,6 +34,7 @@
   "exclude": [
     "node_modules",
     ".next",
+    "referance",
     "Aksiyon Soft Admin paneli ile birlikte",
     "Aksiyon Soft Full example"
   ]

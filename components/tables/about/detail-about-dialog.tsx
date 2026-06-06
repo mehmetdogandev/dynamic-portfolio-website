@@ -7,46 +7,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import type { AdminAboutRow } from './types'
-
-function htmlToText(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
+import type { AdminAboutProfileRow } from './types'
 
 export function DetailAboutDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminAboutRow
+  row: AdminAboutProfileRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const plain = htmlToText(row.content.html)
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{row.title}</DialogTitle>
-          <DialogDescription>/{row.slug}</DialogDescription>
+          <DialogTitle>{row.lead}</DialogTitle>
+          <DialogDescription>Hakkımda sayfa profili</DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
-          <p className="text-sm">
-            Durum: <strong>{row.isPublished ? 'YAYINDA' : 'TASLAK'}</strong>
-          </p>
           <p className="text-sm">SEO Başlığı: {row.seoTitle?.trim() || '—'}</p>
           <p className="text-sm">
             SEO Açıklaması: {row.seoDescription?.trim() || '—'}
           </p>
+          <p className="text-sm">
+            İndeks: {row.robotsIndex ? 'Açık' : 'Kapalı (noindex)'}
+          </p>
           <div className="rounded-md border p-3">
-            <p className="text-muted-foreground text-xs">İçerik özeti</p>
-            <p className="mt-1 text-sm">
-              {plain.length > 450 ? `${plain.slice(0, 447)}...` : plain || '—'}
-            </p>
+            <p className="text-muted-foreground text-xs">Giriş</p>
+            <p className="mt-1 text-sm whitespace-pre-wrap">{row.intro}</p>
           </div>
         </div>
       </DialogContent>

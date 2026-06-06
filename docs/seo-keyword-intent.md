@@ -1,48 +1,38 @@
 # SEO hedef sorgular ve niyet envanteri
 
-Aşağıdaki liste içerik ve seed üretiminde referans olarak kullanılır. Hedef URL’ler `NEXT_PUBLIC_WEBSITE_BASE` boşken örnektir (`/` kök).
+Aşağıdaki liste içerik ve seed üretiminde referans olarak kullanılır. Hedef URL'ler `NEXT_PUBLIC_WEBSITE_BASE` boşken örnektir (`/` kök).
 
-| #   | Örnek sorgu / niyet                  | Niyet          | Öncelik hedef URL                                 |
-| --- | ------------------------------------ | -------------- | ------------------------------------------------- |
-| 1   | aksiyon soft                         | Marka          | `/`                                               |
-| 2   | aksiyon soft iletişim                | Marka          | `/iletisim`                                       |
-| 3   | kurumsal yazılım firması             | Ticari         | `/`, `/solution`                                  |
-| 4   | özel yazılım geliştirme              | Ticari         | `/`, `/hakkimizda`                                |
-| 5   | kurumsal yazılım istanbul            | Ticari (yerel) | `/`, `/iletisim`                                  |
-| 6   | b2b yazılım projeleri                | Ticari         | `/solution`                                       |
-| 7   | iş yazılımı geliştirme               | Ticari         | `/solution`, `/`                                  |
-| 8   | web uygulaması geliştirme kurumsal   | Ticari         | `/solution`                                       |
-| 9   | api entegrasyon şirketi              | Ticari         | `/blog/*`, `/solution/*`                          |
-| 10  | enterprise yazılım türkiye           | Ticari         | `/`, `/hakkimizda`                                |
-| 11  | dijital dönüşüm danışmanlığı         | Ticari         | `/`, `/hakkimizda`                                |
-| 12  | yazılım projesi kapsam yönetimi      | Bilgi          | `/blog/*`                                         |
-| 13  | rbac nedir kurumsal                  | Bilgi          | `/blog/rbac-ile-erisim-modeli-tasarimi`           |
-| 14  | gözlemlenebilirlik logging           | Bilgi          | `/blog/kurumsal-uygulamalarda-gozlemlenebilirlik` |
-| 15  | üretim ortamı izleme                 | Bilgi          | `/blog/*`                                         |
-| 16  | postgresql yüksek erişilebilirlik    | Bilgi          | `/blog/*`                                         |
-| 17  | güvenli belge yönetimi               | Ticari / bilgi | `/solution/guvenli-belge-yonetimi`                |
-| 18  | saha iş emri mobil uygulama          | Ticari         | `/solution/saha-is-akisi-sistemi`                 |
-| 19  | operasyon paneli yazılımı            | Ticari         | `/solution/kurumsal-operasyon-platformu`          |
-| 20  | kpi raporlama paneli                 | Ticari         | `/solution/entegre-raporlama`                     |
-| 21  | kurumsal portal geliştirme           | Ticari         | `/solution/*`                                     |
-| 22  | sso kurumsal portal                  | Bilgi          | `/blog/*`                                         |
-| 23  | yazılım referansları                 | Marka / ticari | `/references`                                     |
-| 24  | yazılım şirketi referansları         | Ticari         | `/references`, `/`                                |
-| 25  | teknoloji blogu yazılım              | Bilgi          | `/blog`                                           |
-| 26  | platform güncelleme notları          | Bilgi          | `/blog/aksiyon-soft-platform-guncellemeleri`      |
-| 27  | minio s3 kurumsal dosya              | Bilgi          | `/solution/*`                                     |
-| 28  | trpc react kurumsal                  | Bilgi          | `/blog/*`                                         |
-| 29  | next.js kurumsal uygulama            | Ticari / bilgi | `/solution/*`                                     |
-| 30  | uyumluluk denetim izi                | Bilgi          | `/solution/guvenli-belge-yonetimi`                |
-| 31  | lojistik yazılımı                    | Ticari         | `/solution/kurumsal-operasyon-platformu`          |
-| 32  | finans yazılımı raporlama            | Ticari         | `/solution/entegre-raporlama`                     |
-| 33  | sağlık teknolojisi yazılım güvenliği | Ticari         | `/references` (sektör örnekleri)                  |
-| 34  | perakende operasyon yazılımı         | Ticari         | `/references`, `/solution`                        |
-| 35  | enerji dağıtım saha uygulaması       | Ticari         | `/solution/saha-is-akisi-sistemi`                 |
-| 36  | kurumsal medya galeri                | Marka          | `/galeri`                                         |
-| 37  | yazılım firması iletişim             | Marka          | `/iletisim`                                       |
-| 38  | özel yazılım teklif süreci           | Bilgi          | `/blog/*`, `/iletisim`                            |
-| 39  | agile teslimat kurumsal              | Bilgi          | `/blog/*`                                         |
-| 40  | veri entegrasyonu eşleme             | Bilgi          | `/blog/*`, `/solution/*`                          |
+| #   | Örnek sorgu / niyet             | Niyet          | Öncelik hedef URL                                 |
+| --- | ------------------------------- | -------------- | ------------------------------------------------- |
+| 1   | mehmet doğan yazılım mühendisi  | Marka          | `/`                                               |
+| 2   | mehmetdogandev                  | Marka          | `/`                                               |
+| 3   | full stack developer türkiye    | Ticari         | `/`, `/hakkimda`                                  |
+| 4   | erp geliştirme uzmanı           | Ticari         | `/projeler`                                       |
+| 5   | next.js geliştirici portfolyo   | Ticari         | `/projeler`                                       |
+| 6   | yazılım mühendisi aksaray       | Ticari (yerel) | `/hakkimda`, `/iletisim`                          |
+| 7   | iot yazılım geliştirme          | Ticari         | `/projeler`, `/hakkimda`                          |
+| 8   | yapay zeka nlp projeleri        | Bilgi          | `/projeler`, `/blog`                              |
+| 9   | django vue.js geliştirici       | Ticari         | `/hakkimda`                                       |
+| 10  | yazılım staj deneyimi portfolyo | Bilgi          | `/hakkimda`                                       |
+| 11  | mentorluk yazılım eğitimi       | Bilgi          | `/hakkimda`, `/blog`                              |
+| 12  | açık kaynak yazılım projeleri   | Bilgi          | `/projeler`, `/blog`                              |
+| 13  | rbac nedir                      | Bilgi          | `/blog/rbac-ile-erisim-modeli-tasarimi`           |
+| 14  | gözlemlenebilirlik logging      | Bilgi          | `/blog/kurumsal-uygulamalarda-gozlemlenebilirlik` |
+| 15  | postgresql drizzle orm          | Bilgi          | `/blog/*`                                         |
+| 16  | trpc react full stack           | Bilgi          | `/blog/*`, `/projeler`                            |
+| 17  | kişisel portfolyo web sitesi    | Bilgi          | `/`, `/projeler`                                  |
+| 18  | yazılım projeleri github        | Marka          | `/projeler`                                       |
+| 19  | teknoloji blogu yazılım         | Bilgi          | `/blog`                                           |
+| 20  | yazılım mühendisi iletişim      | Marka          | `/iletisim`                                       |
+| 21  | kurumsal deneyim referansları   | Marka          | `/referanslar`                                    |
+| 22  | anadolu mikronize yazılım       | Marka          | `/referanslar`, `/hakkimda`                       |
+| 23  | t3 vakfı mentor yazılım         | Bilgi          | `/hakkimda`, `/referanslar`                       |
+| 24  | konferans etkinlik galeri       | Marka          | `/galeri`                                         |
+| 25  | elektrikli araç yapay zeka      | Bilgi          | `/projeler`, `/hakkimda`                          |
+| 26  | dolibarr erp geliştirme         | Ticari         | `/projeler`                                       |
+| 27  | minio s3 dosya yükleme          | Bilgi          | `/blog/*`                                         |
+| 28  | docker postgresql deployment    | Bilgi          | `/blog/*`                                         |
+| 29  | esp32 iot projeleri             | Bilgi          | `/projeler`, `/hakkimda`                          |
+| 30  | yazılım topluluğu liderliği     | Bilgi          | `/hakkimda`, `/galeri`                            |
 
 **Not:** Gerçek sıralama rekabet, backlink ve içerik güncelliğine bağlıdır; liste GSC sorgularına göre üç ayda bir gözden geçirilmelidir.

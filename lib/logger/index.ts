@@ -25,7 +25,7 @@ export const logger = pino(
     ...(isProduction && {
       base: {
         env: process.env.NODE_ENV,
-        service: 'aksiyonsoft-app',
+        service: 'dynamic-portfolio-website-mehmetdogandev-app',
       },
     }),
   },

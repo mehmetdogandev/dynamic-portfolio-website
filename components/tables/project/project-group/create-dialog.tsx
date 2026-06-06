@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
-export function CreateSolutionGroupDialog({
+export function CreateProjectGroupDialog({
   open,
   onOpenChange,
 }: {
@@ -30,11 +30,11 @@ export function CreateSolutionGroupDialog({
   const [description, setDescription] = useState('')
 
   const { mutateAsync, isPending } = useMutation(
-    trpc.solutionGroup.create.mutationOptions({
+    trpc.projectGroup.create.mutationOptions({
       onSuccess: async () => {
-        toast.success('Çözüm grubu eklendi')
+        toast.success('Proje grubu eklendi')
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionGroup.list.queryKey(),
+          queryKey: trpc.projectGroup.list.queryKey(),
         })
         onOpenChange(false)
         setName('')
@@ -63,17 +63,17 @@ export function CreateSolutionGroupDialog({
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="solution-group-name">Ad</Label>
+            <Label htmlFor="project-group-name">Ad</Label>
             <Input
-              id="solution-group-name"
+              id="project-group-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="solution-group-desc">Açıklama</Label>
+            <Label htmlFor="project-group-desc">Açıklama</Label>
             <Textarea
-              id="solution-group-desc"
+              id="project-group-desc"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               rows={3}

@@ -1,0 +1,52 @@
+/* Public portfolio site — scoped tokens from reference design */
+[data-portfolio-site] {
+  --background: oklch(0.98 0.005 85);
+  --foreground: oklch(0.22 0.02 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.02 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.02 250);
+  --primary: oklch(0.45 0.08 255);
+  --primary-foreground: oklch(0.98 0.01 255);
+  --secondary: oklch(0.95 0.01 85);
+  --secondary-foreground: oklch(0.28 0.02 250);
+  --muted: oklch(0.94 0.01 85);
+  --muted-foreground: oklch(0.48 0.02 250);
+  --accent: oklch(0.55 0.12 195);
+  --accent-foreground: oklch(0.15 0.02 195);
+  --border: oklch(0.9 0.01 85);
+  --input: oklch(0.9 0.01 85);
+  --ring: oklch(0.45 0.08 255 / 0.5);
+  --radius: 0.75rem;
+  --font-heading:
+    var(--font-prata-impl), var(--font-serif-impl), Georgia, serif;
+  --font-prose: var(--font-cormorant-impl), Georgia, serif;
+}
+
+.dark [data-portfolio-site] {
+  --background: oklch(0.14 0.02 250);
+  --foreground: oklch(0.95 0.01 250);
+  --card: oklch(0.18 0.015 250);
+  --card-foreground: oklch(0.95 0.01 250);
+  --popover: oklch(0.18 0.015 250);
+  --popover-foreground: oklch(0.95 0.01 250);
+  --primary: oklch(0.65 0.12 250);
+  --primary-foreground: oklch(0.98 0.01 250);
+  --secondary: oklch(0.25 0.02 250);
+  --secondary-foreground: oklch(0.9 0.01 250);
+  --muted: oklch(0.22 0.015 250);
+  --muted-foreground: oklch(0.65 0.02 250);
+  --accent: oklch(0.5 0.14 195);
+  --accent-foreground: oklch(0.98 0.01 250);
+  --border: oklch(0.28 0.02 250);
+  --input: oklch(0.28 0.02 250);
+  --ring: oklch(0.65 0.12 250);
+}
+
+[data-portfolio-site] .font-heading {
+  font-family: var(--font-heading);
+}
+
+[data-portfolio-site] .font-prose {
+  font-family: var(--font-prose);
+}

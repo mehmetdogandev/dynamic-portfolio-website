@@ -11,7 +11,7 @@ import { file } from './file'
 
 export const mediaTypeEnum = pgEnum('media_type', [
   'ACTIVITY',
-  'SOLUTION',
+  'PROJECT',
   'COMMUNITY',
   'NEWS',
   'EVENT',

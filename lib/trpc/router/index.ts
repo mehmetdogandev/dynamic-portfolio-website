@@ -16,15 +16,19 @@ import { mediaGroupRouter } from './media-group'
 import { blogRouter } from './blog'
 import { blogTypeRouter } from './blog-type'
 import { sliderRouter } from './slider'
-import { solutionRouter } from './solution'
-import { solutionGroupRouter } from './solution-group'
-import { solutionTechnologyRouter } from './solution-technology'
+import { projectRouter } from './project'
+import { projectGroupRouter } from './project-group'
+import { projectTechnologyRouter } from './project-technology'
 import { siteSeoRouter } from './site-seo'
 import { headerNavRouter } from './header-nav'
 import { headerSettingsRouter } from './header-settings'
 import { footerNavRouter } from './footer-nav'
 import { footerSocialRouter } from './footer-social'
-import { aboutRouter } from './about'
+import { aboutPageProfileRouter } from './about-page-profile'
+import { aboutExperienceRouter } from './about-experience'
+import { aboutExpertiseRouter } from './about-expertise'
+import { aboutTechnologyRouter } from './about-technology'
+import { aboutInterestRouter } from './about-interest'
 import { radioMobileRouter } from './radio-mobile/index'
 
 export const appRouter = router({
@@ -48,15 +52,19 @@ export const appRouter = router({
   blog: blogRouter,
   blogType: blogTypeRouter,
   slider: sliderRouter,
-  solution: solutionRouter,
-  solutionGroup: solutionGroupRouter,
-  solutionTechnology: solutionTechnologyRouter,
+  project: projectRouter,
+  projectGroup: projectGroupRouter,
+  projectTechnology: projectTechnologyRouter,
   siteSeo: siteSeoRouter,
   headerNav: headerNavRouter,
   headerSettings: headerSettingsRouter,
   footerNav: footerNavRouter,
   footerSocial: footerSocialRouter,
-  about: aboutRouter,
+  aboutPageProfile: aboutPageProfileRouter,
+  aboutExperience: aboutExperienceRouter,
+  aboutExpertise: aboutExpertiseRouter,
+  aboutTechnology: aboutTechnologyRouter,
+  aboutInterest: aboutInterestRouter,
   radioMobile: radioMobileRouter,
 })
 

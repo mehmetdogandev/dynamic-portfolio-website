@@ -11,7 +11,7 @@ import {
 import { id, timestamps, auditMeta } from '../utils'
 import { file } from './file'
 
-export const solutionTechnology = pgTable('solution_technologies', {
+export const projectTechnology = pgTable('project_technologies', {
   id,
   name: text('name').notNull(),
   description: text('description').notNull(),
@@ -20,7 +20,7 @@ export const solutionTechnology = pgTable('solution_technologies', {
   ...auditMeta,
 })
 
-export const solutionGroup = pgTable('solution_groups', {
+export const projectGroup = pgTable('project_groups', {
   id,
   name: text('name').notNull(),
   description: text('description').notNull(),
@@ -29,13 +29,13 @@ export const solutionGroup = pgTable('solution_groups', {
   ...auditMeta,
 })
 
-export const solution = pgTable('solutions', {
+export const project = pgTable('projects', {
   id,
   title: text('title').notNull(),
   slug: text('slug').notNull().unique(),
   excerpt: text('excerpt'),
   content: jsonb('content').notNull(),
-  groupId: uuid('group_id').references(() => solutionGroup.id, {
+  groupId: uuid('group_id').references(() => projectGroup.id, {
     onDelete: 'restrict',
   }),
   fileId: uuid('file_id').references(() => file.id, {
@@ -53,15 +53,15 @@ export const solution = pgTable('solutions', {
   ...auditMeta,
 })
 
-export const solutionTechnologyLink = pgTable(
-  'solution_technology_link',
+export const projectTechnologyLink = pgTable(
+  'project_technology_link',
   {
-    solutionId: uuid('solution_id')
+    projectId: uuid('project_id')
       .notNull()
-      .references(() => solution.id, { onDelete: 'cascade' }),
+      .references(() => project.id, { onDelete: 'cascade' }),
     technologyId: uuid('technology_id')
       .notNull()
-      .references(() => solutionTechnology.id, { onDelete: 'restrict' }),
+      .references(() => projectTechnology.id, { onDelete: 'restrict' }),
   },
-  (table) => [primaryKey({ columns: [table.solutionId, table.technologyId] })]
+  (table) => [primaryKey({ columns: [table.projectId, table.technologyId] })]
 )

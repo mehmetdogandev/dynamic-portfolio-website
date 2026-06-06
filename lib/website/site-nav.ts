@@ -26,10 +26,11 @@ export function sitePath(relative: string): string {
 
 /** Base for public marketing (no admin). */
 export type WebsiteNavId =
-  | 'hakkimizda'
-  | 'solution'
+  | 'anasayfa'
+  | 'hakkimda'
+  | 'projeler'
   | 'blog'
-  | 'references'
+  | 'referanslar'
   | 'galeri'
   | 'iletisim'
 
@@ -46,46 +47,53 @@ export interface WebsiteNavItem {
 
 export const WEBSITE_MAIN_NAV: WebsiteNavItem[] = [
   {
-    id: 'hakkimizda',
-    href: sitePath('hakkimizda'),
-    navLabel: 'Hakkımızda',
-    title: 'Hakkımızda',
-    subtitle: 'Aksiyon Soft olarak',
+    id: 'anasayfa',
+    href: sitePath(''),
+    navLabel: 'Anasayfa',
+    title: 'Anasayfa',
+    subtitle: 'Mehmet Doğan — Software Engineer',
   },
   {
-    id: 'solution',
-    href: sitePath('solution'),
-    navLabel: 'Çözümler',
-    title: 'Çözümlerimiz',
-    subtitle: 'Kurumsal yazılım ve operasyon çözüm örnekleri',
+    id: 'hakkimda',
+    href: sitePath('hakkimda'),
+    navLabel: 'Hakkımda',
+    title: 'Hakkımda',
+    subtitle: 'Yazılım mühendisliği ve deneyimlerim',
+  },
+  {
+    id: 'projeler',
+    href: sitePath('projeler'),
+    navLabel: 'Projeler',
+    title: 'Projeler',
+    subtitle: 'Geliştirdiğim yazılım projeleri',
   },
   {
     id: 'blog',
     href: sitePath('blog'),
     navLabel: 'Blog',
     title: 'Bilgi merkezi',
-    subtitle: 'Kurumsal yazılım, güvenlik ve mühendislik notları',
+    subtitle: 'Yazılım, kariyer ve teknoloji notları',
   },
   {
-    id: 'references',
-    href: sitePath('references'),
+    id: 'referanslar',
+    href: sitePath('referanslar'),
     navLabel: 'Referanslar',
-    title: 'Müşterilerimiz',
-    subtitle: 'Güvendiğimiz iş ortaklıkları',
+    title: 'Referanslar',
+    subtitle: 'İş birlikleri ve referanslarım',
   },
   {
     id: 'galeri',
     href: sitePath('galeri'),
-    navLabel: 'Medya',
-    title: 'Kurumsal medya',
-    subtitle: 'Etkinlikler ve görseller',
+    navLabel: 'Galeri',
+    title: 'Galeri',
+    subtitle: 'Konferanslar, projeler ve etkinliklerden görüntüler',
   },
   {
     id: 'iletisim',
     href: sitePath('iletisim'),
     navLabel: 'İletişim',
     title: 'İletişim',
-    subtitle: 'Bize ulaşın',
+    subtitle: 'Benimle iletişime geçin',
   },
 ]
 

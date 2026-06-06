@@ -14,25 +14,25 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useTRPC } from '@/lib/trpc/client'
-import type { AdminAboutRow } from './types'
+import type { AdminAboutProfileRow } from './types'
 
 export function DeleteAboutDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminAboutRow
+  row: AdminAboutProfileRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const { mutateAsync, isPending } = useMutation(
-    trpc.about.delete.mutationOptions({
+    trpc.aboutPageProfile.delete.mutationOptions({
       onSuccess: async () => {
-        toast.success('Hakkımızda kaydı silindi')
+        toast.success('Hakkımda profili silindi')
         await queryClient.invalidateQueries({
-          queryKey: trpc.about.list.queryKey(),
+          queryKey: trpc.aboutPageProfile.list.queryKey(),
         })
         onOpenChange(false)
       },
@@ -44,9 +44,9 @@ export function DeleteAboutDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Hakkımızda kaydını sil</AlertDialogTitle>
+          <AlertDialogTitle>Hakkımda profilini sil</AlertDialogTitle>
           <AlertDialogDescription>
-            <strong>{row.title}</strong> kaydını silmek istediğinizden emin
+            <strong>{row.lead}</strong> profilini silmek istediğinizden emin
             misiniz?
           </AlertDialogDescription>
         </AlertDialogHeader>

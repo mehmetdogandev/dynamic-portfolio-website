@@ -24,48 +24,53 @@ const SEED_SLIDES: Array<{
   title: string
   subtitle: string
   primaryLabel: string
-  primaryHrefKey: 'iletisim' | 'hakkimizda' | 'references' | 'solution'
+  primaryHrefKey: 'iletisim' | 'hakkimda' | 'referanslar' | 'projeler' | 'blog'
   secondaryLabel: string
-  secondaryHrefKey: 'hakkimizda' | 'references' | 'solution' | 'iletisim'
+  secondaryHrefKey:
+    | 'hakkimda'
+    | 'referanslar'
+    | 'projeler'
+    | 'iletisim'
+    | 'blog'
   sortOrder: number
 }> = [
   {
     key: 'intro',
     imageUrl: unsplash('photo-1497366754035-f200968a6e72'),
-    imageAlt: 'Kurumsal ofis ve iş birliği ortamı',
-    title: 'Dijital dönüşümde güvenilir çözüm ortağınız',
+    imageAlt: 'Yazılım mühendisliği ve teknoloji',
+    title: 'Merhaba, ben Mehmet Doğan',
     subtitle:
-      'Aksiyon Soft; kurumsal uygulamalar, entegrasyon ve operasyonel güvenilirlik odaklı uçtan uca yazılım hizmetleri sunar.',
-    primaryLabel: 'Bize ulaşın',
-    primaryHrefKey: 'iletisim',
-    secondaryLabel: 'Kurumsal',
-    secondaryHrefKey: 'hakkimizda',
+      'Software Engineer. ERP sistemleri, full-stack web uygulamaları ve yapay zeka projeleri üzerinde çalışıyorum.',
+    primaryLabel: 'Projelerim',
+    primaryHrefKey: 'projeler',
+    secondaryLabel: 'İletişim',
+    secondaryHrefKey: 'iletisim',
     sortOrder: 0,
   },
   {
-    key: 'integration',
+    key: 'experience',
     imageUrl: unsplash('photo-1522071820081-009f0129c71c'),
-    imageAlt: 'Ekip ve dijital dönüşüm',
-    title: 'Kurumsal uygulama, entegrasyon ve izlenebilir süreç',
+    imageAlt: 'Ekip çalışması ve yazılım geliştirme',
+    title: 'Kurumsal deneyim & topluluk liderliği',
     subtitle:
-      'Karmaşık sistemleri birbirine bağlayan köprüler, rol tabanlı onaylar ve yönetim panoları ile operasyonu tek noktadan yönetin.',
-    primaryLabel: 'Hakkımızda',
-    primaryHrefKey: 'hakkimizda',
+      'Anadolu Mikronize, T3 Vakfı ve üniversite topluluklarında edindiğim deneyimlerle üretken çözümler geliştiriyorum.',
+    primaryLabel: 'Hakkımda',
+    primaryHrefKey: 'hakkimda',
     secondaryLabel: 'Referanslar',
-    secondaryHrefKey: 'references',
+    secondaryHrefKey: 'referanslar',
     sortOrder: 1,
   },
   {
-    key: 'solution',
+    key: 'projeler',
     imageUrl: unsplash('photo-1454165804606-c3d57bc86b40'),
-    imageAlt: 'Çözüm ve teknoloji odaklı çalışma',
-    title: 'Sektörel deneyim ve uygulanabilir çözümler',
+    imageAlt: 'Yazılım projeleri ve teknoloji',
+    title: 'Projeler & açık kaynak çalışmalar',
     subtitle:
-      'Referans çözümlerimiz ve ürünleştirilebilir modüllerimizle hızlı başlangıç, ölçeklenebilir mimari ve net teslimat.',
-    primaryLabel: 'Çözümler',
-    primaryHrefKey: 'solution',
-    secondaryLabel: 'İletişim',
-    secondaryHrefKey: 'iletisim',
+      'ERP, IoT, mobil uygulama ve yapay zeka odaklı projelerimi inceleyin; blog yazılarımda teknik notlarımı paylaşıyorum.',
+    primaryLabel: 'Projeler',
+    primaryHrefKey: 'projeler',
+    secondaryLabel: 'Blog',
+    secondaryHrefKey: 'blog',
     sortOrder: 2,
   },
 ]

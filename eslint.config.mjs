@@ -15,6 +15,7 @@ const eslintConfig = [
       // Ayrı Vite örnekleri — ana Next.js lint’ine dahil edilmez
       'Aksiyon Soft Full example/**',
       'Aksiyon Soft Admin paneli ile birlikte/**',
+      'referance/**',
       'next-env.d.ts',
     ],
   },

@@ -1,12 +1,16 @@
-import Image from 'next/image'
 import Link from 'next/link'
+import { Building2, Link2, Mail, Share2 } from 'lucide-react'
+import { PORTFOLIO_CONFIG } from '@/lib/website/portfolio-config'
 import type { PublicNavLink } from '@/lib/data/website-nav'
 import type { PublicFooterSocialLink } from '@/lib/website/public-footer-social'
 import { WebsiteFooterSocialGrid } from '@/components/website/layout/website-footer-social-grid'
 
-function trim(v: string | undefined) {
-  return v?.trim() || undefined
-}
+const iconMap = {
+  building: Building2,
+  link: Link2,
+  mail: Mail,
+  share: Share2,
+} as const
 
 export function WebsiteFooter({
   navItems,
@@ -16,97 +20,115 @@ export function WebsiteFooter({
   socialLinks: PublicFooterSocialLink[]
 }) {
   const year = new Date().getFullYear()
-  const email =
-    trim(process.env.NEXT_PUBLIC_WEBSITE_CONTACT_EMAIL) ??
-    'support@aksiyonsoft.com'
-  const phone = trim(process.env.NEXT_PUBLIC_WEBSITE_CONTACT_PHONE)
-  const address = trim(process.env.NEXT_PUBLIC_WEBSITE_ADDRESS) ?? 'Türkiye'
-  const phoneClean = phone ? phone.replace(/[^\d+]/g, '') : ''
+  const { phone, email } = PORTFOLIO_CONFIG.contact
+  const footerLinks =
+    navItems.length > 0
+      ? navItems.map((item) => ({ label: item.label, href: item.href }))
+      : [...PORTFOLIO_CONFIG.footerNav]
+
+  const columns = [
+    {
+      title: 'Sayfalar',
+      icon: 'link' as const,
+      links: footerLinks,
+    },
+    {
+      title: 'İletişim',
+      icon: 'mail' as const,
+      items: [phone, email].filter(Boolean),
+    },
+    {
+      title: 'Sosyal Medya',
+      icon: 'share' as const,
+      social: true,
+    },
+  ]
 
   return (
-    <footer className="border-border/60 bg-muted/30 mt-auto border-t">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
-        <div className="space-y-3">
-          <Image
-            src="/logo.png"
-            alt="Aksiyon Soft"
-            width={160}
-            height={46}
-            className="h-10 w-auto object-contain dark:brightness-110"
-          />
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Aksiyon Soft olarak kurumsal süreçlerinizi özel yazılım, entegrasyon
-            ve güvenli operasyon uygulamalarıyla dijitalleştiriyoruz.
-            Ölçeklenebilir mimari ve şeffaf teslimat ile yanınızdayız.
-          </p>
-        </div>
+    <footer className="bg-muted/30 relative overflow-hidden border-t">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.06] dark:opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1920&q=80')",
+        }}
+      />
+      <div className="relative z-10">
+        <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-4 lg:gap-8">
+            <div className="space-y-3 text-center md:text-left">
+              <div className="flex items-center justify-center gap-2 md:justify-start">
+                <div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-lg">
+                  <Building2 className="size-4" />
+                </div>
+                <h3 className="font-heading text-foreground text-sm font-semibold">
+                  {PORTFOLIO_CONFIG.name}
+                </h3>
+              </div>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {PORTFOLIO_CONFIG.description}
+              </p>
+            </div>
 
-        <div>
-          <h2 className="text-foreground mb-4 text-sm font-semibold tracking-wide">
-            Kurumsal
-          </h2>
-          <ul className="space-y-2.5 text-sm">
-            {navItems.map((item) => (
-              <li key={`${item.href}-${item.label}`}>
-                <Link
-                  href={item.href}
-                  target={item.openInNewTab ? '_blank' : undefined}
-                  rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
-                  className="text-muted-foreground hover:text-primary transition-colors"
+            {columns.map((col) => {
+              const Icon = iconMap[col.icon]
+              return (
+                <div
+                  key={col.title}
+                  className="space-y-3 text-center md:text-left"
                 >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h2 className="text-foreground mb-4 text-sm font-semibold tracking-wide">
-            İletişim
-          </h2>
-          <ul className="text-muted-foreground space-y-2 text-sm">
-            <li>
-              <a
-                href={`mailto:${email}`}
-                className="hover:text-primary transition-colors"
-              >
-                {email}
-              </a>
-            </li>
-            {phone && (
-              <li>
-                {phoneClean.length > 5 ? (
-                  <a
-                    href={`tel:${phoneClean}`}
-                    className="hover:text-primary transition-colors"
-                  >
-                    {phone}
-                  </a>
-                ) : (
-                  <span>{phone}</span>
-                )}
-              </li>
-            )}
-            <li className="pt-1 leading-relaxed">{address}</li>
-          </ul>
-        </div>
-
-        <div className="flex flex-col items-center text-center lg:-translate-x-20">
-          <h2 className="text-foreground mb-4 text-sm font-semibold tracking-wide">
-            Sosyal medya
-          </h2>
-          {socialLinks.length > 0 ? (
-            <WebsiteFooterSocialGrid socialLinks={socialLinks} columns={3} />
-          ) : (
-            <p className="text-muted-foreground max-w-xs text-sm">
-              Kurumsal hesaplar yakında burada.
+                  <div className="flex items-center justify-center gap-2 md:justify-start">
+                    <div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded-lg">
+                      <Icon className="size-4" />
+                    </div>
+                    <h3 className="text-foreground text-sm font-semibold">
+                      {col.title}
+                    </h3>
+                  </div>
+                  {'links' in col && col.links ? (
+                    <ul className="text-muted-foreground space-y-2 text-sm">
+                      {col.links.map((link) => (
+                        <li key={link.href}>
+                          <Link
+                            href={link.href}
+                            className="hover:text-foreground underline-offset-4 transition-colors hover:underline"
+                          >
+                            {link.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {'items' in col && col.items ? (
+                    <ul className="text-muted-foreground space-y-1 text-sm">
+                      {col.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {'social' in col && col.social ? (
+                    socialLinks.length > 0 ? (
+                      <WebsiteFooterSocialGrid
+                        socialLinks={socialLinks}
+                        columns={3}
+                        className="mt-2"
+                      />
+                    ) : (
+                      <p className="text-muted-foreground text-sm">
+                        Sosyal hesaplar yakında burada.
+                      </p>
+                    )
+                  ) : null}
+                </div>
+              )
+            })}
+          </div>
+          <div className="mt-6 flex justify-center border-t pt-5">
+            <p className="text-muted-foreground text-center text-sm">
+              © {year} {PORTFOLIO_CONFIG.name}. Tüm hakları saklıdır.
             </p>
-          )}
+          </div>
         </div>
-      </div>
-      <div className="border-border/60 text-muted-foreground border-t py-4 text-center text-xs">
-        © {year} Aksiyon Soft. Tüm hakları saklıdır.
       </div>
     </footer>
   )

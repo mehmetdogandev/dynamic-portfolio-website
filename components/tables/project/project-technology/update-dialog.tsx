@@ -16,14 +16,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import type { AdminSolutionTechnologyRow } from './data-table'
+import type { AdminProjectTechnologyRow } from './data-table'
 
-export function UpdateSolutionTechnologyDialog({
+export function UpdateProjectTechnologyDialog({
   row,
   open,
   onOpenChange,
 }: {
-  row: AdminSolutionTechnologyRow
+  row: AdminProjectTechnologyRow
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
@@ -39,11 +39,11 @@ export function UpdateSolutionTechnologyDialog({
   }, [open, row])
 
   const { mutateAsync, isPending } = useMutation(
-    trpc.solutionTechnology.update.mutationOptions({
+    trpc.projectTechnology.update.mutationOptions({
       onSuccess: async () => {
         toast.success('Teknoloji güncellendi')
         await queryClient.invalidateQueries({
-          queryKey: trpc.solutionTechnology.list.queryKey(),
+          queryKey: trpc.projectTechnology.list.queryKey(),
         })
         onOpenChange(false)
       },
@@ -71,17 +71,17 @@ export function UpdateSolutionTechnologyDialog({
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="edit-solution-tech-name">Ad</Label>
+            <Label htmlFor="edit-project-tech-name">Ad</Label>
             <Input
-              id="edit-solution-tech-name"
+              id="edit-project-tech-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="edit-solution-tech-desc">Açıklama</Label>
+            <Label htmlFor="edit-project-tech-desc">Açıklama</Label>
             <Textarea
-              id="edit-solution-tech-desc"
+              id="edit-project-tech-desc"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               rows={3}

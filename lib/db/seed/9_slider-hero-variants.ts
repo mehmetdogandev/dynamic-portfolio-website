@@ -13,7 +13,7 @@ import { sitePath } from '@/lib/website/site-nav'
 const unsplash = (photoPath: string) =>
   `https://images.unsplash.com/${photoPath}?auto=format&fit=crop&w=1600&q=80`
 
-type HrefKey = 'iletisim' | 'hakkimizda' | 'references' | 'solution'
+type HrefKey = 'iletisim' | 'hakkimda' | 'referanslar' | 'projeler'
 
 type SeedSlide = {
   key: string
@@ -55,7 +55,7 @@ const VARIANT_GROUPS: {
         primaryLabel: 'Bize ulaşın',
         primaryHrefKey: 'iletisim',
         secondaryLabel: 'Kurumsal',
-        secondaryHrefKey: 'hakkimizda',
+        secondaryHrefKey: 'hakkimda',
         sortOrder: 0,
       },
       {
@@ -66,9 +66,9 @@ const VARIANT_GROUPS: {
         subtitle:
           'Aynı veri modeliyle farklı slaytlar; hizalama bölünmüş düzlemde okunur.',
         primaryLabel: 'Referanslar',
-        primaryHrefKey: 'references',
-        secondaryLabel: 'Çözümler',
-        secondaryHrefKey: 'solution',
+        primaryHrefKey: 'referanslar',
+        secondaryLabel: 'Projeler',
+        secondaryHrefKey: 'projeler',
         sortOrder: 1,
       },
       {
@@ -78,7 +78,7 @@ const VARIANT_GROUPS: {
         title: 'Operasyonu görünür, kararları ölçülebilir kılın',
         subtitle: 'Üçüncü vurgu: net teslim ve iletişim hattı.',
         primaryLabel: 'Hakkımızda',
-        primaryHrefKey: 'hakkimizda',
+        primaryHrefKey: 'hakkimda',
         secondaryLabel: 'İletişim',
         secondaryHrefKey: 'iletisim',
         sortOrder: 2,
@@ -98,10 +98,10 @@ const VARIANT_GROUPS: {
         title: 'Görsel solda, mesaj sağa hizalı',
         subtitle:
           'Sağ blokta tipografi; solda büyük görüntü. Marka bütünlüğüne uygun.',
-        primaryLabel: 'Çözümler',
-        primaryHrefKey: 'solution',
+        primaryLabel: 'Projeler',
+        primaryHrefKey: 'projeler',
         secondaryLabel: 'Referanslar',
-        secondaryHrefKey: 'references',
+        secondaryHrefKey: 'referanslar',
         sortOrder: 0,
       },
       {
@@ -111,7 +111,7 @@ const VARIANT_GROUPS: {
         title: 'Farklı slaytlar, aynı bölünmüş düzen',
         subtitle: 'Görüntü ve metin dengesi aynı kalır; sadece içerik değişir.',
         primaryLabel: 'Hakkımızda',
-        primaryHrefKey: 'hakkimizda',
+        primaryHrefKey: 'hakkimda',
         secondaryLabel: 'İletişim',
         secondaryHrefKey: 'iletisim',
         sortOrder: 1,
@@ -126,7 +126,7 @@ const VARIANT_GROUPS: {
         primaryLabel: 'İletişim',
         primaryHrefKey: 'iletisim',
         secondaryLabel: 'Referanslar',
-        secondaryHrefKey: 'references',
+        secondaryHrefKey: 'referanslar',
         sortOrder: 2,
       },
     ],
@@ -144,8 +144,8 @@ const VARIANT_GROUPS: {
         title: 'Ana sahne + altta tıklanabilir strip',
         subtitle:
           'Aktif büyük görüntü; aşağıda tüm kareler önizleme gibi dolaşılır.',
-        primaryLabel: 'Çözümler',
-        primaryHrefKey: 'solution',
+        primaryLabel: 'Projeler',
+        primaryHrefKey: 'projeler',
         secondaryLabel: 'İletişim',
         secondaryHrefKey: 'iletisim',
         sortOrder: 0,
@@ -157,9 +157,9 @@ const VARIANT_GROUPS: {
         title: 'İkinci büyük görsel',
         subtitle: 'Dört slaytlık strip’in farkı hemen belli olsun diye.',
         primaryLabel: 'Hakkımızda',
-        primaryHrefKey: 'hakkimizda',
+        primaryHrefKey: 'hakkimda',
         secondaryLabel: 'Referanslar',
-        secondaryHrefKey: 'references',
+        secondaryHrefKey: 'referanslar',
         sortOrder: 1,
       },
       {
@@ -170,8 +170,8 @@ const VARIANT_GROUPS: {
         subtitle: 'Aynı tipografi; sadece görüntü değişimi.',
         primaryLabel: 'İletişim',
         primaryHrefKey: 'iletisim',
-        secondaryLabel: 'Çözümler',
-        secondaryHrefKey: 'solution',
+        secondaryLabel: 'Projeler',
+        secondaryHrefKey: 'projeler',
         sortOrder: 2,
       },
       {
@@ -181,9 +181,9 @@ const VARIANT_GROUPS: {
         title: 'Dördüncü slayt — strip dolar',
         subtitle: 'En az dört kare, strip’e anlam katar.',
         primaryLabel: 'Referanslar',
-        primaryHrefKey: 'references',
+        primaryHrefKey: 'referanslar',
         secondaryLabel: 'Hakkımızda',
-        secondaryHrefKey: 'hakkimizda',
+        secondaryHrefKey: 'hakkimda',
         sortOrder: 3,
       },
     ],
@@ -203,7 +203,7 @@ const VARIANT_GROUPS: {
         primaryLabel: 'Bize ulaşın',
         primaryHrefKey: 'iletisim',
         secondaryLabel: 'Kurumsal',
-        secondaryHrefKey: 'hakkimizda',
+        secondaryHrefKey: 'hakkimda',
         sortOrder: 0,
       },
       {
@@ -212,10 +212,10 @@ const VARIANT_GROUPS: {
         imageAlt: 'Gökyüzü',
         title: 'Hızlı, sade, merkezde',
         subtitle: 'Dikkat başlıkta.',
-        primaryLabel: 'Çözümler',
-        primaryHrefKey: 'solution',
+        primaryLabel: 'Projeler',
+        primaryHrefKey: 'projeler',
         secondaryLabel: 'Referanslar',
-        secondaryHrefKey: 'references',
+        secondaryHrefKey: 'referanslar',
         sortOrder: 1,
       },
       {
@@ -225,7 +225,7 @@ const VARIANT_GROUPS: {
         title: 'Noktalar yeter; oklar hafif',
         subtitle: 'Görüntü arka planda silik.',
         primaryLabel: 'Hakkımızda',
-        primaryHrefKey: 'hakkimizda',
+        primaryHrefKey: 'hakkimda',
         secondaryLabel: 'İletişim',
         secondaryHrefKey: 'iletisim',
         sortOrder: 2,
@@ -248,7 +248,7 @@ const VARIANT_GROUPS: {
         primaryLabel: 'İletişim',
         primaryHrefKey: 'iletisim',
         secondaryLabel: 'Hakkımızda',
-        secondaryHrefKey: 'hakkimizda',
+        secondaryHrefKey: 'hakkimda',
         sortOrder: 0,
       },
       {
@@ -259,9 +259,9 @@ const VARIANT_GROUPS: {
         subtitle:
           'Deniz ve ışık, dramatik fakat sakin. Cinematic: karakter net, açıklamalar ayrıntı taşır fakat aşırı söz söylemez. Bu paragrafta da ilerleme hissi, alt çubukla aynı ritimde gitmeli; uzun cümle sinemada da monolog gibidir, abartmadan. Referans: gece, kontrast, sessiz hareket. Son cümle: net bir çağrı.',
         primaryLabel: 'Referanslar',
-        primaryHrefKey: 'references',
-        secondaryLabel: 'Çözümler',
-        secondaryHrefKey: 'solution',
+        primaryHrefKey: 'referanslar',
+        secondaryLabel: 'Projeler',
+        secondaryHrefKey: 'projeler',
         sortOrder: 1,
       },
       {
@@ -271,8 +271,8 @@ const VARIANT_GROUPS: {
         title: 'Işık oyunu, üçüncü sahnede açılır',
         subtitle:
           'Ağaçlar, yumuşak gradient ve titrek gölge: sinemada üçüncü perde. Burada açıklama, izleyenin dikkatini ilerleme çubuğuna eşleştirmek için hafif uzatıldı. Metin, sessiz yürüyüş: bir nefes, bir cadde, bir karar. Sonunda yine aynı kurumsal dil, fakat tonu daha olgun, daha az pazarlama, daha çok hikâye. Bitiş cümlesi kısadır, başlık taşır yükü.',
-        primaryLabel: 'Çözümler',
-        primaryHrefKey: 'solution',
+        primaryLabel: 'Projeler',
+        primaryHrefKey: 'projeler',
         secondaryLabel: 'İletişim',
         secondaryHrefKey: 'iletisim',
         sortOrder: 2,
@@ -294,7 +294,7 @@ const VARIANT_GROUPS: {
         primaryLabel: 'İletişim',
         primaryHrefKey: 'iletisim',
         secondaryLabel: 'Hakkımızda',
-        secondaryHrefKey: 'hakkimizda',
+        secondaryHrefKey: 'hakkimda',
         sortOrder: 0,
       },
       {
@@ -303,10 +303,10 @@ const VARIANT_GROUPS: {
         imageAlt: 'Kod ekranı',
         title: 'Kart 2: ürün fokus',
         subtitle: 'Aynı layout, farklı görsel; kaydırmayla ileri.',
-        primaryLabel: 'Çözümler',
-        primaryHrefKey: 'solution',
+        primaryLabel: 'Projeler',
+        primaryHrefKey: 'projeler',
         secondaryLabel: 'Referanslar',
-        secondaryHrefKey: 'references',
+        secondaryHrefKey: 'referanslar',
         sortOrder: 1,
       },
       {
@@ -317,9 +317,9 @@ const VARIANT_GROUPS: {
         subtitle:
           'Dört kare, peek alanı dolar; strip hissi yok, kart yığılımı var.',
         primaryLabel: 'Referanslar',
-        primaryHrefKey: 'references',
-        secondaryLabel: 'Çözümler',
-        secondaryHrefKey: 'solution',
+        primaryHrefKey: 'referanslar',
+        secondaryLabel: 'Projeler',
+        secondaryHrefKey: 'projeler',
         sortOrder: 2,
       },
       {
@@ -331,7 +331,7 @@ const VARIANT_GROUPS: {
         primaryLabel: 'İletişim',
         primaryHrefKey: 'iletisim',
         secondaryLabel: 'Hakkımızda',
-        secondaryHrefKey: 'hakkimizda',
+        secondaryHrefKey: 'hakkimda',
         sortOrder: 3,
       },
     ],
@@ -352,7 +352,7 @@ const VARIANT_GROUPS: {
         primaryLabel: 'Bize ulaşın',
         primaryHrefKey: 'iletisim',
         secondaryLabel: 'Kurumsal',
-        secondaryHrefKey: 'hakkimizda',
+        secondaryHrefKey: 'hakkimda',
         sortOrder: 0,
       },
       {
@@ -361,10 +361,10 @@ const VARIANT_GROUPS: {
         imageAlt: 'Takım toplantı',
         title: 'İkinci yığın, farklı görsel',
         subtitle: 'Rotasyon, önceki karta sinyal; animasyonu abartma.',
-        primaryLabel: 'Çözümler',
-        primaryHrefKey: 'solution',
+        primaryLabel: 'Projeler',
+        primaryHrefKey: 'projeler',
         secondaryLabel: 'Referanslar',
-        secondaryHrefKey: 'references',
+        secondaryHrefKey: 'referanslar',
         sortOrder: 1,
       },
       {
@@ -374,7 +374,7 @@ const VARIANT_GROUPS: {
         title: 'Üçüncü: kapanan deste',
         subtitle: 'Bir ileri, bir geri; aynı tipografi, farklı hikâye.',
         primaryLabel: 'Hakkımızda',
-        primaryHrefKey: 'hakkimizda',
+        primaryHrefKey: 'hakkimda',
         secondaryLabel: 'İletişim',
         secondaryHrefKey: 'iletisim',
         sortOrder: 2,

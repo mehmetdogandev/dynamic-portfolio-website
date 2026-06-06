@@ -32,7 +32,6 @@ import {
   navigationItems,
   generalItems,
   getAllSiteManagementNavItems,
-  japonOtoItems,
   type AdminNavItem,
 } from '@/lib/navigation/admin-nav'
 import { useTRPC } from '@/lib/trpc/client'
@@ -175,7 +174,6 @@ export function FavoritesSection() {
     ...navigationItems.filter(isItemAccessible),
     ...generalItems.filter(isItemAccessible),
     ...getAllSiteManagementNavItems().filter(isItemAccessible),
-    ...japonOtoItems.filter(isItemAccessible),
   ]
 
   const favoriteItems = allAccessibleItems.filter((item) =>
@@ -213,17 +211,10 @@ export function FavoritesSection() {
     return list.filter((item) => normalizeSearch(item.title).includes(q))
   }, [q, isItemAccessible])
 
-  const opsFiltered = useMemo(() => {
-    const list = japonOtoItems.filter(isItemAccessible)
-    if (!q) return list
-    return list.filter((item) => normalizeSearch(item.title).includes(q))
-  }, [q, isItemAccessible])
-
   const noAddDialogResults =
     navFiltered.length === 0 &&
     generalFiltered.length === 0 &&
-    siteFiltered.length === 0 &&
-    opsFiltered.length === 0
+    siteFiltered.length === 0
 
   if (!mounted) return null
 
@@ -359,47 +350,6 @@ export function FavoritesSection() {
                   </h3>
                   <ul className="space-y-1">
                     {siteFiltered.map((item) => {
-                      const isFav = favorites.includes(item.href)
-                      const Icon = item.icon
-                      return (
-                        <li key={item.href}>
-                          <button
-                            type="button"
-                            onClick={() => void toggleFavorite(item.href)}
-                            className={cn(
-                              'flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors',
-                              isFav
-                                ? 'border-[var(--admin-accent)] bg-[var(--admin-nav-hover)]'
-                                : 'border-border bg-card hover:bg-muted/40'
-                            )}
-                          >
-                            <span className="bg-muted flex size-9 shrink-0 items-center justify-center rounded-md">
-                              <Icon className="text-foreground size-4" />
-                            </span>
-                            <span className="min-w-0 flex-1 truncate font-medium">
-                              {item.title}
-                            </span>
-                            {isFav ? (
-                              <Check className="size-4 shrink-0 text-[var(--admin-accent)]" />
-                            ) : (
-                              <Plus className="text-muted-foreground size-4 shrink-0" />
-                            )}
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              ) : null}
-
-              {opsFiltered.length > 0 ? (
-                <div>
-                  <h3 className="text-muted-foreground mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-                    <GitBranch className="size-3.5" />
-                    Müşteri operasyonları
-                  </h3>
-                  <ul className="space-y-1">
-                    {opsFiltered.map((item) => {
                       const isFav = favorites.includes(item.href)
                       const Icon = item.icon
                       return (

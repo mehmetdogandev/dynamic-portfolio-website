@@ -1,12 +1,12 @@
 {
-  "name": "aksiyon-soft",
+  "name": "dynamic-portfolio-website-mehmetdogandev",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "ci": "bash scripts/ci.sh",
     "dev": "docker compose -f docker-compose.dev.yml up -d && pnpm prepare && next dev --turbopack",
     "auth:generate": "pnpx dotenv-cli -e .env -- pnpx @better-auth/cli generate --config lib/auth/index.ts --output lib/db/schema/auth.ts",
-    "cache:flush": "docker exec -it aksiyonsoft-redis redis-cli -a redispassword FLUSHALL",
+    "cache:flush": "docker exec -it mehmetdogandev-redis redis-cli -a redispassword FLUSHALL",
     "db:generate": "npx drizzle-kit generate",
     "db:push": "npx drizzle-kit push",
     "db:migrate": "pnpx dotenv-cli -e .env -- pnpx tsx \"scripts/db-migrate-with-summary.ts\"",
@@ -78,6 +78,7 @@
     "dotenv": "^17.2.2",
     "drizzle-orm": "^0.44.5",
     "drizzle-zod": "^0.8.3",
+    "embla-carousel-react": "^8.6.0",
     "exceljs": "^4.4.0",
     "framer-motion": "^12.23.24",
     "html2canvas": "^1.4.1",

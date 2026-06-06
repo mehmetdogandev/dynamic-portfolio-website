@@ -1,8 +1,6 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -14,34 +12,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { WEBSITE_BASE } from '@/lib/website/site-nav'
-import { getWebsiteSocialLinks } from '@/lib/website/social'
+import { PORTFOLIO_CONFIG } from '@/lib/website/portfolio-config'
 import type { PublicNavLink } from '@/lib/data/website-nav'
 import type { PublicFooterSocialLink } from '@/lib/website/public-footer-social'
-import { WebsiteMobileNavLinks } from '@/components/website/layout/website-mobile-nav-links'
+import { PortfolioNavLinks } from '@/components/website/ui/portfolio-nav-links'
 import { WebsiteMobileSocialLinks } from '@/components/website/layout/website-mobile-social-links'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
-import { cn } from '@/lib/utils'
-
-function SocialRow({ className }: { className?: string }) {
-  const links = getWebsiteSocialLinks()
-  if (links.length === 0) return null
-  return (
-    <div className={cn('flex flex-wrap items-center gap-3', className)}>
-      {links.map(({ href, name, icon: Icon }) => (
-        <a
-          key={name}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-primary transition-colors"
-          aria-label={name}
-        >
-          <Icon className="size-5" />
-        </a>
-      ))}
-    </div>
-  )
-}
 
 export function WebsiteHeader({
   navItems,
@@ -50,9 +26,8 @@ export function WebsiteHeader({
   navItems: PublicNavLink[]
   socialLinks: PublicFooterSocialLink[]
 }) {
-  const pathname = usePathname()
-  const envSocial = getWebsiteSocialLinks()
   const [mounted, setMounted] = useState(false)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -60,106 +35,85 @@ export function WebsiteHeader({
 
   return (
     <header className="w-full">
-      <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link
           href={WEBSITE_BASE || '/'}
-          className="flex shrink-0 items-center gap-2"
+          className="focus-visible:ring-ring flex shrink-0 items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:ring-offset-2"
+          aria-label={`${PORTFOLIO_CONFIG.name} ana sayfa`}
         >
-          <Image
-            src="/logo.png"
-            alt="Aksiyon Soft"
-            width={152}
-            height={44}
-            className="h-9 w-auto object-contain dark:brightness-110"
-            priority
-          />
+          <span className="font-heading text-primary text-xl font-bold tracking-tight">
+            {PORTFOLIO_CONFIG.name}
+          </span>
+          <span className="text-muted-foreground hidden sm:inline" aria-hidden>
+            ·
+          </span>
+          <span className="text-muted-foreground hidden text-sm font-medium sm:inline">
+            {PORTFOLIO_CONFIG.tagline}
+          </span>
         </Link>
 
-        <nav
-          className="text-foreground/90 hidden items-center gap-1 lg:flex"
-          aria-label="Ana menü"
-        >
-          {navItems.map((item) => {
-            const active =
-              pathname === item.href || pathname?.startsWith(`${item.href}/`)
-            return (
-              <Link
-                key={`${item.href}-${item.label}`}
-                href={item.href}
-                target={item.openInNewTab ? '_blank' : undefined}
-                rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
-                className={cn(
-                  'hover:text-primary rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-colors',
-                  active && 'text-primary'
-                )}
-              >
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
+        <PortfolioNavLinks navItems={navItems} className="hidden lg:flex" />
 
-        <div className="hidden items-center gap-4 lg:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <ThemeToggle
             variant="outline"
             className="border-border/60 bg-background/50 size-9 shrink-0"
             aria-label="Tema: aydınlık veya karanlık"
           />
-          <SocialRow />
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
-          {envSocial.length > 0 && <SocialRow />}
           <ThemeToggle
             variant="outline"
             className="border-border/60 bg-background/50 size-9 shrink-0"
             aria-label="Tema: aydınlık veya karanlık"
           />
           {mounted ? (
-            <Sheet>
+            <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
-                  className="shrink-0"
+                  className="size-10 min-w-10 shrink-0"
                   aria-label="Menüyü aç"
                 >
-                  <Menu className="size-5" />
+                  <Menu className="size-6" />
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="flex h-full w-1/2 max-w-sm flex-col"
+                className="flex min-h-full w-full max-w-xs flex-col sm:max-w-sm"
               >
-                <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-                  <SheetHeader className="text-left">
-                    <SheetTitle className="font-serif text-lg">Menü</SheetTitle>
-                  </SheetHeader>
-                  <WebsiteMobileNavLinks
-                    pathname={pathname ?? ''}
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Menü</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-6 pt-6">
+                  <PortfolioNavLinks
                     navItems={navItems}
+                    className="flex flex-col items-stretch gap-0 [&_a]:rounded-none"
+                    onLinkClick={() => setOpen(false)}
                   />
-                  {socialLinks.length > 0 && (
-                    <div className="border-border mt-auto flex flex-col items-center border-t pt-4 pb-2 text-center">
-                      <p className="text-muted-foreground mb-3 text-xs font-medium uppercase tracking-wide">
-                        Sosyal medya
-                      </p>
-                      <WebsiteMobileSocialLinks socialLinks={socialLinks} />
-                    </div>
-                  )}
                 </div>
+                {socialLinks.length > 0 ? (
+                  <div className="border-border mt-auto flex flex-col items-center border-t pt-6 pb-8">
+                    <p className="text-muted-foreground mb-2 text-sm">
+                      İletişim ve sosyal medya
+                    </p>
+                    <WebsiteMobileSocialLinks socialLinks={socialLinks} />
+                  </div>
+                ) : null}
               </SheetContent>
             </Sheet>
           ) : (
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="icon"
-              className="shrink-0"
+              className="size-10 min-w-10 shrink-0"
               aria-label="Menüyü aç"
             >
-              <Menu className="size-5" />
+              <Menu className="size-6" />
             </Button>
           )}
         </div>

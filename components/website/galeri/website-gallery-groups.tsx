@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 
 function kindLabel(kind: WebsiteGalleryItem['kind']): string {
   if (kind === 'etkinlik') return 'Etkinlik'
-  if (kind === 'solution') return 'Çözüm'
+  if (kind === 'project') return 'Proje'
   if (kind === 'topluluk') return 'Topluluk'
   return 'Medya'
 }

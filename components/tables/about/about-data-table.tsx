@@ -26,10 +26,9 @@ import {
 import { usePermission } from '@/lib/hooks/use-rbac'
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
 import { adminHref } from '@/lib/admin-path'
-import { cn } from '@/lib/utils'
 import { DeleteAboutDialog } from './delete-about-dialog'
 import { DetailAboutDialog } from './detail-about-dialog'
-import type { AdminAboutRow } from './types'
+import type { AdminAboutProfileRow } from './types'
 
 const REORDER_FILTER_TOAST =
   'Sıralamayı değiştirmek için arama ve sütun filtrelerini temizleyin.'
@@ -38,13 +37,25 @@ export function AboutDataTable() {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const router = useRouter()
-  const [deleteRow, setDeleteRow] = useState<AdminAboutRow | null>(null)
-  const [detailRow, setDetailRow] = useState<AdminAboutRow | null>(null)
+  const [deleteRow, setDeleteRow] = useState<AdminAboutProfileRow | null>(null)
+  const [detailRow, setDetailRow] = useState<AdminAboutProfileRow | null>(null)
 
-  const { data: canCreate } = usePermission(SCOPES.ABOUT, PERMISSIONS.CREATE)
-  const { data: canRead } = usePermission(SCOPES.ABOUT, PERMISSIONS.READ)
-  const { data: canUpdate } = usePermission(SCOPES.ABOUT, PERMISSIONS.UPDATE)
-  const { data: canDelete } = usePermission(SCOPES.ABOUT, PERMISSIONS.DELETE)
+  const { data: canCreate } = usePermission(
+    SCOPES.ABOUT_PROFILE,
+    PERMISSIONS.CREATE
+  )
+  const { data: canRead } = usePermission(
+    SCOPES.ABOUT_PROFILE,
+    PERMISSIONS.READ
+  )
+  const { data: canUpdate } = usePermission(
+    SCOPES.ABOUT_PROFILE,
+    PERMISSIONS.UPDATE
+  )
+  const { data: canDelete } = usePermission(
+    SCOPES.ABOUT_PROFILE,
+    PERMISSIONS.DELETE
+  )
 
   const {
     pagination,
@@ -66,17 +77,19 @@ export function AboutDataTable() {
 
   const { orderedIds: scopeOrderedIds } = useReorderScope({
     enabled: Boolean(canUpdate) && !reorderDisabled,
-    queryKey: trpc.about.listReorderScope.queryKey(),
+    queryKey: trpc.aboutPageProfile.listReorderScope.queryKey(),
     queryFn: () =>
-      queryClient.fetchQuery(trpc.about.listReorderScope.queryOptions()),
+      queryClient.fetchQuery(
+        trpc.aboutPageProfile.listReorderScope.queryOptions()
+      ),
   })
 
   const { data, isLoading, isError, error } = useQuery({
-    ...trpc.about.list.queryOptions(listInput),
+    ...trpc.aboutPageProfile.list.queryOptions(listInput),
   })
 
   const rows = useMemo(
-    () => (data?.data ?? []) as AdminAboutRow[],
+    () => (data?.data ?? []) as AdminAboutProfileRow[],
     [data?.data]
   )
   const paginationMeta = data?.pagination
@@ -89,13 +102,13 @@ export function AboutDataTable() {
     : undefined
 
   const { mutateAsync: reorderAsync } = useMutation(
-    trpc.about.reorder.mutationOptions({
+    trpc.aboutPageProfile.reorder.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries({
-          queryKey: trpc.about.list.queryKey(),
+          queryKey: trpc.aboutPageProfile.list.queryKey(),
         })
         await queryClient.invalidateQueries({
-          queryKey: trpc.about.listReorderScope.queryKey(),
+          queryKey: trpc.aboutPageProfile.listReorderScope.queryKey(),
         })
       },
     })
@@ -128,7 +141,7 @@ export function AboutDataTable() {
     [reorderDisabled, canUpdate, scopeOrderedIds, reorderAsync]
   )
 
-  const columns: ColumnDef<AdminAboutRow>[] = useMemo(
+  const columns: ColumnDef<AdminAboutProfileRow>[] = useMemo(
     () => [
       {
         id: 'sort',
@@ -143,44 +156,32 @@ export function AboutDataTable() {
         cell: () => null,
       },
       {
-        accessorKey: 'title',
-        header: 'Başlık',
+        accessorKey: 'lead',
+        header: 'Özet',
         meta: {
-          columnLabel: 'Başlık',
+          columnLabel: 'Özet',
           cellClassName: 'max-w-[320px] truncate font-medium',
         },
       },
       {
-        accessorKey: 'slug',
-        header: 'Slug',
-        meta: {
-          columnLabel: 'Slug',
-          cellClassName: 'text-muted-foreground max-w-[200px] truncate text-sm',
-        },
-        cell: ({ row }) => `/${row.original.slug}`,
-      },
-      {
-        accessorKey: 'isPublished',
-        header: 'Durum',
+        accessorKey: 'intro',
+        header: 'Giriş',
         enableSorting: false,
         meta: {
-          columnLabel: 'Durum',
-          filterPlaceholder: 'Yayında veya taslak...',
+          columnLabel: 'Giriş',
+          cellClassName: 'text-muted-foreground max-w-[280px] truncate text-sm',
         },
-        cell: ({ row }) => (
-          <span
-            className={cn(
-              'rounded-full px-2 py-1 text-xs',
-              row.original.isPublished
-                ? 'bg-emerald-500/10 text-emerald-700'
-                : 'bg-muted text-muted-foreground'
-            )}
-          >
-            {row.original.isPublished ? 'YAYINDA' : 'TASLAK'}
-          </span>
-        ),
       },
-      createIconActionColumn<AdminAboutRow>((row) => {
+      {
+        accessorKey: 'robotsIndex',
+        header: 'İndeks',
+        enableSorting: false,
+        meta: {
+          columnLabel: 'İndeks',
+        },
+        cell: ({ row }) => (row.original.robotsIndex ? 'Evet' : 'Hayır'),
+      },
+      createIconActionColumn<AdminAboutProfileRow>((row) => {
         const actions = []
         if (canRead) {
           actions.push({
@@ -223,7 +224,7 @@ export function AboutDataTable() {
   )
 
   const renderTableBody = useCallback(
-    (table: ReactTable<AdminAboutRow>) =>
+    (table: ReactTable<AdminAboutProfileRow>) =>
       table
         .getRowModel()
         .rows.map((row) => (
@@ -250,7 +251,7 @@ export function AboutDataTable() {
           isLoading={isLoading}
           globalFilter={search}
           onGlobalFilterChange={handleSearchChange}
-          searchPlaceholder="Başlık veya slug ara..."
+          searchPlaceholder="Özet veya giriş ara..."
           pagination={paginationMeta}
           onPaginationChange={handlePaginationChange}
           sorting={sorting}
@@ -269,7 +270,7 @@ export function AboutDataTable() {
                 onClick={() => router.push(adminHref('/about/new'))}
               >
                 <Plus className="mr-1.5 h-4 w-4" />
-                Yeni hakkımızda
+                Yeni profil
               </Button>
             ) : null
           }
@@ -299,7 +300,7 @@ function SortableAboutTableRow({
   displayIndex,
   canReorder,
 }: {
-  row: Row<AdminAboutRow>
+  row: Row<AdminAboutProfileRow>
   displayIndex: number
   canReorder: boolean
 }) {

@@ -11,7 +11,7 @@ import type {
 
 function mapKind(type: string): WebsiteGalleryItem['kind'] {
   if (type === 'ACTIVITY' || type === 'EVENT') return 'etkinlik'
-  if (type === 'SOLUTION') return 'solution'
+  if (type === 'PROJECT') return 'project'
   if (type === 'COMMUNITY') return 'topluluk'
   return undefined
 }

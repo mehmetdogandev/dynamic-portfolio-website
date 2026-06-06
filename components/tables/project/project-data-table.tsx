@@ -33,35 +33,35 @@ import { useReorderScope } from '@/lib/hooks/use-reorder-scope'
 import { usePermission } from '@/lib/hooks/use-rbac'
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
 import { cn } from '@/lib/utils'
-import { DeleteSolutionDialog } from './delete-solution-dialog'
-import { DetailSolutionDialog } from './detail-solution-dialog'
-import type { AdminSolutionGroupRow } from './solution-group/data-table'
-import type { AdminSolutionRow } from './types'
+import { DeleteProjectDialog } from './delete-project-dialog'
+import { DetailProjectDialog } from './detail-project-dialog'
+import type { AdminProjectGroupRow } from './project-group/data-table'
+import type { AdminProjectRow } from './types'
 
 const REORDER_FILTER_TOAST =
   'Sıralamayı değiştirmek için arama ve diğer sütun filtrelerini temizleyin.'
 const REORDER_GROUP_TOAST =
   'Sıralamayı değiştirmek için tek bir çözüm grubuna filtreleyin.'
 
-const COLUMN_FILTER_KEY_MAP = { solutionGroup: 'solutionGroupId' } as const
+const COLUMN_FILTER_KEY_MAP = { projectGroup: 'projectGroupId' } as const
 
-export function SolutionDataTable() {
+export function ProjectDataTable() {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const router = useRouter()
-  const [detailRow, setDetailRow] = useState<AdminSolutionRow | null>(null)
-  const [deleteRow, setDeleteRow] = useState<AdminSolutionRow | null>(null)
+  const [detailRow, setDetailRow] = useState<AdminProjectRow | null>(null)
+  const [deleteRow, setDeleteRow] = useState<AdminProjectRow | null>(null)
 
-  const { data: canCreate } = usePermission(SCOPES.SOLUTION, PERMISSIONS.CREATE)
-  const { data: canRead } = usePermission(SCOPES.SOLUTION, PERMISSIONS.READ)
-  const { data: canUpdate } = usePermission(SCOPES.SOLUTION, PERMISSIONS.UPDATE)
-  const { data: canDelete } = usePermission(SCOPES.SOLUTION, PERMISSIONS.DELETE)
+  const { data: canCreate } = usePermission(SCOPES.PROJECT, PERMISSIONS.CREATE)
+  const { data: canRead } = usePermission(SCOPES.PROJECT, PERMISSIONS.READ)
+  const { data: canUpdate } = usePermission(SCOPES.PROJECT, PERMISSIONS.UPDATE)
+  const { data: canDelete } = usePermission(SCOPES.PROJECT, PERMISSIONS.DELETE)
 
   const { data: groupData } = useQuery(
-    trpc.solutionGroup.list.queryOptions(adminListFetchAllInput('sortOrder'))
+    trpc.projectGroup.list.queryOptions(adminListFetchAllInput('sortOrder'))
   )
   const groups = useMemo(
-    () => (groupData?.data ?? []) as AdminSolutionGroupRow[],
+    () => (groupData?.data ?? []) as AdminProjectGroupRow[],
     [groupData]
   )
   const groupFilterOptions = useMemo(
@@ -90,34 +90,34 @@ export function SolutionDataTable() {
     columnFilterKeyMap: COLUMN_FILTER_KEY_MAP,
   })
 
-  const groupFilterId = columnFiltersRecord.solutionGroupId
+  const groupFilterId = columnFiltersRecord.projectGroupId
   const hasNonGroupListFilters =
     Boolean(debouncedSearch) ||
     Object.entries(columnFiltersRecord).some(
-      ([key]) => key !== 'solutionGroupId'
+      ([key]) => key !== 'projectGroupId'
     )
   const canReorder =
     Boolean(canUpdate) && Boolean(groupFilterId) && !hasNonGroupListFilters
 
   const { orderedIds: scopeOrderedIds } = useReorderScope({
     enabled: canReorder,
-    queryKey: trpc.solution.listReorderScope.queryKey({
-      solutionGroupId: groupFilterId ?? '',
+    queryKey: trpc.project.listReorderScope.queryKey({
+      projectGroupId: groupFilterId ?? '',
     }),
     queryFn: () =>
       queryClient.fetchQuery(
-        trpc.solution.listReorderScope.queryOptions({
-          solutionGroupId: groupFilterId!,
+        trpc.project.listReorderScope.queryOptions({
+          projectGroupId: groupFilterId!,
         })
       ),
   })
 
   const { data, isLoading, isError, error } = useQuery({
-    ...trpc.solution.list.queryOptions(listInput),
+    ...trpc.project.list.queryOptions(listInput),
   })
 
   const rows = useMemo(
-    () => (data?.data ?? []) as AdminSolutionRow[],
+    () => (data?.data ?? []) as AdminProjectRow[],
     [data?.data]
   )
   const paginationMeta = data?.pagination
@@ -131,38 +131,38 @@ export function SolutionDataTable() {
 
   const invalidateSolutionQueries = useCallback(async () => {
     await queryClient.invalidateQueries({
-      queryKey: trpc.solution.list.queryKey(),
+      queryKey: trpc.project.list.queryKey(),
     })
     if (groupFilterId) {
       await queryClient.invalidateQueries({
-        queryKey: trpc.solution.listReorderScope.queryKey({
-          solutionGroupId: groupFilterId,
+        queryKey: trpc.project.listReorderScope.queryKey({
+          projectGroupId: groupFilterId,
         }),
       })
     }
   }, [queryClient, trpc, groupFilterId])
 
   const { mutateAsync: reorderAsync } = useMutation(
-    trpc.solution.reorder.mutationOptions({
+    trpc.project.reorder.mutationOptions({
       onSuccess: invalidateSolutionQueries,
     })
   )
 
   const { mutateAsync: moveToGroupAsync } = useMutation(
-    trpc.solution.moveToGroup.mutationOptions({
+    trpc.project.moveToGroup.mutationOptions({
       onSuccess: invalidateSolutionQueries,
     })
   )
 
   const handleMoveToGroup = useCallback(
-    async (row: AdminSolutionRow, solutionGroupId: string) => {
-      if (!solutionGroupId || solutionGroupId === row.groupId) return
+    async (row: AdminProjectRow, projectGroupId: string) => {
+      if (!projectGroupId || projectGroupId === row.groupId) return
       try {
-        await moveToGroupAsync({ id: row.id, solutionGroupId })
-        toast.success('Çözüm grubu güncellendi')
+        await moveToGroupAsync({ id: row.id, projectGroupId })
+        toast.success('Proje grubu güncellendi')
       } catch (err) {
         toast.error(
-          err instanceof Error ? err.message : 'Çözüm grubu güncellenemedi'
+          err instanceof Error ? err.message : 'Proje grubu güncellenemedi'
         )
       }
     },
@@ -209,7 +209,7 @@ export function SolutionDataTable() {
     ]
   )
 
-  const columns: ColumnDef<AdminSolutionRow>[] = useMemo(
+  const columns: ColumnDef<AdminProjectRow>[] = useMemo(
     () => [
       {
         id: 'sort',
@@ -270,13 +270,13 @@ export function SolutionDataTable() {
         cell: ({ row }) => `/${row.original.slug}`,
       },
       {
-        id: 'solutionGroup',
+        id: 'projectGroup',
         accessorKey: 'groupName',
         header: 'Grup',
         enableSorting: false,
         meta: {
           columnLabel: 'Grup',
-          filterKey: 'solutionGroupId',
+          filterKey: 'projectGroupId',
           filterPlaceholder: 'Grup seç...',
           filterSelectOptions: groupFilterOptions,
           cellClassName: 'min-w-[160px]',
@@ -323,7 +323,7 @@ export function SolutionDataTable() {
           </span>
         ),
       },
-      createIconActionColumn<AdminSolutionRow>((row) => {
+      createIconActionColumn<AdminProjectRow>((row) => {
         const actions = []
         if (canRead) {
           actions.push({
@@ -337,7 +337,7 @@ export function SolutionDataTable() {
             icon: Pencil,
             label: 'Düzenle',
             onClick: () =>
-              router.push(adminHref(`/solution/${row.original.id}`)),
+              router.push(adminHref(`/project/${row.original.id}`)),
           })
         }
         if (canDelete) {
@@ -374,7 +374,7 @@ export function SolutionDataTable() {
   )
 
   const renderTableBody = useCallback(
-    (table: ReactTable<AdminSolutionRow>) =>
+    (table: ReactTable<AdminProjectRow>) =>
       table
         .getRowModel()
         .rows.map((row) => (
@@ -418,7 +418,7 @@ export function SolutionDataTable() {
               <Button
                 type="button"
                 size="sm"
-                onClick={() => router.push(adminHref('/solution/new'))}
+                onClick={() => router.push(adminHref('/project/new'))}
               >
                 <Plus className="mr-1.5 h-4 w-4" />
                 Yeni çözüm
@@ -429,14 +429,14 @@ export function SolutionDataTable() {
       )}
 
       {detailRow ? (
-        <DetailSolutionDialog
+        <DetailProjectDialog
           row={detailRow}
           open={true}
           onOpenChange={(open) => !open && setDetailRow(null)}
         />
       ) : null}
       {deleteRow ? (
-        <DeleteSolutionDialog
+        <DeleteProjectDialog
           row={deleteRow}
           open={true}
           onOpenChange={(open) => !open && setDeleteRow(null)}
@@ -451,7 +451,7 @@ function SortableSolutionTableRow({
   displayIndex,
   canReorder,
 }: {
-  row: Row<AdminSolutionRow>
+  row: Row<AdminProjectRow>
   displayIndex: number
   canReorder: boolean
 }) {

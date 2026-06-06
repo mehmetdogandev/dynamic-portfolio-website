@@ -105,7 +105,7 @@ load_dotenv
 # SSH: `ssh aksiyon1` / `scp aksiyon1:...` — Host "aksiyon1" ~/.ssh/config icinde (User, HostName, IdentityFile)
 SSH_TARGET="aksiyon1"
 # Uzakta: ornek varsayilan compose proje adi aksiyon-soft -> aksiyon-soft-postgres-1. Farkli isim: .env SYNC_REMOTE_PG_CONTAINER
-REMOTE_PG_CONTAINER="${SYNC_REMOTE_PG_CONTAINER:-aksiyon-soft-postgres-1}"
+REMOTE_PG_CONTAINER="${SYNC_REMOTE_PG_CONTAINER:-dynamic-portfolio-website-mehmetdogandev-postgres-1}"
 SYNC_LOCAL_COMPOSE_FILE="docker-compose.dev.yml"
 LOCAL_COMPOSE_ABS="$REPO_ROOT/$SYNC_LOCAL_COMPOSE_FILE"
 if [[ ! -f "$LOCAL_COMPOSE_ABS" ]]; then
@@ -114,10 +114,10 @@ if [[ ! -f "$LOCAL_COMPOSE_ABS" ]]; then
 fi
 
 # .env: yalnizca veritabani adi (diger app ayarlari zaten yuklendi)
-DB_NAME="${POSTGRES_DB:-aksiyonsoft}"
+DB_NAME="${POSTGRES_DB:-mehmetdogandev_portfolio}"
 DB_NAME="${DB_NAME#"${DB_NAME%%[![:space:]]*}"}"
 DB_NAME="${DB_NAME%"${DB_NAME##*[![:space:]]}"}"
-[[ -z "$DB_NAME" ]] && DB_NAME="aksiyonsoft"
+[[ -z "$DB_NAME" ]] && DB_NAME="mehmetdogandev_portfolio"
 
 echo "SSH hedefi: $SSH_TARGET (~/.ssh/config Host)" >&2
 echo "Yerel compose: $SYNC_LOCAL_COMPOSE_FILE | Uzak PG container: $REMOTE_PG_CONTAINER | DB: $DB_NAME (.env POSTGRES_DB)" >&2

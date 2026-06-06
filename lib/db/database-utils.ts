@@ -15,32 +15,32 @@ if (!process.env.DATABASE_URL) {
 // Use global cache to persist connection pools across hot reloads in Next.js
 // This prevents pool recreation on every module reload
 declare global {
-  var __aksiyonsoftConnectionPools:
+  var __mehmetdogandevConnectionPools:
     | Map<string, ReturnType<typeof createDbConnection>>
     | undefined
-  var __aksiyonsoftPoolInstances: Map<string, Pool> | undefined
+  var __mehmetdogandevPoolInstances: Map<string, Pool> | undefined
 }
 
-const DEFAULT_DB_NAME = process.env.POSTGRES_DB || 'aksiyonsoft'
+const DEFAULT_DB_NAME = process.env.POSTGRES_DB || 'mehmetdogandev_portfolio'
 
 // Single database connection pool.
 const connectionPools =
   (
     globalThis as typeof globalThis & {
-      __aksiyonsoftConnectionPools?: Map<
+      __mehmetdogandevConnectionPools?: Map<
         string,
         ReturnType<typeof createDbConnection>
       >
     }
-  ).__aksiyonsoftConnectionPools ||
+  ).__mehmetdogandevConnectionPools ||
   ((
     globalThis as typeof globalThis & {
-      __aksiyonsoftConnectionPools: Map<
+      __mehmetdogandevConnectionPools: Map<
         string,
         ReturnType<typeof createDbConnection>
       >
     }
-  ).__aksiyonsoftConnectionPools = new Map<
+  ).__mehmetdogandevConnectionPools = new Map<
     string,
     ReturnType<typeof createDbConnection>
   >())
@@ -49,14 +49,14 @@ const connectionPools =
 const poolInstances =
   (
     globalThis as typeof globalThis & {
-      __aksiyonsoftPoolInstances?: Map<string, Pool>
+      __mehmetdogandevPoolInstances?: Map<string, Pool>
     }
-  ).__aksiyonsoftPoolInstances ||
+  ).__mehmetdogandevPoolInstances ||
   ((
     globalThis as typeof globalThis & {
-      __aksiyonsoftPoolInstances: Map<string, Pool>
+      __mehmetdogandevPoolInstances: Map<string, Pool>
     }
-  ).__aksiyonsoftPoolInstances = new Map<string, Pool>())
+  ).__mehmetdogandevPoolInstances = new Map<string, Pool>())
 
 /**
  * Single-tenant database connection manager.

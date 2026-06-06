@@ -4,7 +4,7 @@ import { use } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
-import { SolutionEditorForm } from '@/components/tables/solution/solution-editor-form'
+import { ProjectEditorForm } from '@/components/tables/project/project-editor-form'
 import {
   Card,
   CardContent,
@@ -18,7 +18,7 @@ import { useTRPC } from '@/lib/trpc/client'
 
 type SolutionEditPageParams = Promise<{ id: string }>
 
-export default function EditSolutionPage({
+export default function EditProjectPage({
   params,
 }: {
   params: SolutionEditPageParams
@@ -26,15 +26,15 @@ export default function EditSolutionPage({
   const { id } = use(params)
   const trpc = useTRPC()
   const { data: canAccess, isLoading: authLoading } = usePermission(
-    SCOPES.SOLUTION,
+    SCOPES.PROJECT,
     PERMISSIONS.UPDATE
   )
   const {
-    data: solutionData,
+    data: projectData,
     isLoading,
     isError,
     error,
-  } = useQuery(trpc.solution.getById.queryOptions({ id }))
+  } = useQuery(trpc.project.getById.queryOptions({ id }))
 
   if (authLoading || isLoading) {
     return (
@@ -55,7 +55,7 @@ export default function EditSolutionPage({
               Erişim reddedildi
             </CardTitle>
             <CardDescription>
-              Bu sayfa için SOLUTION kapsamında UPDATE izni gerekir.
+              Bu sayfa için PROJECT kapsamında UPDATE izni gerekir.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -68,7 +68,7 @@ export default function EditSolutionPage({
     )
   }
 
-  if (isError || !solutionData) {
+  if (isError || !projectData) {
     return (
       <DashboardLayout>
         <Card className="border-0 shadow-none">
@@ -94,24 +94,24 @@ export default function EditSolutionPage({
             Başlığı, grubu, teknolojileri ve içeriği bu sayfadan güncelleyin.
           </p>
         </div>
-        <SolutionEditorForm
+        <ProjectEditorForm
           mode="edit"
-          solutionId={solutionData.id}
+          projectId={projectData.id}
           initialValues={{
-            title: solutionData.title,
-            slug: solutionData.slug,
-            excerpt: solutionData.excerpt,
-            content: solutionData.content,
-            groupId: solutionData.groupId,
-            technologyIds: solutionData.technologyIds,
-            fileId: solutionData.fileId,
-            isPublished: solutionData.isPublished,
-            isFeatured: solutionData.isFeatured,
-            publishedAt: solutionData.publishedAt,
-            seoTitle: solutionData.seoTitle,
-            seoDescription: solutionData.seoDescription,
-            robotsIndex: solutionData.robotsIndex,
-            coverImageAlt: solutionData.coverImageAlt,
+            title: projectData.title,
+            slug: projectData.slug,
+            excerpt: projectData.excerpt,
+            content: projectData.content,
+            groupId: projectData.groupId,
+            technologyIds: projectData.technologyIds,
+            fileId: projectData.fileId,
+            isPublished: projectData.isPublished,
+            isFeatured: projectData.isFeatured,
+            publishedAt: projectData.publishedAt,
+            seoTitle: projectData.seoTitle,
+            seoDescription: projectData.seoDescription,
+            robotsIndex: projectData.robotsIndex,
+            coverImageAlt: projectData.coverImageAlt,
           }}
         />
       </div>

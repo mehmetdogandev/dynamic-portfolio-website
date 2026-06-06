@@ -2,7 +2,7 @@
 
 import { Loader2 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layouts/dashboard-layout'
-import { SolutionTechnologyDataTable } from '@/components/tables/solution/solution-technology/data-table'
+import { ProjectTechnologyDataTable } from '@/components/tables/project/project-technology/data-table'
 import {
   Card,
   CardContent,
@@ -13,9 +13,9 @@ import {
 import { PERMISSIONS, SCOPES } from '@/lib/db/schema'
 import { usePermission } from '@/lib/hooks/use-rbac'
 
-export default function SolutionTechnologyPage() {
+export default function ProjectTechnologyPage() {
   const { data: canAccess, isLoading } = usePermission(
-    SCOPES.SOLUTION_TECHNOLOGY,
+    SCOPES.PROJECT_TECHNOLOGY,
     PERMISSIONS.ACCESS
   )
 
@@ -38,7 +38,7 @@ export default function SolutionTechnologyPage() {
               Erişim reddedildi
             </CardTitle>
             <CardDescription>
-              Bu sayfa için SOLUTION_TECHNOLOGY kapsamında ACCESS izni gerekir.
+              Bu sayfa için PROJECT_TECHNOLOGY kapsamında ACCESS izni gerekir.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -64,7 +64,7 @@ export default function SolutionTechnologyPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SolutionTechnologyDataTable />
+            <ProjectTechnologyDataTable />
           </CardContent>
         </Card>
       </div>

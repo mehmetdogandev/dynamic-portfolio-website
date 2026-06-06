@@ -29,8 +29,8 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { BlogContentEditor } from '@/components/tables/blog/blog-content-editor'
-import type { AdminSolutionGroupRow } from '@/components/tables/solution/solution-group/data-table'
-import type { AdminSolutionTechnologyRow } from '@/components/tables/solution/solution-technology/data-table'
+import type { AdminProjectGroupRow } from '@/components/tables/project/project-group/data-table'
+import type { AdminProjectTechnologyRow } from '@/components/tables/project/project-technology/data-table'
 
 type UploadResponse = {
   fileId?: string
@@ -38,9 +38,9 @@ type UploadResponse = {
   details?: string
 }
 
-interface SolutionEditorFormProps {
+interface ProjectEditorFormProps {
   mode: 'create' | 'edit'
-  solutionId?: string
+  projectId?: string
   initialValues?: {
     title: string
     slug: string
@@ -67,30 +67,30 @@ const EMPTY_CONTENT: BlogContent = {
   videoFileIds: [],
 }
 
-export function SolutionEditorForm({
+export function ProjectEditorForm({
   mode,
-  solutionId,
+  projectId,
   initialValues,
-}: SolutionEditorFormProps) {
+}: ProjectEditorFormProps) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const router = useRouter()
 
   const { data: groups } = useQuery(
-    trpc.solutionGroup.list.queryOptions(adminListFetchAllInput('sortOrder'))
+    trpc.projectGroup.list.queryOptions(adminListFetchAllInput('sortOrder'))
   )
   const groupOptions = useMemo(
-    () => (groups?.data ?? []) as AdminSolutionGroupRow[],
+    () => (groups?.data ?? []) as AdminProjectGroupRow[],
     [groups]
   )
 
   const { data: technologies } = useQuery(
-    trpc.solutionTechnology.list.queryOptions(
+    trpc.projectTechnology.list.queryOptions(
       adminListFetchAllInput('sortOrder')
     )
   )
   const technologyOptions = useMemo(
-    () => (technologies?.data ?? []) as AdminSolutionTechnologyRow[],
+    () => (technologies?.data ?? []) as AdminProjectTechnologyRow[],
     [technologies]
   )
 
@@ -151,23 +151,23 @@ export function SolutionEditorForm({
   }
 
   const createMutation = useMutation(
-    trpc.solution.create.mutationOptions({
+    trpc.project.create.mutationOptions({
       onSuccess: async (result) => {
         await queryClient.invalidateQueries({
-          queryKey: trpc.solution.list.queryKey(),
+          queryKey: trpc.project.list.queryKey(),
         })
         toast.success('Çözüm oluşturuldu')
-        router.push(adminHref(`/solution/${result.id}`))
+        router.push(adminHref(`/project/${result.id}`))
       },
       onError: (error) => toast.error(error.message),
     })
   )
 
   const updateMutation = useMutation(
-    trpc.solution.update.mutationOptions({
+    trpc.project.update.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries({
-          queryKey: trpc.solution.list.queryKey(),
+          queryKey: trpc.project.list.queryKey(),
         })
         toast.success('Çözüm güncellendi')
       },
@@ -187,7 +187,7 @@ export function SolutionEditorForm({
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('prefix', 'solution/cover')
+      formData.append('prefix', 'project/cover')
       const alt = coverImageAlt.trim()
       if (alt) formData.append('altText', alt)
       const response = await fetch('/api/files/upload', {
@@ -217,7 +217,7 @@ export function SolutionEditorForm({
       return
     }
     if (!groupId) {
-      toast.error('Çözüm grubu seçilmelidir')
+      toast.error('Proje grubu seçilmelidir')
       return
     }
 
@@ -247,13 +247,13 @@ export function SolutionEditorForm({
       return
     }
 
-    if (!solutionId) {
+    if (!projectId) {
       toast.error('Çözüm kimliği bulunamadı')
       return
     }
 
     await updateMutation.mutateAsync({
-      id: solutionId,
+      id: projectId,
       ...payload,
     })
   }
@@ -262,17 +262,17 @@ export function SolutionEditorForm({
     <div className="space-y-4 rounded-lg border p-4">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="solution-title">Başlık</Label>
+          <Label htmlFor="project-title">Başlık</Label>
           <Input
-            id="solution-title"
+            id="project-title"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="solution-slug">Slug</Label>
+          <Label htmlFor="project-slug">Slug</Label>
           <Input
-            id="solution-slug"
+            id="project-slug"
             value={slug}
             onChange={(event) => setSlug(event.target.value)}
           />
@@ -281,9 +281,9 @@ export function SolutionEditorForm({
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="solution-group">Çözüm grubu</Label>
+          <Label htmlFor="project-group">Proje grubu</Label>
           <Select value={groupId} onValueChange={setGroupId}>
-            <SelectTrigger id="solution-group">
+            <SelectTrigger id="project-group">
               <SelectValue placeholder="Grup seçin" />
             </SelectTrigger>
             <SelectContent>
@@ -296,7 +296,7 @@ export function SolutionEditorForm({
           </Select>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor={fileId ? undefined : 'solution-cover'}>
+          <Label htmlFor={fileId ? undefined : 'project-cover'}>
             Kapak görseli
           </Label>
           {isCoverUploading && !fileId ? (
@@ -329,7 +329,7 @@ export function SolutionEditorForm({
             </div>
           ) : (
             <Input
-              id="solution-cover"
+              id="project-cover"
               type="file"
               accept="image/*"
               onChange={onCoverFile}
@@ -365,9 +365,9 @@ export function SolutionEditorForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="solution-excerpt">Özet</Label>
+        <Label htmlFor="project-excerpt">Özet</Label>
         <Textarea
-          id="solution-excerpt"
+          id="project-excerpt"
           value={excerpt}
           onChange={(event) => setExcerpt(event.target.value)}
           rows={3}
@@ -378,22 +378,20 @@ export function SolutionEditorForm({
         <p className="text-sm font-medium">SEO</p>
         <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="solution-seo-title">
-              Arama başlığı (opsiyonel)
-            </Label>
+            <Label htmlFor="project-seo-title">Arama başlığı (opsiyonel)</Label>
             <Input
-              id="solution-seo-title"
+              id="project-seo-title"
               value={seoTitle}
               onChange={(event) => setSeoTitle(event.target.value)}
               placeholder="Boşsa çözüm başlığı kullanılır"
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
-            <Label htmlFor="solution-seo-desc">
+            <Label htmlFor="project-seo-desc">
               Meta açıklama (öneri ~155 karakter)
             </Label>
             <Textarea
-              id="solution-seo-desc"
+              id="project-seo-desc"
               value={seoDescription}
               onChange={(event) => setSeoDescription(event.target.value)}
               rows={3}
@@ -405,9 +403,9 @@ export function SolutionEditorForm({
             </p>
           </div>
           <div className="space-y-1.5 md:col-span-2">
-            <Label htmlFor="solution-cover-alt">Kapak görseli alt metni</Label>
+            <Label htmlFor="project-cover-alt">Kapak görseli alt metni</Label>
             <Input
-              id="solution-cover-alt"
+              id="project-cover-alt"
               value={coverImageAlt}
               onChange={(event) => setCoverImageAlt(event.target.value)}
               placeholder="Erişilebilirlik ve arama motorları için"

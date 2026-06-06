@@ -5,7 +5,7 @@ export interface WebsiteAboutPreview {
   summary: string
 }
 
-export interface WebsiteSolution {
+export interface WebsiteProject {
   id: string
   slug: string
   title: string
@@ -57,7 +57,7 @@ export interface WebsiteReference {
   logoAlt?: string
 }
 
-export type WebsiteGalleryKind = 'etkinlik' | 'solution' | 'topluluk'
+export type WebsiteGalleryKind = 'etkinlik' | 'project' | 'topluluk'
 
 export interface WebsiteGalleryItem {
   id: string
