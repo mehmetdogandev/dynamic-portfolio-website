@@ -1,2 +1,0 @@
-CREATE TYPE "public"."logoTypeEnum" AS ENUM('WEBSITE_LOGO', 'WEBSITE_FAVICON', 'EMAIL_LOGO', 'EMAIL_FAVICON');--> statement-breakpoint
-ALTER TABLE "logo" ADD COLUMN "type" "logoTypeEnum" DEFAULT 'WEBSITE_LOGO' NOT NULL;
