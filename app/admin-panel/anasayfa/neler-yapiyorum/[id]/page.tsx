@@ -24,7 +24,12 @@ export default function EditHighlightPage() {
     PERMISSIONS.UPDATE
   )
 
-  const { data: row, isLoading, isError, error } = useQuery({
+  const {
+    data: row,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     ...trpc.homeHighlight.getById.queryOptions({ id: params.id }),
     enabled: Boolean(canAccess && params.id),
   })
@@ -66,7 +71,9 @@ export default function EditHighlightPage() {
       <DashboardLayout>
         <Card className="border-0 shadow-none">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Kayıt bulunamadı</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              Kayıt bulunamadı
+            </CardTitle>
             <CardDescription>
               {error?.message ?? 'Kart kaydı yüklenemedi.'}
             </CardDescription>

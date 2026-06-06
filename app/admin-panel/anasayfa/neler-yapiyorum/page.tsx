@@ -43,8 +43,7 @@ export default function AnasayfaNelerYapiyorumPage() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-sm">
-              Yöneticinizden Neler Yapıyorum kartları için rol ataması
-              isteyin.
+              Yöneticinizden Neler Yapıyorum kartları için rol ataması isteyin.
             </p>
           </CardContent>
         </Card>

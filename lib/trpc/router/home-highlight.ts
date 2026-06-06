@@ -54,7 +54,11 @@ export const homeHighlightRouter = router({
       if (search) {
         conditions.push(
           createMultiColumnSearch(
-            [homeHighlight.title, homeHighlight.description, homeHighlight.iconKey],
+            [
+              homeHighlight.title,
+              homeHighlight.description,
+              homeHighlight.iconKey,
+            ],
             search
           )
         )
@@ -235,7 +239,10 @@ export const homeHighlightRouter = router({
         .update(homeHighlight)
         .set({ deletedAt: null, deletedBy: null })
         .where(
-          and(eq(homeHighlight.id, input.id), isNotNull(homeHighlight.deletedAt))
+          and(
+            eq(homeHighlight.id, input.id),
+            isNotNull(homeHighlight.deletedAt)
+          )
         )
         .returning({ id: homeHighlight.id })
 
