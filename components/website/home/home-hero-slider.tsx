@@ -26,8 +26,8 @@ function buildFallbackSlides(): WebsiteHeroSlide[] {
       title: 'Full-stack & ERP deneyimi',
       subtitle:
         'Next.js, Django ve kurumsal sistemler üzerine çalışıyorum. Hakkımda sayfasında deneyimlerimi ve yetkinliklerimi inceleyebilirsiniz.',
-      imageAlt: 'Yazılım geliştirme ve teknoloji',
-      mediaSrc: WEBSITE_IMAGES.projectCovers[0],
+      imageAlt: 'Eğitim ve topluluk etkinliği',
+      mediaSrc: WEBSITE_IMAGES.blogCovers[2],
       mimeType: 'image/jpeg',
       showPrimaryButton: true,
       showSecondaryButton: true,
@@ -42,7 +42,7 @@ function buildFallbackSlides(): WebsiteHeroSlide[] {
       subtitle:
         'Yazılım mühendisliği, yapay zeka ve kariyer üzerine paylaştığım yazılara göz atın.',
       imageAlt: 'Teknoloji ve blog',
-      mediaSrc: WEBSITE_IMAGES.blogCovers[0],
+      mediaSrc: WEBSITE_IMAGES.projectCovers[0],
       mimeType: 'image/jpeg',
       showPrimaryButton: true,
       showSecondaryButton: false,
