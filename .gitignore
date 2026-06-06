@@ -3,20 +3,23 @@
 # dependencies
 /node_modules
 /.pnp
-.pnp.js
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
 # testing
 /coverage
 
-# database
-/prisma/db.sqlite
-/prisma/db.sqlite-journal
-db.sqlite
+# backup
+/backup
+
 
 # next.js
 /.next/
 /out/
-next-env.d.ts
 
 # production
 /build
@@ -31,32 +34,31 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-# do not commit any .env files to git, except for the .env.example file. https://create.t3.gg/en/usage/env-variables#using-environment-variables
-.env
-.env*.local
+# env files (can opt-in for committing if needed)
+.env*
+# not .env.example
+!.env.example
+!.env.production.example
+!.env.host.example
 
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
+next-env.d.ts
 
-# idea files
-.idea
+# logs
+/logs
+*.log
 
-docker-compose.dev.yml
+# maintenance status
+.maintenance.json
 
-/.pnpm-store/** */
+/docker/*
+backup.sql
+scripts/sync-db/backup.sql
+scripts/sync-db/fix.sql
 
-<<<<<<< HEAD
-.env.prod
-docs/**
-.pnpm-store/**
-.pnpm-store/v10/files/**
-=======
 Aksiyon Soft Admin paneli ile birlikte/**
 Aksiyon Soft Full example/**
-
-referance/**
->>>>>>> b3145da (fix(gitignore): add missing reference entries to .gitignore)
