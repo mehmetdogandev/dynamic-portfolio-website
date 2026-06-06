@@ -42,9 +42,7 @@ export const HOME_HIGHLIGHT_ICON_LABELS: Record<HomeHighlightIconKey, string> =
     sparkles: 'Yenilik / AI',
   }
 
-export function resolveHomeHighlightIcon(
-  iconKey: string
-): LucideIcon {
+export function resolveHomeHighlightIcon(iconKey: string): LucideIcon {
   if (iconKey in HOME_HIGHLIGHT_ICONS) {
     return HOME_HIGHLIGHT_ICONS[iconKey as HomeHighlightIconKey]
   }

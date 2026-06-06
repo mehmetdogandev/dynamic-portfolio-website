@@ -41,12 +41,8 @@ export function HighlightDataTable() {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const router = useRouter()
-  const [deleteRow, setDeleteRow] = useState<AdminHomeHighlightRow | null>(
-    null
-  )
-  const [detailRow, setDetailRow] = useState<AdminHomeHighlightRow | null>(
-    null
-  )
+  const [deleteRow, setDeleteRow] = useState<AdminHomeHighlightRow | null>(null)
+  const [detailRow, setDetailRow] = useState<AdminHomeHighlightRow | null>(null)
 
   const { data: canCreate } = usePermission(
     SCOPES.HOME_HIGHLIGHT,

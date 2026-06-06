@@ -27,15 +27,21 @@ export async function generateMetadata() {
 }
 
 export default async function WebsiteHomePage() {
-  const [projects, blogPosts, aboutPreview, siteSeo, homeStats, homeHighlights] =
-    await Promise.all([
-      getPublicProjects(),
-      getPublicBlogPosts(),
-      getPublishedAboutPreview(),
-      getPublicSiteSeo(),
-      getPublishedHomeStatSet(),
-      getPublicHomeHighlights(),
-    ])
+  const [
+    projects,
+    blogPosts,
+    aboutPreview,
+    siteSeo,
+    homeStats,
+    homeHighlights,
+  ] = await Promise.all([
+    getPublicProjects(),
+    getPublicBlogPosts(),
+    getPublishedAboutPreview(),
+    getPublicSiteSeo(),
+    getPublishedHomeStatSet(),
+    getPublicHomeHighlights(),
+  ])
 
   const fallbackHighlightIcons = ['code2', 'database', 'cpu', 'bot'] as const
   const stats =

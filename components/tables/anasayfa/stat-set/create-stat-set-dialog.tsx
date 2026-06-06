@@ -74,7 +74,11 @@ export function CreateStatSetDialog({
           >
             İptal
           </Button>
-          <Button type="button" disabled={isPending} onClick={() => void submit()}>
+          <Button
+            type="button"
+            disabled={isPending}
+            onClick={() => void submit()}
+          >
             {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
             Oluştur
           </Button>
