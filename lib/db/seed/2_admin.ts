@@ -13,7 +13,7 @@ const PRIMARY_ADMIN = {
   password: 'mehmet1234!',
   firstName: 'Mehmet',
   lastName: 'Doğan',
-  email: 'mehmet.dogan@gmail.com',
+  email: 'mehmetdogan.dev@gmail.com',
 } as const
 
 const OPTIONAL_AKSİYON_ADMINS = [
