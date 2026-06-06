@@ -23,7 +23,8 @@ const SEED_ROWS = [
   },
   {
     title: 'Yapay Zeka & NLP',
-    description: 'Sohbet botları, doğal dil işleme ve model eğitimi projeleri.',
+    description:
+      'Sohbet botları, doğal dil işleme ve model eğitimi projeleri.',
     iconKey: 'bot',
   },
 ] as const

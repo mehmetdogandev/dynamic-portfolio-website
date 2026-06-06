@@ -57,10 +57,7 @@ function StatPair({
   )
 }
 
-export function StatSetFormFields({
-  values,
-  onChange,
-}: StatSetFormFieldsProps) {
+export function StatSetFormFields({ values, onChange }: StatSetFormFieldsProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">

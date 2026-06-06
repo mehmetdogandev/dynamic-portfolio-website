@@ -35,10 +35,7 @@ export function StatSetDataTable() {
     SCOPES.HOME_STAT_SET,
     PERMISSIONS.CREATE
   )
-  const { data: canRead } = usePermission(
-    SCOPES.HOME_STAT_SET,
-    PERMISSIONS.READ
-  )
+  const { data: canRead } = usePermission(SCOPES.HOME_STAT_SET, PERMISSIONS.READ)
   const { data: canUpdate } = usePermission(
     SCOPES.HOME_STAT_SET,
     PERMISSIONS.UPDATE
@@ -101,16 +98,15 @@ export function StatSetDataTable() {
     })
   )
 
-  const { mutateAsync: unpublishAsync, isPending: isUnpublishing } =
-    useMutation(
-      trpc.homeStatSet.unpublish.mutationOptions({
-        onSuccess: async () => {
-          await invalidate()
-          toast.success('Set yayından kaldırıldı')
-        },
-        onError: (err) => toast.error(err.message),
-      })
-    )
+  const { mutateAsync: unpublishAsync, isPending: isUnpublishing } = useMutation(
+    trpc.homeStatSet.unpublish.mutationOptions({
+      onSuccess: async () => {
+        await invalidate()
+        toast.success('Set yayından kaldırıldı')
+      },
+      onError: (err) => toast.error(err.message),
+    })
+  )
 
   const columns: ColumnDef<AdminHomeStatSetRow>[] = useMemo(
     () => [
@@ -220,11 +216,7 @@ export function StatSetDataTable() {
           autoHideEmptyColumns={false}
           toolbarAdd={
             canCreate ? (
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => setCreateOpen(true)}
-              >
+              <Button type="button" size="sm" onClick={() => setCreateOpen(true)}>
                 <Plus className="mr-1.5 h-4 w-4" />
                 Yeni set
               </Button>

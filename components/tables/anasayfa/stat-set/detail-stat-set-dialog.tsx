@@ -31,9 +31,7 @@ export function DetailStatSetDialog({
         <DialogHeader>
           <DialogTitle className="flex flex-wrap items-center gap-2">
             {row.name}
-            <Badge
-              variant={row.status === 'PUBLISHED' ? 'default' : 'secondary'}
-            >
+            <Badge variant={row.status === 'PUBLISHED' ? 'default' : 'secondary'}>
               {row.status === 'PUBLISHED' ? 'Yayında' : 'Taslak'}
             </Badge>
           </DialogTitle>

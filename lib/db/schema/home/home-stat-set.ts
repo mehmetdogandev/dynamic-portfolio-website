@@ -24,6 +24,8 @@ export const homeStatSet = pgTable(
   (table) => [
     uniqueIndex('unique_home_stat_set_single_published')
       .on(table.status)
-      .where(sql`${table.status} = 'PUBLISHED' AND ${table.deletedAt} IS NULL`),
+      .where(
+        sql`${table.status} = 'PUBLISHED' AND ${table.deletedAt} IS NULL`
+      ),
   ]
 )
