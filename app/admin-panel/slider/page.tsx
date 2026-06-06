@@ -1,10 +1,6 @@
-import { DashboardLayout } from '@/components/layouts/dashboard-layout'
-import { SliderManagement } from '@/components/slider/slider-management'
+import { redirect } from 'next/navigation'
+import { adminHref } from '@/lib/admin-path'
 
-export default function SliderPage() {
-  return (
-    <DashboardLayout>
-      <SliderManagement />
-    </DashboardLayout>
-  )
+export default function LegacySliderRedirectPage() {
+  redirect(adminHref('/anasayfa/slider'))
 }

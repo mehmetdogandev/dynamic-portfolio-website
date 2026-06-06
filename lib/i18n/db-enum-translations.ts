@@ -29,6 +29,8 @@ export const SCOPE_TRANSLATIONS: Record<keyof typeof SCOPES, string> = {
   ABOUT_EXPERTISE: 'Hakkımda uzmanlık',
   ABOUT_TECHNOLOGY: 'Hakkımda teknoloji',
   ABOUT_INTEREST: 'Hakkımda ilgi alanı',
+  HOME_STAT_SET: 'Ana sayfa istatistik seti',
+  HOME_HIGHLIGHT: 'Ana sayfa — Neler yapıyorum',
   RADIO_MOBILE_ANDROID_RELEASE: 'Radio Mobil Android Release',
   RADIO_MOBILE_ANDROID_DEBUG: 'Radio Mobil Android Debug',
   RADIO_MOBILE_IOS_RELEASE: 'Radio Mobil iOS Release',

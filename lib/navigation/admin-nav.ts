@@ -17,8 +17,10 @@ import {
   PanelTop,
   PanelBottom,
   LayoutGrid,
+  LayoutDashboard,
   Layers,
   Cpu,
+  BarChart3,
   Users,
   Smartphone,
   KeyRound,
@@ -127,13 +129,6 @@ const siteManagementReference: AdminNavItem = {
   requiredPermission: SCOPES.REFERENCE,
 }
 
-const siteManagementSlider: AdminNavItem = {
-  title: 'Slider',
-  href: `${ADMIN_PANEL_PATH}/slider`,
-  icon: GalleryHorizontal,
-  requiredPermission: SCOPES.SLIDER,
-}
-
 const siteManagementSiteSeo: AdminNavItem = {
   title: 'Site SEO',
   href: `${ADMIN_PANEL_PATH}/site-seo`,
@@ -164,6 +159,31 @@ export type AdminNavSubgroup = {
 
 /** Site yönetimi altında açılır-kapanır gruplar (birden fazla ilgili sayfa). */
 export const siteManagementSubgroups: AdminNavSubgroup[] = [
+  {
+    id: 'anasayfa',
+    label: 'Anasayfa yönetimi',
+    icon: LayoutDashboard,
+    items: [
+      {
+        title: 'İstatistik setleri',
+        href: `${ADMIN_PANEL_PATH}/anasayfa/istatistik`,
+        icon: BarChart3,
+        requiredPermission: SCOPES.HOME_STAT_SET,
+      },
+      {
+        title: 'Neler Yapıyorum',
+        href: `${ADMIN_PANEL_PATH}/anasayfa/neler-yapiyorum`,
+        icon: Sparkles,
+        requiredPermission: SCOPES.HOME_HIGHLIGHT,
+      },
+      {
+        title: 'Slider',
+        href: `${ADMIN_PANEL_PATH}/anasayfa/slider`,
+        icon: GalleryHorizontal,
+        requiredPermission: SCOPES.SLIDER,
+      },
+    ],
+  },
   {
     id: 'media',
     label: 'Medya yönetimi',
@@ -272,7 +292,10 @@ export type SiteManagementNavBlock =
   | { type: 'subgroup'; subgroup: AdminNavSubgroup }
 
 export const siteManagementNavBlocks: SiteManagementNavBlock[] = [
-  { type: 'item', item: siteManagementSlider },
+  {
+    type: 'subgroup',
+    subgroup: siteManagementSubgroups.find((g) => g.id === 'anasayfa')!,
+  },
   { type: 'item', item: siteManagementSiteSeo },
   { type: 'item', item: siteManagementHeader },
   { type: 'item', item: siteManagementFooter },
@@ -297,6 +320,8 @@ export const siteManagementNavBlocks: SiteManagementNavBlock[] = [
 
 /** Site yönetimi menüsünde arama ve aktif rota için düz liste (görünüm sırasıyla). */
 export function getAllSiteManagementNavItems(): AdminNavItem[] {
+  const anasayfaItems =
+    siteManagementSubgroups.find((g) => g.id === 'anasayfa')?.items ?? []
   const mediaItems =
     siteManagementSubgroups.find((g) => g.id === 'media')?.items ?? []
   const blogItems =
@@ -306,7 +331,7 @@ export function getAllSiteManagementNavItems(): AdminNavItem[] {
   const hakkimdaItems =
     siteManagementSubgroups.find((g) => g.id === 'hakkimda')?.items ?? []
   return [
-    siteManagementSlider,
+    ...anasayfaItems,
     siteManagementSiteSeo,
     siteManagementHeader,
     siteManagementFooter,

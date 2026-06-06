@@ -29,6 +29,8 @@ import { aboutExperienceRouter } from './about-experience'
 import { aboutExpertiseRouter } from './about-expertise'
 import { aboutTechnologyRouter } from './about-technology'
 import { aboutInterestRouter } from './about-interest'
+import { homeStatSetRouter } from './home-stat-set'
+import { homeHighlightRouter } from './home-highlight'
 import { radioMobileRouter } from './radio-mobile/index'
 
 export const appRouter = router({
@@ -65,6 +67,8 @@ export const appRouter = router({
   aboutExpertise: aboutExpertiseRouter,
   aboutTechnology: aboutTechnologyRouter,
   aboutInterest: aboutInterestRouter,
+  homeStatSet: homeStatSetRouter,
+  homeHighlight: homeHighlightRouter,
   radioMobile: radioMobileRouter,
 })
 

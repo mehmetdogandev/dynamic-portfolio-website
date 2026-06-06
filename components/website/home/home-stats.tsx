@@ -1,11 +1,15 @@
-import { PORTFOLIO_CONFIG } from '@/lib/website/portfolio-config'
+import type { WebsiteHomeStat } from '@/lib/data/website-home-stats'
 
-export function HomeStats() {
+type HomeStatsProps = {
+  stats: WebsiteHomeStat[]
+}
+
+export function HomeStats({ stats }: HomeStatsProps) {
   return (
     <section className="border-y bg-muted/20 py-10 sm:py-12">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-          {PORTFOLIO_CONFIG.stats.map((stat) => (
+          {stats.map((stat) => (
             <div
               key={stat.label}
               className="flex flex-col items-center justify-center text-center"

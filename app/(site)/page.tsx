@@ -8,6 +8,8 @@ import { CtaSection } from '@/components/website/home/cta-section'
 import { RevealOnScroll } from '@/components/website/motion/reveal-on-scroll'
 import { getPublishedAboutPreview } from '@/lib/data/website-about'
 import { getPublicBlogPosts } from '@/lib/data/website-blog'
+import { getPublicHomeHighlights } from '@/lib/data/website-home-highlights'
+import { getPublishedHomeStatSet } from '@/lib/data/website-home-stats'
 import { getPublicProjects } from '@/lib/data/website-projects'
 import { getPublicSiteSeo } from '@/lib/data/website-site-seo'
 import { PORTFOLIO_CONFIG } from '@/lib/website/portfolio-config'
@@ -25,12 +27,28 @@ export async function generateMetadata() {
 }
 
 export default async function WebsiteHomePage() {
-  const [projects, blogPosts, aboutPreview, siteSeo] = await Promise.all([
-    getPublicProjects(),
-    getPublicBlogPosts(),
-    getPublishedAboutPreview(),
-    getPublicSiteSeo(),
-  ])
+  const [projects, blogPosts, aboutPreview, siteSeo, homeStats, homeHighlights] =
+    await Promise.all([
+      getPublicProjects(),
+      getPublicBlogPosts(),
+      getPublishedAboutPreview(),
+      getPublicSiteSeo(),
+      getPublishedHomeStatSet(),
+      getPublicHomeHighlights(),
+    ])
+
+  const fallbackHighlightIcons = ['code2', 'database', 'cpu', 'bot'] as const
+  const stats =
+    homeStats ??
+    PORTFOLIO_CONFIG.stats.map((s) => ({ value: s.value, label: s.label }))
+  const highlights =
+    homeHighlights.length > 0
+      ? homeHighlights
+      : PORTFOLIO_CONFIG.highlights.map((h, index) => ({
+          title: h.title,
+          description: h.desc,
+          iconKey: fallbackHighlightIcons[index] ?? 'code2',
+        }))
 
   const siteUrl = publicSiteHomeUrl()
   const orgJson =
@@ -48,13 +66,13 @@ export default async function WebsiteHomePage() {
       {orgJson ? <WebsiteJsonLdScript json={orgJson} /> : null}
       <HomeHeroSlider />
       <RevealOnScroll variant="scaleIn" delay={0.03}>
-        <HomeStats />
+        <HomeStats stats={stats} />
       </RevealOnScroll>
       <RevealOnScroll variant="slideLeft" delay={0.05}>
         <FeaturedProjects projects={projects} />
       </RevealOnScroll>
       <RevealOnScroll variant="slideLeft" delay={0.05}>
-        <HomeHighlights />
+        <HomeHighlights highlights={highlights} />
       </RevealOnScroll>
       <RevealOnScroll variant="fadeUp" delay={0.05}>
         <BlogPreview posts={blogPosts} />

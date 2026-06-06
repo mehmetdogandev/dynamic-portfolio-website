@@ -1,12 +1,15 @@
 import Link from 'next/link'
-import { ArrowRight, Bot, Code2, Cpu, Database } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { SectionTitle } from '@/components/website/ui/section-title'
-import { PORTFOLIO_CONFIG } from '@/lib/website/portfolio-config'
+import type { WebsiteHomeHighlight } from '@/lib/data/website-home-highlights'
+import { resolveHomeHighlightIcon } from '@/lib/website/home-highlight-icons'
 import { sitePath } from '@/lib/website/site-nav'
 
-const ICONS = [Code2, Database, Cpu, Bot] as const
+type HomeHighlightsProps = {
+  highlights: WebsiteHomeHighlight[]
+}
 
-export function HomeHighlights() {
+export function HomeHighlights({ highlights }: HomeHighlightsProps) {
   return (
     <section className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
       <SectionTitle
@@ -15,8 +18,8 @@ export function HomeHighlights() {
         className="mb-10"
       />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {PORTFOLIO_CONFIG.highlights.map((item, index) => {
-          const Icon = ICONS[index] ?? Code2
+        {highlights.map((item) => {
+          const Icon = resolveHomeHighlightIcon(item.iconKey)
           return (
             <div
               key={item.title}
@@ -29,7 +32,7 @@ export function HomeHighlights() {
                 {item.title}
               </h3>
               <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                {item.desc}
+                {item.description}
               </p>
             </div>
           )
